@@ -1,0 +1,245 @@
+{% include '::header.html.twig' %}
+<body>
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+        #example tbody td{
+            font-size: 12px;
+        }
+        .yellowLine {
+            background-color: #d8d5b5 !important;
+        }
+
+        
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+    <div class="main">
+        <h3 class="headline" style="width:1521px;">Payments (EUR) {{ title }}</h3>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1500px;">
+            <h4></h4>
+            <form>
+                <div style="width:31%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                State:
+                            </td>
+                            <td>
+                                <select id="state" name="state">
+                                    <option value="">ALL</option>
+                                    {% for statesRows in _states %}
+                                        <option value="{{ statesRows.id }}"> {{ statesRows.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Product:
+                            </td>
+                            <td>
+                                <select id="product" name="product">
+                                    <option value="">ALL</option>
+                                    {% for productsRows in _products %}
+                                        <option value="{{ productsRows.id }}"> {{ productsRows.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                User:
+                            </td>
+                            <td>
+                                <select id="user" name="user">
+                                    <option value="">All users</option>
+                                    {% for userRows in _users %}
+                                        <option value="{{ userRows.id }}"> {{ userRows.name }} {{ userRows.surname }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        {#<tr>#}
+                            {#<td>#}
+                                {#Call center group:#}
+                            {#</td>#}
+                            {#<td>#}
+                                {#<select id="group" name="group">#}
+                                    {#<option value="">All groups</option>#}
+                                    {#{% for centersRows in _centers %}#}
+                                        {#<option value="{{ centersRows.id }}"> {{ centersRows.name }} ({{ centersRows.state }})</option>#}
+                                    {#{% endfor %}#}
+                                {#</select>#}
+                            {#</td>#}
+                        {#</tr>#}
+                        <tr>
+                            <td>
+                                Date from:
+                            </td>
+                            <td>
+                                <input name="from" type="text" id="datumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ from }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Date to:
+                            </td>
+                            <td>
+                                <input name="to" type="text" id="datumTo" placeholder="" onclick="$(this).datepicker();"  style="width:90px;" value="{{ to }}">
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:40%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style=" margin-top: 186px; margin-left: -258px;cursor:pointer;width:120px;height:40px;font-size: 16px;">Search</button>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:50%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1500px;">
+            Breakdown by:
+            <button class="bigOrder BrakeBtn" onclick="getTableData('order_date');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Date</button>
+            <button class="bigOrder BrakeBtn" onclick="getTableData('tmp.state_id');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">State</button>
+            <button class="bigOrder BrakeBtn" onclick="getTableData('tmp.product_main_id');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Product</button>
+            <button class="bigOrder BrakeBtn" onclick="getTableData('orders.extint2');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Type</button>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="padding: 10px 10px 10px 10px;width: 1500px;">
+
+            <div class="dayTable" style="width: 1500px;">
+
+            </div>
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1500px;">
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function(){
+           
+
+            $('#datumFrom,#datumTo').datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            getToOption('state','state');
+            getToOption('product','product');
+            getToOption('user','user');
+            //getToOption('group','group');
+
+            getTableData('order_date');
+
+        });
+        /***** inicializovanja data table *******/
+        function initDataTable() {
+            $('#example').DataTable({
+                "paging": false,
+                "order": [0, 'desc'],
+                "destroy": true,
+                "searching": false,
+                "columns": [
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {}
+                ]
+            });
+        }
+
+        function getTableData(brake){
+            var podaci ={};
+            podaci['brake']     = brake;
+            podaci['state']     = $("#state").val();
+            podaci['product']   = $("#product").val();
+            podaci['user']      = $("#user").val();
+            podaci['group']     = $("#group").val();
+
+            podaci['from'] = $("#datumFrom").val();
+            podaci['to'] = $("#datumTo").val();
+
+
+            $.ajax({
+                url:"ajax/orderData",
+                type:"GET",
+                dataType:"JSON",
+                data:podaci,
+                async: true,
+                success:function(data){
+                    if(data)
+                    {
+                        $('.dayTable').empty();
+                        $('.dayTable').append(data);
+                        initDataTable();
+                        //$('#example').dataTable
+                        //$('#example').dataTable.ajax.reload();
+                    } else {
+                        showError("Message not sent!");
+                    }
+                }
+            });
+            return false;
+        }
+    </script>
+{% endblock %}
+</body>
+
+</html>

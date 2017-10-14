@@ -1,0 +1,363 @@
+{% include '::header.html.twig' %}
+<body>
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.88;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+        .titleBox {
+                width:100px;
+                height:30px;
+                line-height:30px;
+                font-size:14px;
+            }
+            .listBox {
+                width:100px;
+                height:29px;
+                line-height:30px;
+                font-size:14px;
+            }
+            .sirokiBox {
+                width:233px;
+            }
+            .tableLine {
+                height: 30px;
+            }
+            .dLeft {
+                margin-left:30px;
+                float:left;
+                width:300px;
+
+            }
+            .dRight {
+                margin-left:20px;
+                float:left; 
+                width:300px;
+
+            }
+            table tfoot td {
+                background-color: #bbb;
+                text-align: center;
+                font-weight: bold;
+
+            }
+            .chosen-container.chosen-container-single {
+                width: 262px !important;
+            }
+            .campStat{
+                position:fixed;
+                width: 800px;
+                height: 800px;
+                background-color: #e5e5e5;
+                border: 1px solid #aaa;
+                padding: 15px;
+                left:50%;
+                top:50%;
+                margin-left: -400px;
+                margin-top: -400px;
+                z-index: 2000;
+            }
+            .showCampField{
+                font-size: 14px;
+                font-weight: bold;
+            }
+            .campStatTab {
+                width: 777px;
+            }
+            .campStatTab tr {
+                background-color: #d0d0d0;
+            }
+            .redBut{
+                background: #f73333;
+                background: -moz-linear-gradient(top, #f73333 0%, #f25e5e 50%, #f40c0c 51%, #ea1717 72%, #e82727 100%);
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f73333), color-stop(50%,#f25e5e), color-stop(51%,#f40c0c), color-stop(72%,#ea1717), color-stop(100%,#e82727));
+                background: -webkit-linear-gradient(top, #f73333 0%,#f25e5e 50%,#f40c0c 51%,#ea1717 72%,#e82727 100%);
+                background: -o-linear-gradient(top, #f73333 0%,#f25e5e 50%,#f40c0c 51%,#ea1717 72%,#e82727 100%);
+                background: -ms-linear-gradient(top, #f73333 0%,#f25e5e 50%,#f40c0c 51%,#ea1717 72%,#e82727 100%);
+                background: linear-gradient(to bottom, #f73333 0%,#f25e5e 50%,#f40c0c 51%,#ea1717 72%,#e82727 100%);
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f73333', endColorstr='#e82727',GradientType=0 );
+            }
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+    <div class="main" style="width:1650px;margin-left: -750px;">
+        <h3 class="headline" style="width:1650px;">{{ title }}</h3>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1650px;">
+            <h4></h4>
+            <form>
+                <div style="width:31%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                State:
+                            </td>
+                            <td>
+                                <select id="state" name="state">
+                                    <option value="">ALL</option>
+                                    {% for statesRows in _states %}
+                                        <option value="{{ statesRows.code2 }}"> {{ statesRows.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Product:
+                            </td>
+                            <td>
+                                <select id="product" name="product">
+                                    <option value="">ALL</option>
+                                    {% for productsRows in _products %}
+                                         <option value="{{ productsRows.id }}"> {{ productsRows.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Date from:
+                            </td>
+                            <td>
+                                <input name="from" type="text" id="datumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ from }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Date to:
+                            </td>
+                            <td>
+                                <input name="to" type="text" id="datumTo" placeholder="" onclick="$(this).datepicker();"  style="width:90px;" value="{{ to }}">
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:44%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="margin-top: 138px; margin-left: -317px;cursor:pointer;width:120px;height:40px;font-size: 16px;">Search</button>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:50%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1650px;">
+            <table style="width: 1650px;">
+                <tbody>
+                <tr>
+                    {% for statesRows in _states %}
+
+                    <td>
+                        <a href="?state={{ statesRows.code2 }}&product=&from={{ from }}&to={{ to }}"> {{ statesRows.code2 }} </a>
+                    </td>
+                    {% endfor %}
+
+                    <td style="width:10px;"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="padding: 10px 10px 0 10px;width: 1650px;">
+
+            <div class="dayTable" style="width: 1600px;">
+             {% autoescape %}
+                    {{ _html|raw }} {# var won't be escaped #}
+             {% endautoescape %}
+            </div>
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1650px;">
+             © {{ "now"|date("Y") }} - <i>phoneorder</i>
+        </div>
+    </div>
+<!-- PROZOR ZA STATISTIKU POJEDINACNE KAMPANJE -->
+<div class="campStat" style="display:none">
+    <h3 class="headline"  style="width:800px;margin: 10px 0;">Campaign Overview</h3>
+    <div class="tableHolder"  style="width:775px;">
+        <div style="width:370px;float:left;">
+            <h4 style="width:775px;">Campaign details</h4>
+            <table class="campStatTab">
+                <tbody>
+                    <tr><td style="width:200px;">Campaign Name:</td>         <td><span id="sCampName" class="showCampField"></span></td></tr>
+                    <tr><td>State:</td>                 <td><span id="sState" class="showCampField"></span></td></tr>
+                    <tr><td>Product:</td>               <td><span id="sProduct" class="showCampField"></span></td></tr>
+                    <tr><td>Number of recipients:</td>  <td><span id="sRecipients" class="showCampField"></span></td></tr>
+                    <tr><td>Sender:</td>                <td><span id="sSender" class="showCampField"></span></td></tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="tableHolder"  style="width:775px;">
+        <div style="width:370px;float:left;">
+            <h4 style="width:775px;">Number pull criteria</h4>
+            <table class="campStatTab">
+                <tbody>
+                <tr><td style="width:200px;">Time bought:</td>                                       <td><span id="sTime" class="showCampField"></span></td></tr>
+                <tr style="height:20px;"><td></td>                                                   <td></td></tr>
+                <tr><td><strong><u>Product included</u></strong></td>                                <td><strong><u>Product Excluded</u></strong></td></tr>
+                <tr><td>1. <span id="sInclude1" class="showCampField"></span></td> <td>1. <span id="sExclude1" class="showCampField"></span></td></tr>
+                <tr><td>2. <span id="sInclude2" class="showCampField"></span></td> <td>2. <span id="sExclude2" class="showCampField"></span></td></tr>
+                <tr><td>3. <span id="sInclude3" class="showCampField"></span></td> <td>3. <span id="sExclude3" class="showCampField"></span></td></tr>
+                <tr style="height:20px;"><td></td>                                                   <td></td></tr>
+                <tr><td>Not Payed:</td>                                         <td><span id="sNotPayed" class="showCampField"></span></td></tr>
+                <tr><td>Refund made:</td>                                       <td><span id="sRefund" class="showCampField"></span></td></tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="tableHolder"  style="width:775px;">
+        <div style="width:370px;float:left;">
+            <h4 style="width:775px;">Message parameters</h4>
+            <table class="campStatTab">
+                <tbody>
+                <tr><td style="width:200px;">Sending date</td>           <td><span id="sSendDate" class="showCampField"></span></td></tr>
+                <tr><td>Price:</td>                 <td><span id="sPrice" class="showCampField"></span></td></tr>
+                <tr><td>Sent per hour:</td>         <td><span id="sPerHour" class="showCampField"></span></td></tr>
+                <tr><td>Upsell Text:</td>           <td><span id="sUpsellText" class="showCampField"></span></td></tr>
+                <tr><td>Initial Message:</td>       <td><span id="sInitial" class="showCampField"></span></td></tr>
+                <tr><td>Squeeze Message:</td>       <td><span id="sSqueeze" class="showCampField"></span></td></tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div style="width:370px;float:left;">
+        <button class="bigOrder GreyBtn" onclick="$('.blocked').hide();$('.campStat').hide();" style="margin-left:677px;cursor:pointer;width:120px;font-size:20px;height:38px;">Close</button>
+    </div>
+</div>
+{% endblock %}
+{% include '::footer.html.twig' %}
+{% block javascripts %}
+    <script>
+var pageURL = '<?= URL ?>';
+
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "num-html-pre": function ( a ) {
+            var x = String(a).replace( /<[\s\S]*?>/g, "" );
+            return parseFloat( x );
+        },
+
+        "num-html-asc": function ( a, b ) {
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        },
+
+        "num-html-desc": function ( a, b ) {
+            return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+        }
+    } );
+    $(document).ready(function(){
+        initDataTable();
+
+        $('#datumFrom,#datumTo').datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+    });
+    //**********Selekcija polja tabele - GENERALIZOVANO *******************
+    //*********************************************************************
+    var table = "phone_order_splittest"; // OBAVEZNO PRILAGODJAVANJE TABELI
+
+    /***** inicializovanja data table *******/
+    function initDataTable(){
+        $('#example').dataTable({
+            sDom: "",
+            "bDestroy": true,
+            "bPaginate": false,
+            "bFilter": false,
+            "bSortCellsTop": true,
+            "aaSorting": [[ 0, "asc" ]],
+            "aoColumns": [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ]
+        });
+    }
+    function setWinner(ob,winclass,item,recipients,totalrecipients){
+        var r = confirm("Are you shure you want to set campaign " + item + " as WINNER!");
+        var winnerObj   = {};
+        if (r == true) {
+
+            winnerObj.action           = "setWinner";
+            winnerObj.campaign         = item;
+            winnerObj.recipientNum     = recipients;
+            winnerObj.recipientTotalNum= totalrecipients;
+
+
+            $('.'+winclass).attr('disabled','disabled');
+            $('#'+item).addClass('redBut');
+
+
+            $.ajax({
+                url:httpSiteURL+"CampaignsAjax",
+                type:"POST",
+                dataType:"JSON",
+                data:winnerObj,
+                async: true,
+                success:function(data){
+                    console.log(data);
+
+                    if(data.length >0)
+                    {
+                        showSuccess("Winner campaign set for <strong>"+data[1]+"</strong> on <strong>"+data[0]+"</strong> numbers!");
+                    } else {
+                        showError("Campaign not set!");
+                    }
+                }
+            });
+            return false;
+        }
+    }
+    </script>
+{% endblock %}
+</body>
+
+</html>

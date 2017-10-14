@@ -1,0 +1,167 @@
+{% include '::header.html.twig' %}
+<body>
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+        #example tbody td{
+            font-size: 12px;
+        }
+        .yellowLine {
+            background-color: #d8d5b5 !important;
+        }
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+    <div class="main">
+        <h3 class="headline" style="width:1421px;">{{ title }}</h3>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1400px;">
+            <h4></h4>
+            <form>
+                <div style="width:31%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                Product:
+                            </td>
+                            <td>
+                                <select id="product" name="product">
+                                    <option value="">ALL</option>
+                                    {% for productsRows in _products %}
+                                        <option value="{{ productsRows.id }}"> {{ productsRows.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Date from:
+                            </td>
+                            <td>
+                                <input name="from" type="text" id="datumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ from }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Date to:
+                            </td>
+                            <td>
+
+                                <input name="to" type="text" id="datumTo" placeholder="" onclick="$(this).datepicker();"  style="width:90px;" value="{{ to }}">
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:44%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="margin-top: 91px; margin-left: -228px;cursor:pointer;width:120px;height:40px;font-size: 16px;">Search</button>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:50%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1400px;">
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="padding: 10px 10px 0 10px;width: 1400px;">
+
+            <div class="dayTable" style="width: 1400px;">
+                {% autoescape %}
+                    {{ _html|raw }} {# var won't be escaped #}
+                {% endautoescape %}
+            </div>
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1400px;">
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function(){
+            //getTableData('order_date');
+            initDataTable();
+            $('#datumFrom,#datumTo').datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            getToOption('product','product');
+
+        });
+        /***** inicializovanja data table *******/
+        function initDataTable() {
+            $('#example').DataTable({
+                "paging": false,
+                "order": [0, 'asc'],
+                "destroy": true,
+                "searching": false,
+                "columns": [
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {}
+                ]
+            });
+        }
+    </script>
+{% endblock %}
+</body>
+
+</html>

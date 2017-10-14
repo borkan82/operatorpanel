@@ -1,0 +1,164 @@
+{% include '::header.html.twig' %}
+<body>
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.88;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+        .main {
+            left:45%;
+        }
+        .titleBox {
+        width:100px;
+        height:30px;
+        line-height:30px;
+        font-size:14px;
+        }
+        .listBox {
+            width:100px;
+            height:29px;
+            line-height:30px;
+            font-size:14px;
+        }
+        .sirokiBox {
+            width:233px;
+        }
+        .tableLine {
+            height: 30px;
+        }
+        .pageBox{
+            float:left;
+            height:20px;
+            width:20px;
+            border:1px solid #aaa;
+            font-size: 12px;
+            text-align: center;
+            line-height: 20px;
+            margin-right:3px;
+            cursor:pointer;
+        }
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+    <div class="main">
+        <h3 class="headline" style="width:1421px;">{{ title }} Statistic</h3>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1400px;">
+            <h4></h4>
+            <form>
+                <div style="width:31%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                Date from:
+                            </td>
+                            <td>
+                                <input name="from" type="text" id="datumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ from }}">
+
+                                Date to:
+
+                                <input name="to" type="text" id="datumTo" placeholder="" onclick="$(this).datepicker();"  style="width:90px;" value="{{ to }}">
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:44%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="margin-top:0px;cursor:pointer;width:120px;height:40px;font-size: 16px;">Search</button>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:50%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1400px;">
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="padding: 10px 10px 0 10px;width: 1400px;">
+            {% autoescape %}
+                    {{ _html|raw }} {# var won't be escaped #}
+             {% endautoescape %}
+            <div class="dayTable" style="width: 1400px;">
+
+            </div>
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1400px;">
+        </div>
+    </div>
+
+{% endblock %}
+{% include '::footer.html.twig' %}
+{% block javascripts %}
+    <script>
+    $(document).ready(function(){
+            initDataTable();
+
+            $('#datumFrom,#datumTo').datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+        });
+
+    //**********Selekcija polja tabele - GENERALIZOVANO *******************
+    //*********************************************************************
+
+        /***** inicializovanja data table *******/
+        function initDataTable(){
+            $('#example').dataTable({
+                sDom: "",
+                "bDestroy": true,
+                "bPaginate": false,
+                "bFilter": false,
+                "bSortCellsTop": true,
+                "aaSorting": [[ 0, "asc" ]],
+                "aoColumns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ]
+            });
+        }
+    </script>
+{% endblock %}
+</body>
+
+</html>

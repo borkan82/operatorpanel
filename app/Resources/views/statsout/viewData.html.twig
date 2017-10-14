@@ -1,0 +1,633 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        .tQuickLink a {
+            color: #555;
+            text-decoration: none;
+        }
+        .tQuickLink a:hover {
+            color: #000;
+            text-decoration: underline;
+        }
+        .statsData td {
+            border: 1px solid #d4d4d4;
+            background: #efefef;
+            padding: 0 8px;
+            height: 25px;
+        }
+        .statsData th {
+            border-bottom: 1px solid #ccc;
+        }
+        .outSubRow {
+            background-color: #dedbc0!important;
+        }
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+        #example tbody td{
+            font-size: 12px;
+        }
+        .yellowLine {
+            background-color: #d8d5b5 !important;
+        }
+        .statsData a {
+            color:#111!important;
+        }
+        input [type=text], select {
+            float: left;
+        }
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+    {% set emptyarr = {'state': '', 'ordType': '', 'ordStatus': '', 'subStatus': '', 'product': '', 'ordNum': '', 'user': '', 'group': ''} %}
+    {% set queryarr = app.request.query.all %}
+    {% set qp = emptyarr|merge(queryarr) %}
+    {% set downloadName = '/Download/OutboundStats/OrderListOut' %}
+
+    {% if qp.state != "" %}
+        {%   set downloadName = '/Download/OutboundStats/OrderListOut-' %}
+    {% endif %}
+
+    <div class="main">
+        <h3 class="headline" style="width:1421px;">{{ title }}bound</h3>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1400px;">
+
+            <h4></h4>
+            <form>
+                <div style="width:80%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                State:
+                            </td>
+                            <td style="width: 300px;">
+                                <select id="state" name="state">
+                                    <option value="">ALL</option>
+                                    {% for stateInfo in _states %}
+                                        <option value="{{ stateInfo.code2 }}"> {{ stateInfo.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('state');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td >
+                                Call type:
+                            </td>
+                            <td colspan="3">
+
+                                <select id="ordType" name="ordType">
+                                    <option value="">ALL</option>
+                                    {% for type in _types %}
+                                        <option value="{{ type.id }}"> {{ type.title }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('ordType');">X</div>
+                            </td>
+                            <td>
+                                <a href="?state={{ qp.state }}&ordType=&ordStatus={{ qp.ordStatus }}&subStatus={{ qp.subStatus }}&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}"  style="margin-right: 10px;">ALL</a>
+                                {% for typel in _types %}
+                                    <a href="?state={{ qp.state }}&ordType={{ typel.id }}&ordStatus={{ qp.ordStatus }}&subStatus={{ qp.subStatus }}&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}"  style="margin-right: 10px;">{{ typel.title }}</a>
+                                {% endfor %}
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Call status:
+                            </td>
+                            <td colspan="3">
+                                <select id="ordStatus" name="ordStatus">
+                                    <option value="">ALL</option>
+                                    <option value="1">FINISHED</option>
+                                    <option value="2">CANCELED</option>
+                                    <option value="3">OTHER</option>
+                                    <option value="4">NOT CALLED</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('ordStatus');">X</div>
+                            </td>
+                            <td >
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus=&subStatus={{ qp.subStatus }}&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}"  style="margin-right: 10px;">ALL</a>
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus=1&subStatus={{ qp.subStatus }}&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}"  style="margin-right: 10px;">FINISHED</a>
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus=2&subStatus={{ qp.subStatus }}&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}"  style="margin-right: 10px;">CANCELED</a>
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus=3&subStatus={{ qp.subStatus }}&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}"  style="margin-right: 10px;">OTHER</a>
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus=4&subStatus={{ qp.subStatus }}&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}"  style="margin-right: 10px;">NOT CALLED</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Call substatus:
+                            </td>
+                            <td colspan="3">
+                                <select id="subStatus" name="subStatus">
+                                    <option value="">ALL</option>
+                                    <option value="">-----FINISHED-----</option>
+                                    <option value="7">ORDER</option>
+                                    <option value="12">VERIFY</option>
+                                    <option value="">-----OTHER-----</option>
+                                    <option value="0">PENDING</option>
+                                    <option value="1">ANSWERED</option>
+                                    <option value="2">BUSY</option>
+                                    <option value="4">FAKE</option>
+                                    <option value="9">POSTPONED</option>
+                                    <option value="10">INBOUND</option>
+                                    <option value="11">CALLING</option>
+                                    <option value="13">REQUEST GONE</option>
+                                    <option value="14">REMOVED</option>
+                                    <option value="15">REJECTED</option>
+                                    <option value="16">DROPPED</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('subStatus');">X</div>
+                            </td>
+
+                            <td >
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus={{ qp.ordStatus }}&subStatus=&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">ALL</a>
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus={{ qp.ordStatus }}&subStatus=7&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">ORDER</a>
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus={{ qp.ordStatus }}&subStatus=12&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">VERIFY</a>
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus={{ qp.ordStatus }}&subStatus=0&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">PENDING</a>
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus={{ qp.ordStatus }}&subStatus=1&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">ANSWERED</a>
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus={{ qp.ordStatus }}&subStatus=2&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">BUSY</a>
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus={{ qp.ordStatus }}&subStatus=4&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">FAKE</a>
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus={{ qp.ordStatus }}&subStatus=9&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">POSTPONED</a>
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus={{ qp.ordStatus }}&subStatus=10&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">INBOUND</a>
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus={{ qp.ordStatus }}&subStatus=11&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">CALLING</a>
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus={{ qp.ordStatus }}&subStatus=13&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">REQUEST GONE</a>
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus={{ qp.ordStatus }}&subStatus=14&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">REMOVED</a>
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus={{ qp.ordStatus }}&subStatus=15&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">REJECTED</a>
+                                <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus={{ qp.ordStatus }}&subStatus=16&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">DROPPED</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td >
+                                Product:
+                            </td>
+                            <td colspan="3">
+                                <select id="product" name="product">
+                                    <option value="">ALL</option>
+                                    {% for productInfo in _products %}
+                                        <option value="{{ productInfo.id }}"> {{ productInfo.title }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('product');">X</div>
+                            </td>
+                            <td >
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Show num:
+                            </td>
+                            <td colspan="3">
+                                <select id="ordNum" name="ordNum">
+                                    <option value="10000">ALL orders</option>
+                                    <option value="50">50 orders</option>
+                                    <option value="100">100 orders</option>
+                                    <option value="1000">1000 orders</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('ordNum');">X</div>
+                            </td>
+                            <td >
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                User:
+                            </td>
+                            <td colspan="3">
+                                <select id="user" name="user">
+                                    <option value="">All users</option>
+                                    {% for userInfo in _users %}
+                                        <option value="{{ userInfo.id }}"> {{ userInfo.name }} {{ userInfo.surname }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('user');">X</div>
+                            </td>
+                            <td >
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Call center group:
+                            </td>
+                            <td colspan="3">
+                                <select id="group" name="group">
+                                    <option value="">All groups</option>
+                                    {% for centerInfo in _centers %}
+                                        <option value="{{ centerInfo.id }}"> {{ centerInfo.name }} ({{ centerInfo.state }})</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('group');">X</div>
+                            </td>
+                            <td >
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="padding-top: 20px;padding-left: 50px;">
+                                Request submit date:
+                            </td>
+
+                            <td colspan="2" style="padding-top: 20px;">
+                                Last called time:
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 50px;">
+                                From:
+                            </td>
+                            <td>
+                                <input name="from" type="text" id="datumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ from }}">
+                            </td>
+                            <td>
+                                From:
+                            </td>
+                            <td>
+                                <input name="cfrom" type="text" id="cdatumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ cfrom }}">
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding-left: 50px;">
+                                To:
+                            </td>
+                            <td>
+                                <input name="to" type="text" id="datumTo" placeholder="" onclick="$(this).datepicker();"  style="width:90px;" value="{{ to }}">
+                            </td>
+                            <td>
+                                To:
+                            </td>
+                            <td>
+                                <input name="cto" type="text" id="cdatumTo" placeholder="" onclick="$(this).datepicker();"  style="width:90px;" value="{{ cto }}">
+                            </td>
+                            <td >
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="margin-top:0px;cursor:pointer;width: 120px;height:40px;font-size:16px;">Search</button>
+                            </td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1400px;">
+            <table style="width: 100%;">
+                <tbody>
+                <tr>
+                    {% for statesRows in _states %}
+                    <td>
+                        <a href="?state={{ statesRows.code2 }}&ordType={{ qp.ordType }}&ordStatus={{ qp.ordStatus }}&subStatus={{ qp.subStatus }}&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group}}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}"> {{ statesRows.code2 }} </a>
+                    </td>
+                    {% endfor %}
+                    <td>
+                        <button class="bigOrder delButton" onclick="exportStats({{ random }});" style="float:right;cursor:pointer;width: 120px;height:30px;font-size:14px;">Export</button>
+                    </td>
+                    <td>
+                        <span id="downloadText" style="display:none;"><a href="{{ app.request.getBaseURL() }}{{ downloadName }}{{ qp.state }}-{{ exportFile }}">Download</a></span>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1400px;">
+            <table class = "tQuickLink" style="width: 1400px;">
+                <tbody>
+                <tr>
+                    <td>
+                    </td>
+                   
+                    {% for key,val in _statuses %}
+                        <td style="text-align: center;">
+                            <a href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordStatus={{ qp.ordStatus }}&subStatus={{ key }}&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group}}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}"> {{ val.name }} </a>
+                        </td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>Count </td>
+                    {% for key,val in _statuses %}
+                        <td style="text-align: center;">{{ val.num }} </td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>% </td>
+                    {% for key,val in _statuses %}
+                    {% set percStat =  (val.num / headerTable.callCount)*100 %}
+                        <td style="text-align: center;">
+                           {{ percStat|round(2, 'floor') }} %
+                        </td>
+                    {% endfor %}
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="padding: 10px;width: 1400px;">
+            <table class="statsData" style="width: 100%;font-size: 14px;border-spacing: 4px;">
+                <tbody>
+                    <tr style="height:30px;!important">
+                        <th style="text-align:left;padding: 0 10px;"></th>
+                        <th colspan="2" style="text-align:center;">Volumes</th>
+                        <th colspan="2" style="text-align:center;">Percentages</th>
+                        <th colspan="2" style="text-align:center;">Sum values</th>
+                        <th colspan="2" style="text-align:center;">Average values</th>
+                        <th colspan="2" style="text-align:center;">Average costs</th>
+                        <th colspan="2" style="text-align:center;">Durations</th>
+                    </tr>
+                    <tr>
+                        <th rowspan="3" style="text-align:left;padding: 0 10px;">Total Calls</th>
+                        <td style="text-align:left;">Requests:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="Total requests">{{ headerTable.callCount }}</a></strong></td>
+                        <td colspan="2" style="text-align:left;"></td>
+                        <td colspan="2" style="text-align:left;"></td>
+                        <td colspan="2" style="text-align:left;"></td>
+                        <td colspan="2" style="text-align:left;"></td>
+                        <td colspan="2" style="text-align:left;"></td>
+
+                    </tr>
+                    <tr>
+
+                        <td style="text-align:left;">Calls:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="Total Calls">{{ headerTable.callMade }}</a></strong></td>
+                        <td colspan="2" style="text-align:left;"></td>
+                        <td colspan="2" style="text-align:left;"></td>
+                        <td colspan="2" style="text-align:left;"></td>
+                        <td style="text-align:left;">Total monthly costs:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="SUM(answered) * cost_per_call">{{ headerTable.callCosts }}</a> €</strong></td>
+                        <td style="text-align:left;">Sum call duration:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="Total Call Duration">{{ headerTable.totalDuration }}</a></strong></td>
+
+                    </tr>
+                    <tr>
+                        <td style="text-align:left;">Answered:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="COUNT(Answered calls)">{{ headerTable.countAnswered }}</a></strong></td>
+                        <td style="text-align:left;">Answered</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="COUNT(Answered_calls) / COUNT(Requests) * 100">{{ headerTable.answerPercent }}</a> %</strong></td>
+                        <td colspan="2" style="text-align:left;"></td>
+                        <td style="text-align:left;">Average call value:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="SUM(order_value) / COUNT(Answered_calls)">{{ headerTable.perCall }}</a> €</strong></td>
+                        <td style="text-align:left;">Cost per call:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.costpercall }} €</strong></td>
+                        <td style="text-align:left;">Avg call duration:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="SUM(Total_call_duration)/COUNT(Answered calls)">{{ headerTable.avgCallDuration }}</a></strong></td>
+                    </tr>
+                    <tr>
+                        <th style="text-align:left;padding: 0 10px;">Orders</th>
+                        <td style="text-align:left;">Orders:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="COUNT(Orders)">{{ headerTable.countFinish }}</a></strong></td>
+
+                        <td style="text-align:left;">Order:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="COUNT(Orders) / COUNT(Answered_calls) *100">{{ headerTable.orderPercent }}</a> %</strong></td>
+
+                        <td style="text-align:left;">Sum order value:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="SUM(order_value)">{{ headerTable.orderSum|round(2, 'floor') }}</a> €</strong></td>
+
+                        <td style="text-align:left;">Avg order value:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="SUM(order_value) / COUNT(Orders)">{{ headerTable.perOrder }}</a> €</strong></td>
+
+                        <td style="text-align:left;">Cost per order:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.costperorder }} €</strong></td>
+
+                        <td style="text-align:left;">Avg order call duration:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="SUM(Order_duration) / COUNT(Total_Calls)">{{ headerTable.avgOrderDuration }}</a></strong></td>
+                    </tr>
+                    <tr>
+                        <th style="text-align:left;padding: 0 10px;">Upsells</th>
+                        <td style="text-align:left;">Upsells:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="COUNT(Upsells)">{{ headerTable.upsellsCount }}</a></strong></td>
+
+                        <td style="text-align:left;">Upsell:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="COUNT(Upsells) / COUNT(Orders) * 100">{{ headerTable.upsellPercent }}</a> %</strong></td>
+
+                        <td style="text-align:left;">Sum upsell value:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="SUM(upsell_value)">{{ headerTable.upsellPriceDiff|round(2, 'floor') }}</a> €</strong></td>
+
+                        <td style="text-align:left;">Avg upsell value:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="SUM(upsell_value)/COUNT(Upsells)">{{ headerTable.upsellValue }}</a> €</strong></td>
+
+                        <td colspan="4">
+                    </tr>
+                    <tr>
+
+                        <th style="text-align:left;padding: 0 10px;">Other</th>
+                        <td style="text-align:left;"> Other:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="COUNT(Other_calls)">{{ headerTable.countOther }}</a></strong></td>
+
+                        <td style="text-align:left;">Other:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="COUNT(Other_calls) / COUNT(Total_calls) * 100">{{ headerTable.otherPercent }}</a> %</strong></td>
+
+                        <td colspan="8">
+                    </tr>
+                    <tr>
+
+                        <th style="text-align:left;padding: 0 10px;">Cancel</th>
+                        <td style="text-align:left;padding: 0 10px;"> Canceled:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="COUNT(Cancel_calls)">{{ headerTable.countCancell }}</a></strong></td>
+
+                        <td style="text-align:left;">Canceled:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="COUNT(Cancel_calls) / COUNT(Total_calls) * 100">{{ headerTable.cancelPercent }}</a> %</strong></td>
+
+
+                        <td colspan="8">
+                    </tr>
+                    <tr>
+                        <th style="text-align:left;padding: 0 10px;">Not called</th>
+                        <td style="text-align:left;padding: 0 10px;"> Not called:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="COUNT(Pending + Request gone)">{{ headerTable.notCalled }}</a></strong></td>
+                        <td style="text-align:left;">Not Called:</td>
+                        <td style="background: #fff;text-align:right;"><strong><a href="#" class="popElement" data-trigger="focus" data-toggle="popover" data-content="COUNT(Not_Called) / COUNT(Total_calls) * 100">{{ headerTable.notCalledPercent }}</a> %</strong></td>
+                        <td colspan="8">
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tableHolder" style="width: 1400px;">
+            <div class="dayTable" style="width: 1400px;">
+            <div class="dayTable" style="width: 1400px;">
+                {% autoescape %}
+                    {{ _html|raw }} {# var won't be escaped #}
+                {% endautoescape %}
+            </div>
+        </div>
+        <div class="legendHolder" style="width: 1400px;">
+            <div class="legendBox" style="width:500px;margin-left:40px;">
+                <div class="legendItem" style="border-bottom:1px dotted #ccc;"><strong>Call types</strong></div>
+                <div class="legendItem"><strong>Adcombo Call</strong> - Sent requests from small form (name and phone)</div>
+                <div class="legendItem"><strong>Canceled user</strong> - Request from user who wants to cancel order via Email</div>
+                <div class="legendItem"><strong>Upsell call</strong> - Requests when order on LP is made so operator offers upsell</div>
+                <div class="legendItem"><strong>Form fill brake</strong> - Request from small form (name, phone) when user didn't submitted</div>
+                <div class="legendItem"><strong>Order fill brake</strong> - Request from full form when user didn't submitted</div>
+                <div class="legendItem"><strong>Reorder call</strong> - Request from cron which gets all users who has  reorder sms day before and no order</div>
+                <div class="legendItem"><strong>Bulk Call</strong> - Request from cron which gets all users who has  bulk sms day before and no order</div>
+                <div class="legendItem"><strong>Undecided</strong> - Request from exit console on Sale page</div>
+                <div class="legendItem"><strong>Mail reorder</strong> - Request from Mail reorder sale page</div>
+            </div>
+
+            <div class="legendBox" style="width:600px;margin-left:40px;">
+                <div class="legendItem" style="border-bottom:1px dotted #ccc;"><strong>Calculation stats</strong></div>
+                <div class="legendItem"><strong>Order %</strong> - (COUNT(Orders) / COUNT(Answered)) * 100</div>
+                <div class="legendItem"><strong>Upsell %</strong> - (COUNT(Upsells) / COUNT(Orders)) * 100</div>
+                <div class="legendItem"><strong>Average call value</strong> - SUM(Final price) / COUNT(Total calls)</div>
+                <div class="legendItem"><strong>Sum order value</strong> - SUM(Final price) </div>
+                <div class="legendItem"><strong>Sum upsell value</strong> - SUM(Final price) - SUM(Price)</div>
+                <div class="legendItem"><strong>Avg order value</strong> - SUM(Final price) / COUNT(Orders)</div>
+                <div class="legendItem"><strong>Avg upsell value</strong> - SUM(Upsell difference)/COUNT(Orders)</div>
+            </div>
+
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1400px;">
+        </div>
+    </div>
+{% endblock %}
+{% include '::footer.html.twig' %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function(){
+            initDataTable();
+
+            $('#datumFrom,#datumTo,#cdatumFrom,#cdatumTo').datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            getToOption('state','state');
+            getToOption('product','product');
+            getToOption('user','user');
+            getToOption('group','group');
+            getToOption('ordType','ordType');
+            getToOption('ordNum','ordNum');
+            getToOption('ordStatus','ordStatus');
+            getToOption('subStatus','subStatus');
+
+            $('[data-toggle="popover"]').popover();
+
+            $('.showBuyer').click({
+
+            });
+
+        });
+
+        /***** inicializovanja data table *******/
+        function initDataTable(){
+            $('#example').dataTable({
+                sDom: "",
+                "bDestroy": true,
+                "bPaginate": false,
+                "bFilter": false,
+                "bSortCellsTop": true,
+                "aaSorting": [[ 0, "asc" ]],
+                "columns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ]
+            });
+        }
+
+        function exportStats(randomNum) {
+
+            var podaci = {};
+            podaci["action"]     = 'exportOrderList';
+
+            podaci["random"]     = randomNum;
+            podaci["state"]    =  $('#state').find('option:selected').val();
+
+            podaci["ordType"]    = $('#ordType').find('option:selected').val();
+            podaci["ordStatus"]  = $('#ordStatus').find('option:selected').val();
+            podaci["subStatus"]  = $('#subStatus').find('option:selected').val();
+            podaci["product"]    = $('#product').find('option:selected').val();
+            podaci["ordNum"]     = $('#ordNum').find('option:selected').val();
+            podaci["user"]       = $('#user').find('option:selected').val();
+            podaci["group"]      = $('#group').find('option:selected').val();
+            podaci["from"]       = '{{ from }}';
+            podaci["to"]         = '{{ to }}';
+            podaci["cfrom"]      = '{{ cfrom }}';
+            podaci["cto"]        = '{{ cto }}';
+            console.log(podaci);
+
+
+
+            //$('#downloadText').show();
+            $('.loaderGreen').show();
+            $.ajax({
+                url: httpSiteURL+"OutboundAjax",
+                type:"GET",
+                //dataType:"JSON",
+                data: podaci,
+                async: true,
+//                success:function(data){
+//
+//                }
+
+            }).done(function (data) {
+                console.log('success');
+                $('.loaderGreen').hide();
+                $('#downloadText').show();
+            }).fail(function (data) {
+                //error in comuication with server
+                console.log('Error: Server returned error');
+            }).always(function (data) {
+               // console.log('always');
+
+            });
+            return false;
+
+        }
+
+        function openItemList(outid){
+            var klasa = "rit"+outid;
+
+            if ($('.'+klasa).hasClass('opened')){
+                $('.'+klasa).hide();
+                $('.'+klasa).removeClass('opened');
+
+            } else {
+                $('.'+klasa).show();
+                $('.'+klasa).addClass('opened');
+
+            }
+        }
+    </script>
+{% endblock %}
+</body>
+
+</html>

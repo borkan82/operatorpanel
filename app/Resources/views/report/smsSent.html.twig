@@ -1,0 +1,245 @@
+{% include '::header.html.twig' %}
+<body>
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        #example tbody td{
+            font-size: 12px;
+        }
+        .yellowLine {
+            background-color: #d8d5b5 !important;
+        }
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color: #000;
+        }
+        input [type=text], select {
+            float: left;
+        }
+    </style>
+{% endblock %}
+
+
+{% block body %}
+    {% set emptyarr = {'sender': '', 'status': '', 'smstype': '', 'ordNum': '', 'phone': ''} %}
+    {% set queryarr = app.request.query.all %}
+    {% set qp = emptyarr|merge(queryarr) %}
+    <div class="main">
+
+        <h3 style="width: 1322px" class="headline">{{ title }}</h3>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1300px;">
+            <h4>Search filter</h4>
+            <form>
+                <div style="width:36%;float:left;">
+                    <table >
+                        <tbody>
+                            <tr>
+                                <td>
+                                    Sender:
+                                </td>
+                                <td>
+                                    <select id="sender" name="sender" >
+                                        <option value="">All senders</option>
+                                        {% for stateInfo in _states %}
+                                            <option value="{{ stateInfo.smsSender }}"> {{ stateInfo.smsSender }} ({{ stateInfo.code2 }})</option>
+                                        {% endfor %}
+
+                                    </select>
+                                    <div class="resetSelectField" onclick="resetSelectField('sender');">X</div>
+                                </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                Status:
+                              </td>
+                              <td>
+                                <select id="status" name="status" >
+                                    <option value="">All statuses</option>
+                                    <option value="1">Sent</option>
+                                    <option value="2">Delivered</option>
+                                    <option value="3">Undelivered</option>
+                                </select>
+                                  <div class="resetSelectField" onclick="resetSelectField('status');">X</div>
+                              </td>
+                            </tr>
+                             <tr>
+                                 <td>
+                                     SMS type:
+                                 </td>
+                                 <td>
+                                     <select id="smstype" name="smstype" >
+                                         <option value="">All types</option>
+                                         <option value="sms">Bulk</option>
+                                         <option value="ord">Shipped</option>
+                                         <option value="sub">Submit</option>
+                                         <option value="reo">Reorder</option>
+                                     </select>
+                                     <div class="resetSelectField" onclick="resetSelectField('smstype');">X</div>
+                                 </td>
+                             </tr>
+                            <tr>
+                              <td>
+                                Limit:
+                              </td>
+                              <td>
+                                <select id="ordNum" name="ordNum" >
+                                    <option value="">All records</option>
+                                    <option value="100">100 Records</option>
+                                    <option value="500">500 Records</option>
+                                    <option value="1000">1000 Records</option>
+                                </select>
+                                  <div class="resetSelectField" onclick="resetSelectField('ordNum');">X</div>
+                              </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    Date from:
+                                </td>
+                                <td>
+                                    <input name="from" type="text" id="datumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ from }}">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    Date to:
+                                </td>
+                                <td>
+                                    <input name="to" type="text" id="datumTo" placeholder=""onclick="$(this).datepicker();"  style="width:90px;" value="{{ to }}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Search number:
+                                </td>
+                                <td> <input style=" width: 262px;" id="search_by_num"  type="text" name="phone" placeholder="Search by phone number" value="{{ qp.phone }}"></td>
+                                <td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:50%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="margin-top: 275px;cursor:pointer;width:120px;height:40px;font-size: 16px;">Search</button>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="width:50%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1300px;">
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="padding: 10px 10px 0 10px;width: 1300px;">
+            <div class="dayTable" style="width: 1270px;">
+                {% autoescape %}
+                    {{ _html|raw }} {# var won't be escaped #}
+                {% endautoescape %}
+            </div>
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width:  1300px;">
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function(){
+            initDataTable();
+
+            $('#datumFrom,#datumTo').datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            getToOption('sender','sender');
+            getToOption('status','status');
+            getToOption('ordNum','ordNum');
+            getToOption('smstype','smstype');
+
+        });
+        /***** inicializovanja data table *******/
+        function initDataTable() {
+            $('#example').dataTable({
+                sDom: "",
+                "bDestroy": true,
+                "bPaginate": false,
+                "bFilter": false,
+                "bSortCellsTop": true,
+                "aaSorting": [[0, "asc"]],
+                "aoColumns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+
+                ]
+            });
+        }
+
+        function searchByPhoneNum() {
+
+            var data = {};
+            data.action = 'searchByNum';
+            data.phone = $('#search_by_num').val();
+
+            $.ajax({
+                // url: "../settings/adapter.php",
+                url: "<?php $this->container->get('router')->generate('blog_show',array('slug' => 'my-blog-post')); ?>",
+                type: "POST",
+                dataType: "JSON",
+                data: data,
+                async: true,
+                success: function (data) {
+                    // if(data){
+                    //   console.log('YES');
+                    //}
+
+                }
+
+            });
+        }
+    </script>
+{% endblock %}
+</body>
+
+</html>

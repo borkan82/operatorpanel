@@ -1,0 +1,205 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        #example tbody td{
+            font-size: 12px;
+        }
+        .greeny {
+            background-color:#97e0ae!important;
+        }
+        .tQuickLink a {
+            color: #555;
+            text-decoration: none;
+        }
+        .tQuickLink a:hover {
+            color: #000;
+            text-decoration: underline;
+        }
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color: #000;
+        }
+        input [type=text], select {
+            float: left;
+        }
+    </style>
+{% endblock %}
+<body>
+{% block body %}
+    {% set emptyarr = {'state': '', 'opratorGroup': '', 'logoutType': ''} %}
+    {% set queryarr = app.request.query.all %}
+    {% set qp = emptyarr|merge(queryarr) %}
+
+
+    <div class="main">
+
+    <h3 style="width: 1322px" class="headline">{{ title }}</h3>
+
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="width: 1300px;">
+        <h4></h4>
+        <form>
+            <div style="width:36%;float:left;">
+                <table >
+                    <tbody>
+                    <tr>
+                        <td>
+                            State:
+                        </td>
+                        <td>
+                            <select id="state" name="state" >
+                                <option value="">ALL</option>
+
+                                {% for stateInfo in _states %}
+                                    <option value="{{ stateInfo.code2 }}"> {{ stateInfo.title_eng }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="resetSelectField" onclick="resetSelectField('state');">X</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Call centar Group:
+                        </td>
+                        <td>
+                            <select id="opratorGroup" name="opratorGroup" >
+
+                                <option value="">ALL</option>
+                                {% for centerInfo in _callCentres %}
+                                    <option value="{{ centerInfo.id }}"> {{ centerInfo.name }} {{ centerInfo.state }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="resetSelectField" onclick="resetSelectField('opratorGroup');">X</div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Logout Type:
+                        </td>
+                        <td>
+                            <select id="logoutType" name="logoutType" >
+                                <option value="">ALL</option>
+                                <option value="0">Active</option>
+                                <option value="1">Logout</option>
+                                <option value="3">Kicked from session</option>
+                            </select>
+                            <div class="resetSelectField" onclick="resetSelectField('logoutType');">X</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding-top: 20px;padding-left: ;">
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Login from:
+                        </td>
+                        <td>
+                            <input name="loginFrom" type="text" id="loginfrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ loginFrom }}">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Login to:
+                        </td>
+                        <td>
+                            <input name="loginTo" type="text" id="loginto" placeholder="" onclick="$(this).datepicker();"  style="width:90px;" value="{{ loginTo }}">
+                        </td>
+                        <td>
+                            <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="margin-left: -124px;margin-top:0px;cursor:pointer;width: 120px;height:40px;font-size:16px;">Search</button>
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="width:50%;float:left;">
+                <table >
+                    <tbody>
+                    <tr>
+                        <td>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="padding: 10px 10px 0 10px;width: 1300px;">
+
+        <div class="dayTable" style="width: 1300px;">
+            {% autoescape %}
+                {{ _html|raw }} {# var won't be escaped #}
+            {% endautoescape %}
+        </div>
+    </div>
+
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1300px;">
+    </div>
+</div>
+
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function(){
+            initDataTable();
+
+            $('#loginfrom,#loginto').datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            getToOption('state','state');
+            getToOption('opratorGroup','opratorGroup');
+            getToOption('logoutType','logoutType');
+
+        });
+        /***** inicializovanja data table *******/
+        function initDataTable() {
+            $('#example').dataTable({
+                sDom: "",
+                "bDestroy": true,
+                "bPaginate": false,
+                "bFilter": false,
+                "bSortCellsTop": true,
+                "aaSorting": [[0, "asc"]],
+                "aoColumns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+
+                ]
+            });
+        }
+    </script>
+{% endblock %}
+</body>
+</html>

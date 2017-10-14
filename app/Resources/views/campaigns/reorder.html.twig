@@ -1,0 +1,221 @@
+{% include '::header.html.twig' %}
+<body>
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.88;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+    <div class="main" style="width:1650px;margin-left: -750px;">
+        <h3 class="headline" style="width:1671px;">{{ title }}</h3>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1650px;">
+            <h4></h4>
+            <form>
+                <div style="width:31%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                State:
+                            </td>
+                            <td>
+                                <select id="state" name="state">
+                                    <option value="">ALL</option>
+                                    {% for statesRows in _states %}
+                                        <option value="{{ statesRows.code2 }}"> {{ statesRows.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Product:
+                            </td>
+                            <td>
+                                <select id="product" name="product">
+                                    <option value="">ALL</option>
+                                    {% for productsRows in _products %}
+                                         <option value="{{ productsRows.id }}"> {{ productsRows.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Date from:
+                            </td>
+                            <td>
+                                <input name="from" type="text" id="datumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ from }}">
+                        </tr>
+                        <tr>
+                            <td>
+                                Date to:
+                            </td>
+
+                            <td>
+                                <input name="to" type="text" id="datumTo" placeholder="" onclick="$(this).datepicker();"  style="width:90px;" value="{{ to }}">
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:44%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="margin-top: 138px; margin-left: -317px;cursor:pointer;width:120px;height:40px;font-size: 16px;">Search</button>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:50%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1650px;">
+            <table style="width: 1650px;">
+                <tbody>
+                <tr>
+                    {% for statesRows in _states %}
+
+                    <td>
+                        <a href="?state={{ statesRows.code2 }}&product=&from={{ from }}&to={{ to }}"> {{ statesRows.code2 }} </a>
+                    </td>
+                    {% endfor %}
+
+                    <td style="width:10px;"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="padding: 10px 10px 0 10px;width: 1650px;">
+
+            <div class="dayTable" style="width: 1643px;">
+             {% autoescape %}
+                    {{ _html|raw }} {# var won't be escaped #}
+             {% endautoescape %}
+            </div>
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1650px;">
+        </div>
+    </div>
+
+{% endblock %}
+{% include '::footer.html.twig' %}
+{% block javascripts %}
+    <script>
+
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "num-html-pre": function ( a ) {
+            var x = String(a).replace( /<[\s\S]*?>/g, "" );
+            return parseFloat( x );
+        },
+
+        "num-html-asc": function ( a, b ) {
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        },
+
+        "num-html-desc": function ( a, b ) {
+            return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+        }
+    } );
+
+    $(document).ready(function(){
+        initDataTable();
+
+        $('#datumFrom,#datumTo').datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+    });
+
+    //**********Selekcija polja tabele - GENERALIZOVANO *******************
+    //*********************************************************************
+    var table = "phone_order_reorder"; // OBAVEZNO PRILAGODJAVANJE TABELI
+
+    /***** inicializovanja data table *******/
+    function initDataTable(){
+        $('#example').dataTable({
+
+           // sDom: "",
+            "scrollCollapse" : true,
+            "scrollY":        "700px",
+             //"scrollX":        "1625px",
+//            fixedColumns:   {
+//                leftColumns: 1,
+//                rightColumns: 1
+//            },
+            "bDestroy": true,
+            "bPaginate": false,
+            "bFilter": false,
+            "bSortCellsTop": true,
+            "aaSorting": [[ 0, "asc" ]],
+            "aoColumns": [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ]
+        });
+    }
+    $(".chosen-select-campaigns").chosen({no_results_text: "No results"});
+    </script>
+{% endblock %}
+</body>
+
+</html>

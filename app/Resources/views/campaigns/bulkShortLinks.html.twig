@@ -1,0 +1,199 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.88;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+        .titleBox {
+            width:100px;
+            height:30px;
+            line-height:30px;
+            font-size:14px;
+        }
+        .listBox {
+            width:100px;
+            height:29px;
+            line-height:30px;
+            font-size:14px;
+        }
+        .sirokiBox {
+            width:233px;
+        }
+        .tableLine {
+            height: 30px;
+        }
+        .pageBox{
+            float:left;
+            height:20px;
+            width:20px;
+            border:1px solid #aaa;
+            font-size: 12px;
+            text-align: center;
+            line-height: 20px;
+            margin-right:3px;
+            cursor:pointer;
+        }
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+    <div class="main">
+        <h3 class="headline" style="width:1421px;">{{ title }} Statistic</h3>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1400px;">
+            <h4></h4>
+            <form>
+                <div style="width:31%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                State:
+                            </td>
+                            <td>
+                                <select id="state" name="state">
+                                    <option value="">ALL</option>
+                                    {% for stateInfo in _states %}
+                                        <option value="{{ stateInfo.code2 }}"> {{ stateInfo.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td >
+                                Product:
+                            </td>
+                            <td colspan="3">
+                                <select id="product" name="product">
+                                    <option value="">ALL</option>
+                                    {% for productInfo in _products %}
+                                        <option value="{{ productInfo.id }}"> {{ productInfo.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Search campaign:
+                            </td>
+                            <td> <input style=" width: 262px;" id="search_camp"  type="text" name="campaign" placeholder="Search by campaign name" value="{{ campaign }}"></td>
+                            <td>
+                        </tr>
+                        <tr>
+                            <td>Date from:</td>
+                            <td>
+                                <input type="text" id="dateFrom" name="from" value="{{ from }}" placeholder="Date From" style="width:100px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Date to:</td>
+                            <td>
+                                <input type="text" id="dateTo" name="to" value="{{ to }}" placeholder="Date To" style="width:100px;">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:44%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style=" margin-top: 142px; margin-left: -184px; cursor:pointer;width:120px;height:40px;font-size: 16px;">Search</button>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="padding: 10px 10px 0 10px;width: 1400px;">
+
+            <div class="dayTable" style="width: 1400px;">
+                {% autoescape %}
+                    {{ _html|raw }} {# var won't be escaped #}
+                {% endautoescape %}
+            </div>
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1400px;">
+        </div>
+    </div>
+
+{% endblock %}
+{% include '::footer.html.twig' %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function(){
+            getToOption('state','state');
+            getToOption('product','product');
+            $('#dateFrom,#dateTo').datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+
+            $('#example').DataTable( {
+                // "dom": '<"pull-left"f><"pull-right"l>tip',
+                fixedHeader: true,
+                bottom: true,
+                zTop: 5,
+                zBottom: 5,
+                bPaginate: false,
+
+
+
+            } );
+
+        });
+
+
+
+        //**********Selekcija polja tabele - GENERALIZOVANO *******************
+        //*********************************************************************
+
+        /***** inicializovanja data table *******/
+        function initDataTable(){
+            $('#example').dataTable({
+                fixedHeader: true,
+                sDom: "",
+                "bDestroy": true,
+                "bPaginate": false,
+                "bFilter": false,
+                "bSortCellsTop": true,
+                "aaSorting": [[ 0, "asc" ]],
+                "aoColumns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+
+                ],
+
+
+            });
+        }
+    </script>
+{% endblock %}
+</body>
+

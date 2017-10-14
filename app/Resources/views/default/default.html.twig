@@ -1,0 +1,350 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline, .subHeadline {
+            color:#000;
+        }
+        .totalHead {
+            font-size: 20px;
+            height: 105px;
+            width: 255px;
+        }
+        .totalCount {
+            width: 278px;
+            height: 143px
+        }
+    </style>
+{% endblock %}f
+
+{% block javascripts %}
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+{% endblock %}
+
+{% block javascripts1 %}
+    <script type="text/javascript">
+        $(function () {
+            $('#curve_chart').highcharts({
+                chart: {
+                    type: 'spline'
+                },
+                title: {
+                    text: 'Calls chart'
+                },
+                xAxis: {
+                    categories: [
+                        {% for datum in datumi %}
+                        '{{ datum }}',
+                        {% endfor %}
+                    ]
+                },
+                yAxis: {
+                    title: {
+                        text: 'Calls made'
+                    }
+                },
+                series: [
+                {
+                    name: 'Croatia',
+                    data:
+                        [
+                            {% for datum in datumi %}
+                            {{ nizSve['HR'][datum] }},
+                            {% endfor %}
+                        ]
+                }, {
+                    name: 'Bosnia',
+                    data:
+                        [
+                            {% for datum in datumi %}
+                            {{ nizSve['BA'][datum] }},
+                            {% endfor %}
+                        ]
+                }, {
+                    name: 'Serbia',
+                    data:
+                        [
+                            {% for datum in datumi %}
+                            {{ nizSve['RS'][datum] }},
+                            {% endfor %}
+                        ]
+                }, {
+                    name: 'Macedonia',
+                    data:
+                        [
+                            {% for datum in datumi %}
+                            {{ nizSve['MK'][datum] }},
+                            {% endfor %}
+                        ]
+                }, {
+                    name: 'Slovenia',
+                    data:
+                        [
+                            {% for datum in datumi %}
+                            {{ nizSve['SI'][datum] }},
+                            {% endfor %}
+                        ]
+                }, {
+                    name: 'Bulgaria',
+                    data:
+                        [
+                            {% for datum in datumi %}
+                            {{ nizSve['BG'][datum] }},
+                            {% endfor %}
+                        ]
+                }, {
+                    name: 'Romania',
+                    data:
+                        [
+                            {% for datum in datumi %}
+                            {{ nizSve['RO'][datum] }},
+                            {% endfor %}
+                        ]
+                }, {
+                    name: 'Latvia',
+                    data:
+                        [
+                            {% for datum in datumi %}
+                            {{ nizSve['LV'][datum] }},
+                            {% endfor %}
+                        ]
+                }, {
+                    name: 'Italy',
+                    data:
+                        [
+                            {% for datum in datumi %}
+                            {{ nizSve['IT'][datum] }},
+                            {% endfor %}
+                        ]
+                }, {
+                    name: 'Germany',
+                    data:
+                        [
+                            {% for datum in datumi %}
+                            {{ nizSve['DE'][datum] }},
+                            {% endfor %}
+                        ]
+                }, {
+                    name: 'Hungary',
+                    data:
+                        [
+                            {% for datum in datumi %}
+                            {{ nizSve['HU'][datum] }},
+                            {% endfor %}
+                        ]
+                }, {
+                    name: 'Estonia',
+                    data:
+                        [
+                            {% for datum in datumi %}
+                            {{ nizSve['EE'][datum] }},
+                            {% endfor %}
+                        ]
+                }, {
+                    name: 'Lithuania',
+                    data:
+                        [
+                            {% for datum in datumi %}
+                            {{ nizSve['LT'][datum] }},
+                            {% endfor %}
+                        ]
+                }, {
+                    name: 'Greece',
+                    data:
+                        [
+                            {% for datum in datumi %}
+                            {{ nizSve['GR'][datum] }},
+                            {% endfor %}
+                        ]
+                }, {
+                    name: 'Poland',
+                    data:
+                        [
+                            {% for datum in datumi %}
+                            {{ nizSve['PL'][datum] }},
+                            {% endfor %}
+                        ]
+                }, {
+                    name: 'Czesch Republic',
+                    data:
+                        [
+                            {% for datum in datumi %}
+                            {{ nizSve['CZ'][datum] }},
+                            {% endfor %}
+                        ]
+                }, {
+                    name: 'Slovakia',
+                    data:
+                        [
+                            {% for datum in datumi %}
+                            {{ nizSve['SK'][datum] }},
+                            {% endfor %}
+                        ]
+                }]
+            });
+        });
+
+    </script>
+{% endblock %}
+
+<body>
+{% block body %}
+
+<div class="main" style="width:1400px;">
+
+    <div class="headline" style="width:1421px;"> {{ title }}</div>
+    <div class="subHeadline" style="    margin-top: 20px;width:1421px;">7 days Chart</div>
+
+    <div class="chartBox" style=" margin-top: 0px;width:1424px;">
+        <div id="curve_chart" style="width: 1421px; height: 400px"></div>
+    </div>
+    <div class="subHeadline" style="    margin-top: 20px;width:1421px;">Daily total calls</div>
+    <div class="tableHolder" style="width: 1400px;">
+        {% autoescape %}
+            {{ _html|raw }} {# var won't be escaped #}
+        {% endautoescape %}
+
+        <div class="boxStyle">
+            <div class="totalBox"  style="margin-right: 50px;margin-left: 40px;" >
+                <div class="totalHead">
+                    Phone calls</br>
+                    Status: <span style="color:#0c0;">ORDERED</span>
+                </div>
+                <div class="totalCount">{{ countOrder.broj }}</div>
+            </div>
+            <div class="totalBox">
+                <div class="totalHead">
+                    Phone calls</br>
+                    Status: <span style="color:#c00;">CANCELED</span>
+                </div>
+                <div class="totalCount" style="color:#c00">{{ countCancel.broj }}</div>
+            </div>
+            <div class="totalBox" style="margin-right: 50px;margin-left: 40px;" >
+                <div class="totalHead">
+                    Phone calls</br>
+                    Status: <span style="color:#777;">OTHER</span>
+                </div>
+                <div class="totalCount" style="color:#777">{{ countOther.broj }}</div>
+            </div>
+            <div class="totalBox">
+                <div class="totalHead">
+                    Phone calls</br>
+                    <span style="color:#000;">TOTAL</span>
+                </div>
+                <div class="totalCount" style="color:#000">{{ countAll.broj }}</div>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+
+
+        <div class="boxStyle">
+            <div class="totalBox" style="margin-right: 50px;margin-left: 40px;" >
+                <div class="totalHead">
+                    Outbound</br>
+                    Status: <span style="color:#0c0;">ORDERED</span>
+                </div>
+                <div class="totalCount">{{ countOrderOubound.broj }}</div>
+            </div>
+            <div class="totalBox">
+                <div class="totalHead">
+                    Outbound</br>
+                    Status: <span style="color:#c00;">CANCELED</span>
+                </div>
+                <div class="totalCount" style="color:#c00">{{ countCancelOubound.broj }}</div>
+            </div>
+            <div class="totalBox" style="margin-right: 50px;margin-left: 40px;" >
+                <div class="totalHead">
+                    Outbound</br>
+                    Status: <span style="color:#777;">OTHER</span>
+                </div>
+                <div class="totalCount" style="color:#777">{{ countOtherOubound.broj }}</div>
+            </div>
+            <div class="totalBox">
+                <div class="totalHead">
+                    Outbound</br>
+                    <span style="color:#000;">TOTAL</span>
+                </div>
+                <div class="totalCount" style="color:#000">{{ countAllOubound.broj }}</div>
+            </div>
+            <div style="clear:both"></div>
+
+
+        </div>
+    </div>
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px; margin-top:30px;width:1400px;">
+    </div>
+
+</div>
+{% endblock %}
+
+{% block javascripts2 %}
+<script>
+    $(document).ready(function(){
+        initDataTable();
+        initDataTable2();
+    });
+    /***** inicializovanja data table *******/
+    function initDataTable(){
+        $('#example').dataTable({
+            sDom: "",
+            "bDestroy": true,
+            "bPaginate": false,
+            "bFilter": false,
+            "bSortCellsTop": true,
+            "aaSorting": [[ 0, "asc" ]],
+            "aoColumns": [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ],
+            "columnDefs": [{
+                "defaultContent": "-",
+                "targets": "_all"
+            }]
+        })
+    };
+
+    function initDataTable2(){
+        $('#example2').dataTable({
+            sDom: "",
+            "bDestroy": true,
+            "bPaginate": false,
+            "bFilter": false,
+            "bSortCellsTop": true,
+            "aaSorting": [[ 0, "asc" ]],
+            "aoColumns": [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ],
+            "columnDefs": [{
+                "defaultContent": "-",
+                "targets": "_all"
+            }]
+        })
+    };
+</script>
+{% endblock %}
+
+</body>

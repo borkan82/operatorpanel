@@ -1,0 +1,354 @@
+{% include '::header.html.twig' %}
+<body>
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+
+        #example tbody td{
+            font-size: 12px;
+        }
+        .yellowLine {
+            background-color: #d8d5b5 !important;
+        }
+    </style>
+{% endblock %}
+{% set emptyarr = {'state': '', 'product': '', 'ordType': '', 'outcome': '', 'ordNum': '', 'reason': '', 'ordSource': '', 'user': '', 'group': '', 'sType': '1', 'rType': '1'} %}
+{% set queryarr = app.request.query.all %}
+{% set qp = emptyarr|merge(queryarr) %}
+{% block javascripts %}
+
+<script type="text/javascript">
+    $(function () {
+        Highcharts.chart('panel-performance', {
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Inbound Panel Performance'
+            },
+            subtitle: {
+                text: 'Source: <a href="https:</a>'
+            },
+            xAxis: {
+                categories: [
+                    {{ ccategories|raw }}
+        ],
+        title: {
+            text: null
+        }
+    },
+        yAxis: {
+            min: 0,
+                title: {
+                text: 'average call value',
+                    align: 'high'
+            },
+            labels: {
+                overflow: 'justify'
+            }
+        },
+        tooltip: {
+            valueSuffix: ' €'
+        },
+        plotOptions: {
+            bar: {
+                dataLabels: {
+                    enabled: true
+                }
+            }
+        },
+        legend: {
+            layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -40,
+                y: 80,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+                shadow: true
+        },
+        credits: {
+            enabled: false
+        },
+        series: [{
+            name: 'Page order',
+            data: [
+                {{ cseriespage|raw }}
+        ]
+    }, {
+            name: 'SMS Bulk',
+                data: [
+                    {{ cseriesbulk|raw }}
+        ]
+        }, {
+            name: 'SMS Reorder',
+                data: [
+                    {{ cseriesreorder|raw }}
+        ]
+        }]
+    });
+    });
+    {%  if qp.state != "" %}
+        $(function () {
+            Highcharts.chart('state-charts', {
+                chart: {
+                    type: 'areaspline'
+                },
+                title: {
+                    text: '<?php echo $state; ?> Inbound panel performance'
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'left',
+                    verticalAlign: 'top',
+                    x: 150,
+                    y: 100,
+                    floating: true,
+                    borderWidth: 1,
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+                },
+                xAxis: {
+                    categories: [
+                        {{ ccategories2|raw }}
+            ],
+            plotBands: [{ // visualize the weekend
+                from: 4.5,
+                to: 6.5,
+                color: 'rgba(68, 170, 213, .2)'
+            }]
+        },
+            yAxis: {
+                title: {
+                    text: 'calls'
+                }
+            },
+            tooltip: {
+                shared: true,
+                    valueSuffix: ' calls'
+            },
+            credits: {
+                enabled: false
+            },
+            plotOptions: {
+                areaspline: {
+                    fillOpacity: 0.5
+                }
+            },
+            series: [{
+                name: 'Order',
+                data: [
+                    {{ cseriesorder|raw }}
+            ]
+        }, {
+                name: 'Other',
+                    data: [
+                        {{ cseriesother|raw }}
+            ]
+            }]
+        });
+        });
+    {% endif %}
+</script>
+{% endblock %}
+<body>
+{% block body %}
+    <div class="main">
+        <h3 class="headline" style="width:1521px;">{{ title }}ound</h3>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1500px;">
+        {#{{ test|raw }}#}
+            <h4></h4>
+            <form>
+                <div style="width:31%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                State:
+                            </td>
+                            <td>
+                                <select id="state" name="state">
+                                    <option value="">ALL</option>
+                                    {% for statesRows in _states %}
+                                        <option value="{{ statesRows.code2 }}"> {{ statesRows.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Product:
+                            </td>
+                            <td>
+                                <select id="product" name="product">
+                                    <option value="">ALL</option>
+                                    {% for productsRows in _products %}
+                                        <option value="{{ productsRows.id }}"> {{ productsRows.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                User:
+                            </td>
+                            <td>
+                                <select id="user" name="user">
+                                    <option value="">ALL</option>
+                                    {% for userRows in _users %}
+                                        <option value="{{ userRows.id }}"> {{ userRows.name }} {{ userRows.surname }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Call center group:
+                            </td>
+                            <td>
+                                <select id="group" name="group">
+                                    <option value="">ALL</option>
+                                    {% for centersRows in _centers %}
+                                        <option value="{{ centersRows.id }}"> {{ centersRows.name }} ({{ centersRows.state }})</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Call type:
+                            </td>
+                            <td>
+                                <select id="ordType" name="ordType">
+                                    <option value="">ALL</option>
+                                    <option value="1">ORDER</option>
+                                    <option value="2">OTHER</option>
+                                </select>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Outcome:
+                            </td>
+                            <td>
+                                <select id="outcome" name="outcome">
+                                    <option value="">ALL</option>
+                                    <option value="1">ORDER</option>
+                                    <option value="2">UPSELL</option>
+                                    <option value="3">CANCELED</option>
+                                    <option value="4">NO ORDER</option>
+                                </select>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Reason:
+                            </td>
+                            <td>
+                                <select id="reason" name="reason">
+                                    <option value="">ALL</option>
+                                    <option value="NeedTime">Need Time</option>
+                                    <option value="PriceHigh">Price High</option>
+                                    <option value="Postage">Postage High</option>
+                                </select>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Date from:
+                            </td>
+                            <td>
+                                <input name="from" type="text" id="datumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ from }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Date to:
+                            </td>
+                            <td>
+                                <input name="to" type="text" id="datumTo" placeholder=""onclick="$(this).datepicker();"  style="width:90px;" value="{{ to }}">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:44%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style=" margin-top: 377px; margin-left: -228px;cursor:pointer;width:120px;height:40px;font-size: 16px;">Search</button>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:50%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div style="clear:both"></div>
+            {%  if qp.state != "" %}
+        <div class="tableHolder" style="padding: 10px;width: 1500px;">
+            <div id="state-charts" style="min-width: 1500px; height: 400px; margin: 0 auto"></div>
+        </div>
+        <div style="clear:both"></div>
+        {% endif %}
+        <div class="tableHolder" style="padding: 10px;width: 1500px;">
+            <div id="panel-performance" style="min-width: 1000px; max-width: 1500px; height: 700px; margin: 0 auto"></div>
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1500px;">
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts2 %}
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#datumFrom,#datumTo').datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+        });
+    </script>
+{% endblock %}
+
+</body>
+
+</html>

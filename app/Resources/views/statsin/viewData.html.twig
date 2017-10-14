@@ -1,0 +1,467 @@
+{% include '::header.html.twig' %}
+<body>
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+        #example tbody td{
+            font-size: 12px;
+        }
+        .yellowLine {
+            background-color: #d8d5b5 !important;
+        }
+
+        .statsData td {
+            border: 1px solid #d4d4d4;
+            background: #efefef;
+            padding: 0 8px;
+            height: 25px;
+        }
+        .statsData th {
+            border-bottom: 1px solid #ccc;
+        }
+        .statsData a {
+            color:#111!important;
+        }
+        input [type=text], select {
+            float: left;
+        }
+
+    </style>
+{% endblock %}
+
+<body>
+
+{% block body %}
+    {% set emptyarr = {'state': '', 'product': '', 'ordType': '', 'outcome': '', 'ordNum': '', 'reason': '', 'ordSource': '', 'user': '', 'group': ''} %}
+    {% set queryarr = app.request.query.all %}
+    {% set qp = emptyarr|merge(queryarr) %}
+
+    {% set downloadName = '/Download/InboundStats/OrderListInb' %}
+
+    {% if qp.state != "" %}
+        {%   set downloadName = '/Download/InboundStats/OrderListInb-' %}
+    {% endif %}
+
+    <div class="main">
+        <h3 class="headline" style="width:1421px;">{{ title }}ound</h3>
+        <div style="clear:both"></div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1400px;">
+            <h4></h4>
+            <form>
+                <div style="width:80%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                State:
+                            </td>
+                            <td>
+                                <select id="state" name="state">
+                                    <option value="">ALL</option>
+                                    {% for statesRows in _states %}
+                                        <option value="{{ statesRows.code2 }}"> {{ statesRows.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('state');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Product:
+                            </td>
+                            <td>
+                                <select id="product" name="product">
+                                    <option value="">ALL</option>
+                                    {% for productsRows in _products %}
+                                        <option value="{{ productsRows.id }}"> {{ productsRows.title }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('product');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                User:
+                            </td>
+                            <td>
+                                <select id="user" name="user">
+                                    <option value="">ALL</option>
+                                    {% for userRows in _users %}
+                                        <option value="{{ userRows.id }}"> {{ userRows.name }} {{ userRows.surname }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('user');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Call center group:
+                            </td>
+                            <td>
+                                <select id="group" name="group">
+                                    <option value="">ALL</option>
+                                    {% for centersRows in _centers %}
+                                        <option value="{{ centersRows.id }}"> {{ centersRows.name }} ({{ centersRows.state }})</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('group');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Call type:
+                          </td>
+                          <td>
+                              <select id="ordType" name="ordType">
+                                  <option value="">ALL</option>
+                                  <option value="1">ORDER</option>
+                                  <option value="2">OTHER</option>
+                              </select>
+                              <div class="resetSelectField" onclick="resetSelectField('ordType');">X</div>
+                          </td>
+                            <td>
+                                <a href="?state={{ qp.state }}&product={{ qp.product }}&ordType=&outcome={{ qp.outcome }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason={{ qp.reason }}&ordSource={{ qp.ordSource }}&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">ALL</a>
+                                <a href="?state={{ qp.state }}&product={{ qp.product }}&ordType=1&outcome={{ qp.outcome }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason={{ qp.reason }}&ordSource={{ qp.ordSource }}&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">ORDER</a>
+                                <a href="?state={{ qp.state }}&product={{ qp.product }}&ordType=2&outcome={{ qp.outcome }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason={{ qp.reason }}&ordSource={{ qp.ordSource }}&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">OTHER</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Outcome:
+                            </td>
+                            <td>
+                                <select id="outcome" name="outcome">
+                                    <option value="">ALL</option>
+                                    <option value="1">ORDER</option>
+                                    <option value="2">UPSELL</option>
+                                    <option value="3">CANCELED</option>
+                                    <option value="4">NO ORDER</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('outcome');">X</div>
+                            </td>
+                            <td>
+                                <a href="?state={{ qp.state }}&product={{ qp.product }}&ordType={{ qp.ordType }}&outcome=&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason={{ qp.reason }}&ordSource={{ qp.ordSource }}&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">ALL</a>
+                                <a href="?state={{ qp.state }}&product={{ qp.product }}&ordType={{ qp.ordType }}&outcome=1&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason={{ qp.reason }}&ordSource={{ qp.ordSource }}&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">ORDER</a>
+                                <a href="?state={{ qp.state }}&product={{ qp.product }}&ordType={{ qp.ordType }}&outcome=2&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason={{ qp.reason }}&ordSource={{ qp.ordSource }}&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">UPSELL</a>
+                                <a href="?state={{ qp.state }}&product={{ qp.product }}&ordType={{ qp.ordType }}&outcome=3&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason={{ qp.reason }}&ordSource={{ qp.ordSource }}&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">CANCELED</a>
+                                <a href="?state={{ qp.state }}&product={{ qp.product }}&ordType={{ qp.ordType }}&outcome=4&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason={{ qp.reason }}&ordSource={{ qp.ordSource }}&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">NO ORDER</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Reason:
+                            </td>
+                            <td>
+                                <select id="reason" name="reason">
+                                    <option value="">ALL</option>
+                                    <option value="NeedTime">Need Time</option>
+                                    <option value="PriceHigh">Price High</option>
+                                    <option value="Postage">Postage High</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('reason');">X</div>
+                            </td>
+                            <td>
+                                <a href="?state={{ qp.state }}&product={{ qp.product }}&ordType={{ qp.ordType }}&outcome={{ qp.outcome }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason=&ordSource={{ qp.ordSource }}&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">ALL</a>
+                                <a href="?state={{ qp.state }}&product={{ qp.product }}&ordType={{ qp.ordType }}&outcome={{ qp.outcome }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason=NeedTime&ordSource={{ qp.ordSource }}&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">Need Time</a>
+                                <a href="?state={{ qp.state }}&product={{ qp.product }}&ordType={{ qp.ordType }}&outcome={{ qp.outcome }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason=PriceHigh&ordSource={{ qp.ordSource }}&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">Price High</a>
+                                <a href="?state={{ qp.state }}&product={{ qp.product }}&ordType={{ qp.ordType }}&outcome={{ qp.outcome }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason=Postage&ordSource={{ qp.ordSource }}&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">Postage High</a>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                Order source:
+                            </td>
+                            <td>
+                                <select id="ordSource" name="ordSource">
+                                    <option value="">ALL</option>
+                                    <option value="1">Page Order</option>
+                                    <option value="2">SMS Bulk order</option>
+                                    <option value="5">SMS Reorder</option>
+                                    <option value="3">Print Order</option>
+                                    <option value="4">Mail Order</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('ordSource');">X</div>
+                            </td>
+                            <td>
+                                <a href="?state={{ qp.state }}&product={{ qp.product }}&ordType={{ qp.ordType }}&outcome={{ qp.outcome }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason={{ qp.reason }}&ordSource=&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">ALL</a>
+                                <a href="?state={{ qp.state }}&product={{ qp.product }}&ordType={{ qp.ordType }}&outcome={{ qp.outcome }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason={{ qp.reason }}&ordSource=1&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">Page order</a>
+                                <a href="?state={{ qp.state }}&product={{ qp.product }}&ordType={{ qp.ordType }}&outcome={{ qp.outcome }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason={{ qp.reason }}&ordSource=2&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">SMS Bulk</a>
+                                <a href="?state={{ qp.state }}&product={{ qp.product }}&ordType={{ qp.ordType }}&outcome={{ qp.outcome }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason={{ qp.reason }}&ordSource=5&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">SMS Reorder</a>
+                                <a href="?state={{ qp.state }}&product={{ qp.product }}&ordType={{ qp.ordType }}&outcome={{ qp.outcome }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason={{ qp.reason }}&ordSource=3&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">Mail Order</a>
+                                <a href="?state={{ qp.state }}&product={{ qp.product }}&ordType={{ qp.ordType }}&outcome={{ qp.outcome }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason={{ qp.reason }}&ordSource=4&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">Print Order</a>
+                            </td>
+                            
+                        </tr>
+                        <tr>
+                          <td>
+                              Number on page:
+                          </td>
+                          <td>
+                              <select id="ordNum" name="ordNum">
+                                  <option value="10000">ALL</option>
+                                  <option value="50">50 orders</option>
+                                  <option value="100">100 orders</option>
+                                  <option value="10000">1000 orders</option>
+                              </select>
+                              <div class="resetSelectField" onclick="resetSelectField('ordNum');">X</div>
+                          </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Date from:
+                            </td>
+                            <td>
+                                <input name="from" type="text" id="datumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ from }}">
+
+                                Date to:
+
+                                <input name="to" type="text" id="datumTo" placeholder="" onclick="$(this).datepicker();"  style="width:90px;" value="{{ to }}">
+                            </td>
+                            <td>
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="margin-left:50px;cursor:pointer;width:120px;height:40px;font-size: 16px;">Search</button>
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:20%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1400px;">
+            <table style="width: 100%;">
+                <tbody>
+                <td>
+                    {% for statesRows in _states %}
+                    <td>
+                    <a href="?state={{ statesRows.code2 }}&product={{ qp.product }}&ordType={{ qp.ordType }}&outcome={{ qp.outcome }}&user={{ qp.user }}&group={{ qp.group }}&ordNum={{ qp.ordNum }}&reason={{ qp.reason }}&ordSource=&user={{ qp.user }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">{{ statesRows.code2 }} </a>
+                    </td>
+                    {% endfor %}
+                    <td>
+                        <button class="bigOrder delButton" onclick="exportStats({{ random }});" style="float:right;cursor:pointer;width: 120px;height:30px;font-size:14px;">Export</button>
+                    </td>
+                    <td>
+                        <span id="downloadText" style="display:none;"><a href="{{ app.request.getBaseURL() }}{{ downloadName }}{{ qp.state }}-{{ exportFile }}">Download</a></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="padding: 10px 10px 0 10px;width: 1400px;">
+                {% autoescape %}
+                    {{ _html|raw }} {# var won't be escaped #}
+                {% endautoescape %}
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1400px;">
+        </div>
+    </div>
+<div class="showBuyerPopup">
+    <div class="infoPopupHolder">Caller info</div>  <div class="showBuyerClose">X</div>
+    <div class="infoPopupHolder">
+        <div class="showBuyerInfo"><strong>Name: </strong></div>
+        <div class="showBuyerInfo"><span id="showName"></span></div>
+    </div>
+    <div class="infoPopupHolder">
+        <div class="showBuyerInfo"><strong>Surname: </strong></div>
+        <div class="showBuyerInfo"><span id="showSurname"></span></div>
+    </div>
+    <div class="infoPopupHolder">
+        <div class="showBuyerInfo"><strong>Address: </strong></div>
+        <div class="showBuyerInfo"><span id="showStreet"></span></div>
+    </div>
+    <div class="infoPopupHolder">
+        <div class="showBuyerInfo"><strong>City: </strong></div>
+        <div class="showBuyerInfo"><span id="showCity"></span></div>
+    </div>
+    <div class="infoPopupHolder">
+        <div class="showBuyerInfo"><strong>Phone: </strong></div>
+        <div class="showBuyerInfo"><span id="showPhone"></span></div>
+    </div>
+    <div class="showBuyerInfo"><strong>Mail: </strong></div>
+    <div class="showBuyerInfo"><span id="showMail"></span></div>
+</div>
+
+{% endblock %}
+{% include '::footer.html.twig' %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function(){
+            //getTableData('order_date');
+            initDataTable();
+            $('#datumFrom,#datumTo').datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            getToOption('state','state');
+            getToOption('product','product');
+            getToOption('user','user');
+            getToOption('group','group');
+            getToOption('ordType','ordType');
+            getToOption('ordSource','ordSource');
+            getToOption('outcome','outcome');
+            getToOption('reason','reason');
+            getToOption('ordNum','ordNum');
+
+            $('[data-toggle="popover"]').popover();
+
+        });
+        /***** inicializovanja data table *******/
+        function initDataTable() {
+            $('#example').DataTable({
+                "paging": false,
+                "order": [0, 'asc'],
+                "destroy": true,
+                "searching": false,
+                "columns": [
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {}
+                ]
+            });
+        }
+        function exportStats(randomNum) {
+
+            var podaci = {};
+            podaci["action"]     = 'exportOrderList';
+
+            podaci["random"]     = randomNum;
+            podaci["state"]    =  $('#state').find('option:selected').val();
+            podaci["product"]    = $('#product').find('option:selected').val();
+            podaci["user"]       = $('#user').find('option:selected').val();
+
+            podaci["group"]      = $('#group').find('option:selected').val();
+            podaci["ordType"]    = $('#ordType').find('option:selected').val();
+            podaci['outcome']    = $('#outcome').find('option:selected').val();
+            podaci["reason"]     = $('#reason').find('option:selected').val();
+
+            podaci["ordSource"]  = $('#ordSource').find('option:selected').val();
+            podaci["ordNum"]     = $('#ordNum').find('option:selected').val();
+
+
+            podaci["from"]       = '{{ from }}';
+            podaci["to"]         = '{{ to }}';
+
+            console.log(podaci);
+
+
+            $('.loaderGreen').show();
+            //$('#downloadText').show();
+            $.ajax({
+                url: httpSiteURL+"InboundAjax",
+                type:"GET",
+                //dataType:"JSON",
+                data: podaci,
+                async: true,
+//                success:function(data){
+//
+//                }
+
+            }).done(function (data) {
+                console.log('success');
+                $('.loaderGreen').hide();
+                $('#downloadText').show();
+            }).fail(function (data) {
+                //error in comuication with server
+                console.log('Error: Server returned error');
+            }).always(function (data) {
+                // console.log('always');
+
+            });
+            return false;
+
+        }
+
+        function getTableData(brake){
+            var podaci ={};
+            podaci['brake'] = brake;
+            podaci['from'] = $("#datumFrom").val();
+            podaci['to'] = $("#datumTo").val();
+
+            $.ajax({
+                url:"ajax/orderData",
+                type:"GET",
+                dataType:"JSON",
+                data:podaci,
+                async: true,
+                success:function(data){
+                    if(data)
+                    {
+                        $('.dayTable').empty();
+                        $('.dayTable').append(data);
+                        initDataTable();
+                        //$('#example').dataTable
+                        //$('#example').dataTable.ajax.reload();
+                    } else {
+                        showError("Message not sent!");
+                    }
+                }
+            });
+            return false;
+        }
+
+        function openItemList(outid){
+            var klasa = "rit"+outid;
+
+            if ($('.'+klasa).hasClass('opened')){
+                $('.'+klasa).hide();
+                $('.'+klasa).removeClass('opened');
+
+            } else {
+                $('.'+klasa).show();
+                $('.'+klasa).addClass('opened');
+
+            }
+        }
+    </script>
+{% endblock %}
+</body>
+
+</html>

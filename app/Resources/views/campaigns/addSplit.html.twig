@@ -1,0 +1,525 @@
+{% include '::header.html.twig' %}
+<body>
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        /*body {*/
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        /*}*/
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+        #example tbody td{
+            font-size: 12px;
+        }
+        .yellowLine {
+            background-color: #d8d5b5 !important;
+        }
+        #example tbody td{
+            font-size: 12px;
+        }
+        .yellowLine {
+            background-color: #d8d5b5 !important;
+        }
+        .titleBox {
+        width:100px;
+        height:30px;
+        line-height:30px;
+        font-size:14px;
+        }
+        .listBox {
+            width:100px;
+            height:29px;
+            line-height:30px;
+            font-size:14px;
+        }
+        .sirokiBox {
+            width:233px;
+        }
+        .tableLine {
+            height: 30px;
+        }
+        .dLeft {
+            margin-left:30px;
+            float:left;
+            width:300px;
+
+        }
+        .dRight {
+            margin-left:20px;
+            float:left; 
+            width:300px;
+
+        }
+        table tfoot td {
+            background-color: #bbb;
+            text-align: center;
+            font-weight: bold;
+
+        }
+        .chosen-container.chosen-container-single {
+            width: 150px !important;
+    }
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+    <div class="main">
+        <h3 class="headline"  style="width:1301px;">{{ title }} Management</h3>
+        <div style="clear:both"></div>
+        <form id="forma">
+        <div class="tableHolder"  style="width:1280px;">
+
+                <h4>Add new split test</h4>
+                <div style="float:left;width:50%;margin-top:15px;">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td>
+                                State:
+                            </td>
+                            <td>
+                                <select id="country" name="country">
+                                    {% for statesRows in _states %}
+                                        <option value="{{ statesRows.code2 }}"> {{ statesRows.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Product:
+                            </td>
+                            <td>
+                                <select id="product" name="product">
+                                    {% for productsRows in _products %}
+                                    <option value="{{ productsRows.id }}"> {{ productsRows.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Split test name:
+                            </td>
+                            <td>
+                                <input type="text" id="campName" name="campName" placeholder="Split test name">
+                            </td>
+                        </tr>
+                        <tr style="height:20px;">
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            <div style="float:left;width:50%;margin-top:15px;">
+                    <input type="hidden" id="addCountry" name="CountryCode">
+                    <input type="hidden" id="recNum" name="recNum">
+                    Time bought<br/>
+                    <input id="addBuyF" type="text" name="buyF" value="2010-01-01" style="width:100px;margin-bottom:4px;"> to <input id="addBuyT" type="text" name="buyT" value="{{ _monthLess }}" style="width:100px;margin-bottom:4px;">
+                    <br/>
+
+                    <select autofocus id="addProduct" name="product" style="margin-bottom:10px;background-color: #efe;">
+                        <option value="">Choose first product</option>
+                                {% for productsRows in _products %}
+                                    <option value="{{ productsRows.id }}"> {{ productsRows.title }}</option>
+                                {% endfor %}
+                    </select> Buyed product 1.<br>
+
+                    <select id="addProduct2" name="product2" style="margin-bottom:10px;background-color: #efe;">
+                        <option value="">Choose second product</option>
+                                {% for productsRows in _products %}
+                                    <option value="{{ productsRows.id }}"> {{ productsRows.title }}</option>
+                                {% endfor %}
+                    </select> Buyed product 2. <span style="font-size: 10px;color:#555;">*(optional)</span><br/>
+
+                    <select id="addProduct3" name="product3" style="margin-bottom:10px;background-color: #efe;">
+                        <option value="">Choose third product</option>
+                                {% for productsRows in _products %}
+                                    <option value="{{ productsRows.id }}"> {{ productsRows.title }}</option>
+                                {% endfor %}
+                    </select> Buyed product 3. <span style="font-size: 10px;color:#555;">*(optional)</span><br/>
+                    <button type="button" id="addPhones" class="bigOrder GreyBtn" style="width:264px;font-size: 16px;float: left;margin-left: 0px;margin-top: 10px;" onclick="setNumbers();">SET NUMBERS</button>
+                <div style="float:left;width:100%;margin-top:5px;">
+
+                    <span id="numberList"></span>
+                </div>
+            </div>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder"  style="padding: 10px 10px 0 10px;width:1280px;">
+            <select id="campaignList" name="campaignList">
+                {% for campRows in _campaigns %}
+                    <option value="{{ campRows.id }}"> {{ campRows.CampaignName }}</option>
+                {% endfor %}
+            </select>
+            <button type="button" id="addcamp" class="bigOrder" style="padding-bottom: 5px;margin-top: 0px;width:160px;height:43px;color:#fff;font-size: 16px;" onclick="addCampToList();">+ Add Campaign</button>
+            <div class="dayTable" style="margin-top: 10px;width: 1280px;">
+                <table class="dayView compact" id="example">
+                    <thead>
+                    <tr>
+                        <td width="20px"> # </td>
+                        <td>Campaign Name</td>
+                        <td>State</td>
+                        <td>Messages</td>
+                        <td>Base price</td>
+                        <td>Upsell price</td>
+                        <td>Recipients</td>
+                        <td></td>
+                    </tr>
+                    </thead>
+                    <tbody id="tabela">
+                    </tbody>
+                    <tfoot>
+                        <td style="text-align: right;" colspan = "6">Total recipients: </td>
+                        <td ><span id="totalRec">0</span></td>
+                        <td></td>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width:1280px;">
+            <input type="hidden" id="centerPhone" value="">
+            <input type="hidden" id="centerMail" value="">
+            <input type="hidden" id="centerCurrency" value="">
+            Numbers to split: <input type="number" id="splitLimit" name="splitLimit" max="2000" placeholder="000" style="width:140px;" value=""></br>
+            <button type="button" id="addSplit" class="bigOrder" style="width:260px;font-size: 20px;" onclick="saveSplit();">Save split test</button>
+        </div>
+        </form>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width:1280px;">
+        </div>
+    </div>
+
+{% endblock %}
+{% include '::footer.html.twig' %}
+{% block javascripts %}
+    <script>
+
+    var t = $('#example').DataTable();
+    var counter = 1;
+    var arrKampanje = [];
+
+    $(document).ready(function(){
+
+        initDataTable();
+
+
+
+        $('#datumF').datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+
+        $('#country').change(function(){
+
+        });
+    });
+
+    /***** inicializovanja data table *******/
+    function initDataTable(){
+        $('#example').dataTable({
+            sDom: "",
+            "bDestroy": true,
+            "bPaginate": false,
+            "bFilter": false,
+            "ordering": false,
+            "aoColumns": [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ]
+        });
+    }
+
+    function setNumbers(){
+        var kampanja = $('#campName').val();
+        if (kampanja.length < 3){
+            showWarning("Split test Name is not entered or is not correct!");
+            return false;
+        }
+
+        var addObject = {};
+        addObject.campName = $('#campName').val();
+        addObject.state = $('#country option:selected').val();
+        addObject.product = $('#addProduct').val();
+        addObject.product2 = $('#addProduct2').val();
+        addObject.product3 = $('#addProduct3').val();
+        addObject.noproduct = $('#noAddProduct').val();
+        addObject.noproduct2 = $('#noAddProduct2').val();
+        addObject.noproduct3 = $('#noAddProduct3').val();
+        addObject.exclude1 = " AND documents.paymentmade = 'Yes' ";
+        addObject.exclude2 = " AND documents.refund NOT LIKE 'Yes' ";
+        addObject.buyF = $('#addBuyF').val();
+        addObject.buyT = $('#addBuyT').val();
+        addObject.split = 1;
+        addNumberList(addObject);
+    }
+
+    var csvFajl = "";
+    function addNumberList(addObject){
+        $('.loaderGreen').show();
+        addObject.action = "getCustomerNumbers";
+        $.ajax({
+            type:"POST",
+            dataType:"JSON",
+            url: '../includes/adapter.php',
+            timeout: 120000,
+            data: addObject,
+            // or GET
+            success: function(msg) {
+                if (msg > 0){
+                    csvFajl = '../includes/split/'+$('#campName').val()+'.csv';
+                    console.log(csvFajl);
+                    $("#numberList").empty();
+                    $("#numberList").append('<div style="width:400px;height:50px;color:#500;margin-left:100px;font-size: 18px;">'+msg+' numbers added to list<BR/><a href="../includes/split/'+$('#campName').val()+'.csv">DOWNLOAD LIST</a> | <span style="cursor:pointer;text-decoration: underline;" onclick="readTextFile(csvFajl);">VIEW LIST</span></div>')
+                    $("#recNum").val(msg);
+                    $("#splitLimit").val(msg);
+
+                    //zakljucavanje polja da se ne mogu ponov mijenjati
+                    $("#country").attr("disabled","disabled");
+                    $("#product").attr("disabled","disabled");
+                    $("#campName").attr("disabled","disabled");
+
+                    $("#country").css("background-color","#aaa");
+                    $("#product").css("background-color","#aaa");
+                    $("#campName").css("background-color","#aaa");
+
+                    showSuccess("Numbers added to list!");
+                } else {
+                    showWarning("No numbers for this criteria!");
+                }
+            },
+            error: function (xhr, status, errorThrown) {
+                console.log(xhr);
+                console.log(status);
+                console.log(errorThrown);
+
+                listenResults();
+            }
+        }).done(function() {
+            $('.loaderGreen').hide();
+        });
+        return false;
+    }
+
+    function addCampToList(){
+        var kamapanjaSelektovana = $('#campaignList option:selected').val();
+        addCampaignObj = {};
+        $('.loaderGreen').show();
+        addCampaignObj.action = "getCampaignForSplit";
+        addCampaignObj.id = kamapanjaSelektovana;
+        $.ajax({
+            type:"POST",
+            dataType:"JSON",
+            url: '../includes/adapter.php',
+            timeout: 120000,
+            data: addCampaignObj,
+            // or GET
+            success: function(msg) {
+                if (msg){
+                    var provjeraKampanje = arrKampanje.indexOf(msg.CampaignName);
+
+                    if (provjeraKampanje >= 0) {
+                        showWarning("Campaign allready added!");
+                    } else {
+                        arrKampanje.push(msg.CampaignName);
+                        addRowToTable(msg.CampaignName, msg.Country, msg.selectedMessages, msg.price, msg.upsellPrice);
+
+                        showSuccess("Campaign added to list!");
+                    }
+
+                } else {
+                    showWarning("No campaign!");
+                }
+            }
+        }).done(function() {
+            $('.loaderGreen').hide();
+        });
+        return false;
+    }
+
+    function addRowToTable(campName, state, mess, base, upsell){
+        t.row.add( [
+            counter,
+            campName,
+            state,
+            mess,
+            base,
+            upsell,
+            '<span id="'+campName+'">0</span>',
+            '<button type="button" data-id="'+counter+'" class="delButton" style="width:100px;font-size: 12px;" onclick="removeRow(this);">Delete</button>'
+        ] ).draw( false );
+
+        counter++;
+
+    }
+
+    function removeRow(rowNum) {
+        t
+            .row( rowNum.closest('tr') )
+            .remove()
+            .draw();
+
+        var imekampanje = rowNum.closest('tr').cells[1].innerHTML;
+
+        var arrPosition = arrKampanje.indexOf(imekampanje);
+
+        arrKampanje.splice(arrPosition,1);
+       // delete arrKampanje[arrPosition];
+    }
+
+    function saveSplit(){
+        var splitKampanja   = $('#campName').val();
+        var splitState      = $('#country option:selected').val();
+        var splitproduct    = $('#product option:selected').val();
+        var splitLim        = $('#splitLimit').val();
+
+        if (splitKampanja.length < 6 || splitKampanja == ""){
+            showWarning("Campaign name empty or wrong!");
+            return false;
+        }
+
+        if (arrKampanje.length <= 0){
+            showWarning("No campaigns in list!");
+            return false;
+        } else if (arrKampanje.length > 0) {
+
+
+            var splitData = {};
+
+            $('.loaderGreen').show();
+            splitData.action    = "saveSplitTest";
+            splitData.campaigns = arrKampanje;
+            splitData.splitName = splitKampanja;
+            splitData.state     = splitState;
+            splitData.product   = splitproduct;
+            splitData.splitLimit= splitLim;
+            $.ajax({
+                type:"POST",
+                dataType:"JSON",
+                url: '../includes/adapter.php',
+                timeout: 120000,
+                data: splitData,
+                // or GET
+                success: function(msg) {
+                    if (msg){
+                        if (msg == '-5'){
+                            showWarning("No number list for this split test!");
+                            return false
+                        }
+
+                        var countTotal = 0;
+
+                        $.each(msg, function(k, v) {
+                            $('#'+k).empty();
+                            $('#'+k).append(v[0]);
+                            countTotal = countTotal + parseInt(v[0]);
+                        });
+
+                        $('#totalRec').empty();
+                        $('#totalRec').append(countTotal);
+
+                        $('.delButton').remove();
+                        $('#campaignList').remove();
+                        $('#addcamp').remove();
+
+                        $('#addSplit').attr("disabled","disabled");
+
+                        showSuccess("Split Test saved!");
+                    } else {
+                        showWarning("Unknown error, cannot save SplitTest!");
+                    }
+                }
+            }).done(function() {
+                $('.loaderGreen').hide();
+            });
+            return false;
+
+        } else {
+            showWarning("Unknown error, cannot save SplitTest!");
+        }
+    }
+
+
+    function listenResults(){
+        setTimeout(function(){
+            checkSessionData();
+        },8000);
+    }
+
+    function checkSessionData(){
+
+        var sData = {action:"getSessionData", sessionType:"sms", sessionName:"sms"};
+        $.ajax({
+            url:"../includes/adapter.php",
+            type:"POST",
+            dataType:"JSON",
+            data:sData,
+            async: true,
+            success:function(data){
+                console.log(data);
+                $("#recNum").val(data);
+                if (data > 0) {
+                    console.log("Vece od 0");
+                }
+
+                if (data) {
+                    console.log("Rezultat je true");
+                }
+
+
+
+                if (data > 0){
+                    csvFajl = '../includes/split/'+$('#campName').val()+'.csv';
+                    console.log(csvFajl);
+                    $("#numberList").empty();
+                    $("#numberList").append('<div style="width:400px;height:50px;color:#500;margin-left:100px;font-size: 18px;">'+data+' numbers added to list<BR/><a href="../includes/split/'+$('#campName').val()+'.csv">DOWNLOAD LIST</a> | <span style="cursor:pointer;text-decoration: underline;" onclick="readTextFile(csvFajl);">VIEW LIST</span></div>')
+                    $("#recNum").val(data);
+                    $("#splitLimit").val(data);
+
+                    //zakljucavanje polja da se ne mogu ponov mijenjati
+                    $("#country").attr("disabled","disabled");
+                    $("#product").attr("disabled","disabled");
+                    $("#campName").attr("disabled","disabled");
+
+                    $("#country").css("background-color","#aaa");
+                    $("#product").css("background-color","#aaa");
+                    $("#campName").css("background-color","#aaa");
+                    $(".loaderGreen").hide();
+                    showSuccess("Numbers added to list!");
+                } else {
+                    listenResults();
+                    showWarning("Numbers are still updating!");
+                }
+            }
+        });
+
+    }
+    </script>
+{% endblock %}
+</body>
+
+</html>

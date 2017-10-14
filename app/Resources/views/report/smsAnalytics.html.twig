@@ -1,0 +1,224 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        #example tbody td{
+            font-size: 12px;
+        }
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color: #000;
+        }
+        input [type=text], select {
+            float: left;
+        }
+    </style>
+
+{% endblock %}
+
+<body>
+{% block body %}
+    {% set emptyarr = {'sender': '', 'status': '', 'smstype': '', 'state': ''} %}
+    {% set queryarr = app.request.query.all %}
+    {% set qp = emptyarr|merge(queryarr) %}
+
+    <div class="main">
+        <h3 style="width: 1322px;" class="headline">{{ title }}</h3>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1300px;">
+            <h4></h4>
+            <form>
+                <div style="width:36%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                State:
+                            </td>
+                            <td>
+                                <select id="state" name="state" >
+                                    <option value="">ALL</option>
+                                    {% for state in _stateArr %}
+                                        <option value="{{ state.id }}"> {{ state.title_eng }} ({{ state.code2 }})</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('state');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Sender:
+                            </td>
+                            <td>
+                                <select id="sender" name="sender" >
+                                    <option value="">ALL</option>
+                                    {% for stateInfo in _states %}
+                                        <option value="{{ stateInfo.smsSender }}"> {{ stateInfo.smsSender }} ({{ stateInfo.code2 }})</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('sender');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Status:
+                            </td>
+                            <td>
+                                <select id="status" name="status" >
+                                    <option value="">ALL</option>
+                                    <option value="1">Sent</option>
+                                    <option value="2">Delivered</option>
+                                    <option value="3">Undelivered</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('status');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                SMS type:
+                            </td>
+                            <td>
+                                <select id="smstype" name="smstype" >
+                                    <option value="">ALL</option>
+                                    <option value="sms">Bulk</option>
+                                    <option value="ord">Shipped</option>
+                                    <option value="sub">Submit</option>
+                                    <option value="reo">Reorder</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('smstype');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Date from:
+                            </td>
+                            <td>
+                                <input name="from" type="text" id="datumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ from }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Date to:
+                            </td>
+                            <td>
+                                <input name="to" type="text" id="datumTo" placeholder="" onclick="$(this).datepicker();"  style="width:90px;" value="{{ to }}">
+                            </td>
+                            <td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:50%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="    margin-left: -260px; margin-top:230px;cursor:pointer;width:120px;height:40px;font-size: 16px;">Search</button>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:50%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1300px;">
+            <table style="width: 100%;">
+                <tbody>
+                    <tr>
+                        {% for row in _stateArr %}
+                            <td>
+                                <a href="?state={{ row.id }}&sender={{ qp.sender }}&status={{ qp.status }}&smstype={{ qp.smstype }}&from={{ from }}&to={{ to }}"> {{ row.code2 }} </a>
+                            </td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="padding: 10px 10px 0 10px;width: 1300px;">
+
+            <div class="dayTable" style="width: 1270px;">
+                {% autoescape %}
+                    {{ _html|raw }} {# var won't be escaped #}
+                {% endautoescape %}
+
+            </div>
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1300px;">
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+
+    <script>
+
+        $(document).ready(function(){
+            initDataTable();
+
+            $('#datumFrom,#datumTo').datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            getToOption('state','state');
+            getToOption('sender','sender');
+            getToOption('status','status');
+            getToOption('smstype','smstype');
+
+
+        });
+
+        /***** inicializovanja data table *******/
+        function initDataTable() {
+            $('#example').dataTable({
+                sDom: "",
+                "bDestroy": true,
+                "bPaginate": false,
+                "bFilter": false,
+                "bSortCellsTop": true,
+                "aaSorting": [[0, "asc"]],
+                "aoColumns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+
+                ]
+            });
+        }
+    </script>
+{% endblock %}
+
+</body>
+
+</html>

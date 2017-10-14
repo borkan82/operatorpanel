@@ -1,0 +1,196 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+         body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+   <div class="main">
+
+    <h3 class="headline"  style="width:1420px;">{{ title }} List</h3>
+
+    <div style="clear:both"></div>
+      <div class="tableHolder"  style="width:1400px;">
+        <form id="forma">
+            <h4>Add Call center to list</h4>
+            <div style="float:left;width:50%;margin-top:15px;">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>
+                            States:
+                        </td>
+                        <td>
+                            <select id="country" name="country">
+                                {% for stateInfo in _states %}
+                                    <option value="{{ stateInfo.code2 }}"> {{ stateInfo.title_eng }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Name:
+                        </td>
+                        <td>
+                            <input  style="width: 263px;" type="text" name="name" placeholder="Name">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Page Phone:
+                        </td>
+                        <td>
+                            <input  style="width: 263px;" type="text" name="pagephone" placeholder="Phone for Lp's">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            SMS Phone:
+                        </td>
+                        <td>
+                            <input  style="width: 263px;" type="text" name="phone" placeholder="Phone">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Reorder Phone:
+                        </td>
+                        <td>
+                            <input style="width: 263px;" type="text" name="reorderphone" placeholder="Phone for reorder">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Email:
+                        </td>
+                        <td>
+                            <input  style="width: 263px;" type="text" name="email" placeholder="Email">
+                        </td>
+                    </tr>
+                        <td>
+                        </td>
+                        <td>
+                            <button type="button" id="addUser" class="bigOrder GreyBtn" style="width:260px;font-size: 20px;" onclick="addNewCenter();">Add New CallCenter</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+    <div style="clear:both"></div>
+    <div class="tableHolder"  style="padding: 10px 10px 10px 10px;width:1400px;">
+        <div class="dayTable" style="width: 1400px;">
+            {% autoescape %}
+                {{ _html|raw }} {# var won't be escaped #}
+            {% endautoescape %}
+        </div>
+    </div>
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width:1400px;">
+    </div>
+</div>
+
+{% endblock %}
+{% include '::footer.html.twig' %}
+{% block javascripts %}
+    <script>
+    $(document).ready(function(){
+            initDataTable();
+        });
+        //*********************************************************************
+        //**********SNIMANJE KORISNIKA ****************************************
+        //*********************************************************************
+
+        function addNewCenter(){
+            var podaciForme ={};
+            podaciForme['action'] = 'addCenter';
+
+            $("form [name]").each(function (){
+                var kljuc = $(this).attr("name");
+                var vrijednost = $(this).val();
+                podaciForme[kljuc] = vrijednost;
+            });
+
+
+            if (podaciForme["country"] == "" || podaciForme["name"] == "" || podaciForme["email"] == "" ){
+                showWarning("You must fill out the form!");
+                return false;
+            }
+
+            $.ajax({
+                url:httpSiteURL+"SettingsAjax",
+                type:"POST",
+                dataType:"JSON",
+                data:podaciForme,
+                async: true,
+                success:function(data){
+                    if(data > 0)
+                    {
+                        $('#tabela').append('<tr>' +
+                            '<td >-</td>'+
+                            '<td >'+ podaciForme["country"] +'</td>'+
+                            '<td >'+ podaciForme["name"] +'</td>'+
+                            '<td >'+ podaciForme["pagephone"] +'</td>'+
+                            '<td >'+ podaciForme["phone"] +'</td>'+
+                            '<td >'+ podaciForme["reorderphone"] +'</td>'+
+                            '<td >'+ podaciForme["email"] +'</td>'+
+                            '<td >-</td>'+
+                            '</tr>');
+
+                        showSuccess("Center added to Database!");
+                    }
+                }
+            });
+            return false;
+        }
+    //**********Selekcija polja tabele - GENERALIZOVANO *******************
+    //*********************************************************************
+        var table = "phone_order_callcenter"; // OBAVEZNO PRILAGODJAVANJE TABELI
+
+        /***** inicializovanja data table *******/
+        function initDataTable(){
+            $('#example').dataTable({
+                sDom: "",
+                "bDestroy": true,
+                "bPaginate": false,
+                "bFilter": false,
+                "bSortCellsTop": true,
+                "aaSorting": [[ 0, "asc" ]],
+                "aoColumns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ]
+            });
+        }
+    </script>
+{% endblock %}
+</body>
+
+</html>

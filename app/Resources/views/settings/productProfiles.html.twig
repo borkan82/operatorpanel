@@ -1,0 +1,355 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+
+        .titleBox {
+            width:100px;
+            height:30px;
+            line-height:30px;
+            font-size:14px;
+        }
+        .listBox {
+            width:100px;
+            height:29px;
+            line-height:30px;
+            font-size:14px;
+        }
+        .sirokiBox {
+            width:233px;
+        }
+        .tableLine {
+            height: 30px;
+        }
+        .subItem a:hover {
+            color: #fff!important;
+            text-decoration: none!important;
+        }
+        .select2-container {
+            width: 1010px!important;
+            margin-left: 28px;
+            margin-top: 4px;
+        }
+        .zaglavlje-forme{
+            height: auto !important;
+        }
+        input [type=text], select {
+            float: left;
+        }
+        .select2-container--open .select2-dropdown {
+            margin-left: -28px;
+            left: 0;
+        }
+
+    </style>
+{% endblock %}
+
+
+
+<body>
+{% block body %}
+    {% set emptyarr = {'product_search': ''} %}
+    {% set queryarr = app.request.query.all %}
+    {% set qp = emptyarr|merge(queryarr) %}
+
+<div class="main" style="left: 33%; width: 1870px" >
+
+    <h3 class="headline"  style="width: 1860px; margin-top: 33px; margin-bottom: 56px;">{{ title }}</h3>
+
+    <div style="clear:both"></div>
+    <div class="zaglavlje-forme">
+        <div class="tableHolder"  style="width:37%;height: auto; margin-right: 5px;" id="table-holder1">
+            <form style="height: 215px;">
+                <h4>Search bar</h4>
+                <table style="position: relative;    margin-top: 32px;">
+                    <tbody>
+                    <tr>
+                        <td>
+                            Search by state:
+                        </td>
+                        <td style="margin-left: 23px; width: 400px;">
+                            <select style="margin-left: 23px; width: 350px;" name="state_search" id="state_search">
+                                <option value="">Choose state</option>
+                                {% for stateInfo in _states %}
+                                    <option value="{{ stateInfo.code2 }}"> {{ stateInfo.title_eng }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="resetSelectField" onclick="resetSelectField('state_search');">X</div>
+                        </td>
+                    </tr>
+                        <tr>
+                            <td>
+                                Search by product:
+                            </td>
+                            <td style="margin-left: 23px; width: 400px;">
+                                <select style="margin-left: 23px; width: 350px;" name="product_search" id="product_search">
+                                    <option value="">Choose product</option>
+                                    {% for productInfo in _products %}
+                                        <option value="{{ productInfo.id }}"> {{ productInfo.title }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('product_search');">X</div>
+                            </td>
+                        </tr>
+
+                        <tr style="float: right; position: absolute; right: 0;">
+                            <td >
+                                <button type="button" class="bigOrder GreyBtn" onclick='SearchFormSimple.search(this);' style="width: 150px; height:35px; width: 120px;height: 40px;font-size: 16px;margin-top: 22px; float: right;    margin-right: 27px;">Search</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        <div class="tableHolder"  style="width: 60%; height: auto;" id="table-holder2">
+            <form id="forma">
+                <h4 style="width: 360px">Add and edit profile to products</h4>
+                <div style="float:left;width:auto;margin-top:15px;">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    State:
+                                </td>
+                                <td style="margin-left: 23px; width: 350px;">
+                                    <select style="margin-left: 28px; width: 350px;" id="state" name="state">
+                                        {% for stateInfo in _states %}
+                                            <option data-state-id ="{{ stateInfo.id }}" value="{{ stateInfo.code2 }}"> {{ stateInfo.title_eng }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Product:
+                                </td>
+                                <td style="margin-left: 23px; width: 350px;">
+                                    <select style="margin-left: 27px!important;" id="product" name="product" class="js-example-basic-multiple" multiple="multiple" required>
+                                        {#<option value="">ALL</option>#}
+                                        {% for productInfo in _products %}
+                                            <option value="{{ productInfo.id }}"> {{ productInfo.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Profile:
+                                </td>
+                                <td>
+                                    <input style=" margin-left: 28px; width: 100px; height: 43px" type="text" id="profile" name="profile" placeholder="Profile No.">
+                                </td>
+                                <td>
+                                    {#<button  onclick="addProfile();" class="bigOrder" style="width: 233px;  font-size: 18px;     margin-left: -234px;  margin-top: 7px;">Add profile to products</button>#}
+                                    <input required type="button" class="bigOrder" style="width: 233px;  font-size: 18px;    margin-left: -233px; margin-top: 7px;" onclick="addProfile(2);" value="Submit profile">
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div style="clear:both"></div>
+    <div class="tableHolder"  style="    margin-top: 10px;padding: 10px 10px 7px 10px;width:1841px;">
+        <div class="dayTable" style="width: auto;">
+            {% autoescape %}
+                {{ _html|raw }} {# var won't be escaped #}
+            {% endautoescape %}
+        </div>
+    </div>
+    <div class="legendHolder" style="width: 1863px;">
+    </div>
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width:1841px;">
+    </div>
+</div>
+{% endblock %}
+{% include '::footer.html.twig' %}
+{% block javascripts %}
+    <script>
+
+        $(document).ready(function(){
+
+            $(".js-example-basic-multiple").select2({
+                placeholder: "Choose products",
+            });
+
+            getToOption('product_search','product_search');
+            getToOption('state_search','state_search');
+
+            $('#example').DataTable({
+                "scrollCollapse" : true,
+                "scrollY":        "650px",
+                "paging": false,
+                "ordering": true,
+                "searching": false,
+                //"lengthMenu": [[100, 250, 500, -1], [100, 250, 500, "All"]]
+            });
+
+            window.onload = changeHeight();
+
+            $('#product').on('change', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                changeHeight();
+            });
+
+        });
+
+        function changeHeight(){
+            $('#table-holder1').css('height',$("#table-holder2").css("height"));
+        }
+
+
+        function addProfile(condition){
+            var podaciForme ={};
+            if (condition === 1){
+                podaciForme['action'] = 'addProfileToProduct';
+            }else  if(condition === 2){
+                podaciForme['action'] = 'checkProductsProfile';
+            }
+
+            var products = $(".js-example-basic-multiple").select2("val");
+            var products = JSON.stringify(products);
+            podaciForme['state'] =  $("#state").val();
+            podaciForme['profile'] =  $("#profile").val();
+
+            if (podaciForme["state"] == "" || typeof products == 'undefined' || products == null || podaciForme["profile"] == ""){
+                showWarning("You must fill out the form!");
+                return false;
+            } else {
+                podaciForme['products'] = products;
+                if(podaciForme['profile'].match(/[^0-9]/)){
+                    showWarning("Profile must be number(integer)");
+                }
+            }
+
+            $.ajax({
+                url: httpSiteURL+"SettingsAjax",
+                type:"POST",
+                dataType:"JSON",
+                data:podaciForme,
+                async: true,
+                success:function(data){
+
+                    if (condition === 1){
+//                        window.location.reload();
+                    } else  if(condition === 2){
+                        var insert = data['insert'];
+                        var update = data['update'];
+                        showResponse(insert,update,podaciForme['state']);
+                    }
+                }
+            });
+            return false;
+        }
+
+
+
+        function showResponse(inserts,updates,state){
+            $('#table-insert').children('tbody').empty();
+            $('#table-update').children('tbody').empty();
+            var addToInsert='';
+            var addToUpdate='';
+            $('#result-state').text(state);
+            $('#response-insert').show();
+            if (typeof inserts !== 'undefined' && inserts !== null) {
+                for (var key in inserts){
+                    if (inserts.hasOwnProperty(key)) {
+                        addToInsert += '<tr>' +
+                                '<td>'+key+'</td>' +
+                                '<td style="color:blue;">'+inserts[key]+'</td>' +
+                                '</tr>';
+                        //alert("Key is " + key + ", value is" + inserts[key]);
+                    }
+                }
+                $('#table-insert').children('tbody') .append(addToInsert);
+            } else {
+                $('#response-insert').hide();
+            }
+
+            if (typeof updates !== 'undefined' && updates !== null) {
+                $('#response-update').show();
+                for (var key in updates){
+                    if (updates.hasOwnProperty(key)) {
+                        addToUpdate += '<tr>' +
+                                '<td>'+key+'</td>' +
+                                '<td style="color:red;">'+updates[key].old+'</td>' +
+                                '<td style="color:blue;">'+updates[key].new+'</td>' +
+                                '</tr>';
+                    }
+                }
+                $('#table-update').children('tbody') .append(addToUpdate);
+            } else {
+                $('#response-update').hide();
+            }
+
+            var responseDialog = $('#show-response');
+            responseDialog.modal('show');
+        }
+
+    </script>
+{% endblock %}
+</body>
+
+</html>
+
+
+<form name = 'show-response' method="post"  id="show-response" class="modal fade form-horizontal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="margin-top: 8%;">
+        <div class="modal-content" style="width: 750px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Your results for state:  <strong><span id="result-state"></span></strong></h4>
+            </div>
+            <fieldset class="modal-body" id="response-insert">
+                <div class="form-group">
+                    <div class="container" style="width: 700px">
+                        <h5> <strong>Profile you want to add:</strong></h5>
+                        <table class="table" id="table-insert">
+                            <thead>
+                                <tr>
+                                    <th>Product name</th>
+                                    <th>Profile</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="modal-body" id="response-update">
+                <div class="form-group">
+                    <div class="container" style="width: 700px">
+                        <h5> <strong>Profile you want to change:</strong></h5>
+                        <table class="table" id="table-update">
+                            <thead>
+                                <tr>
+                                    <th>Products</th>
+                                    <th>Old Profiles</th>
+                                    <th>New Profiles</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                {#<input type="button" id="confirm_changes" onclick="addProfile(1);"value="Confirm changes" class="btn btn-success"><i class="glyphicon glyphicon-save"></i>#}
+                <button type="submit" onclick="addProfile(1);" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Confirm changes</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</form><!-- /.modal -->

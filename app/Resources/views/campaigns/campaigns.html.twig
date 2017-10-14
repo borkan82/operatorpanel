@@ -1,0 +1,419 @@
+{% include '::header.html.twig' %}
+<body>
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.88;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+        #example tbody td{
+            font-size: 12px;
+        }
+        .yellowLine {
+            background-color: #d8d5b5 !important;
+        }
+        .dataTables_scrollHeadInner{
+            padding-left: 0px !important;
+        }
+
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+    <div class="main" style="width:1700px;margin-left: -850px;">
+    <h3 class="headline"  style="width:1721px;">{{ title }}</h3>
+    <div style="clear:both"></div>
+    <div class="tableHolder"  style="width:1700px;">
+        <form id="forma">
+        <div style="width:370px;float:left;">
+
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>
+                            Type:
+                        </td>
+                        <td>
+                            <select id="cType" name="cType">
+                                <option value="">All campaigns</option>
+                                <option value="0" >Single campaigns</option>
+                                <option value="1" >Split campaigns</option>
+                            </select>
+                        </td>
+                    </tr>
+                        <tr>
+                            <td>
+                               State:
+                            </td>
+                            <td>
+                               <select id="state" name="state">
+                                    <option value="">ALL</option>
+                                      {% for statesRows in _states %}
+                                        <option value="{{ statesRows.code2 }}"> {{ statesRows.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Products:
+                            </td>
+                            <td>
+                               <select id="selProduct" name="product">
+                                    <option value="">ALL</option>
+                                    {% for productsRows in _products %}
+                                         <option value="{{ productsRows.id }}"> {{ productsRows.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Campaigns:</td>
+                            <td>
+                                <select id="camp" name="camp" class="chosen-select-campaigns" style="width:262px!important;">
+                                    <option value="">All campaigns</option>
+                                    {% for campRows in _campaigns %}
+                                        <option value="{{ campRows.id }}"> {{ campRows.CampaignName }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Date from:</td>
+                            <td>
+                                <input type="text" id="dateFrom" name="from" value="{{ from }}" placeholder="Date From" style="width:100px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Date to:</td>
+                            <td>
+                                <input type="text" id="dateTo" name="to" value="{{ to }}" placeholder="Date To" style="width:100px;">
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+        </div>
+            <div style="width:50%;float:left;">
+                <table >
+                    <tbody>
+
+                    <tr>
+                        <td>
+                            <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="  margin-top: 221px; margin-left: -166px;cursor:pointer;width: 120px;height: 40px;font-size: 16px;">Search</button>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="width: 1700px;">
+        <table style="width: 1700px;">
+            <tbody>
+            <tr>
+                {% for statesRows in _states %}
+
+                <td>
+                    <a href="?state={{ statesRows.code2 }}&product=&camp=&dateFrom={{ from }}&dateTo={{ to }}"> {{ statesRows.code2 }} </a>
+                </td>
+                {% endfor %}
+
+                <td style="width:10px;"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div style="clear:both"></div>
+    <div class="tableHolder"  style="padding: 10px 10px 0 10px;width:1700px;">
+        <div class="dayTable" style="width: 1700px;">
+             {% autoescape %}
+                    {{ _html|raw }} {# var won't be escaped #}
+             {% endautoescape %}
+        </div>
+    </div>
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width:1700px;">
+    </div>
+</div>
+<!-- PROZOR ZA STATISTIKU POJEDINACNE KAMPANJE -->
+<div class="campStat" style="display:none">
+    <h3 class="headline"  style="width:800px;margin: 10px 0;">Campaign Overview</h3>
+    <div class="tableHolder"  style="width:775px;">
+        <div style="width:370px;float:left;">
+            <h4 style="width:775px;">Campaign details</h4>
+            <table class="campStatTab">
+                <tbody>
+                    <tr><td style="width:200px;">Campaign Name:</td>         <td><span id="sCampName" class="showCampField"></span></td></tr>
+                    <tr><td>State:</td>                 <td><span id="sState" class="showCampField"></span></td></tr>
+                    <tr><td>Product:</td>               <td><span id="sProduct" class="showCampField"></span></td></tr>
+                    <tr><td>Number of recipients:</td>  <td><span id="sRecipients" class="showCampField"></span></td></tr>
+                    <tr><td>Sender:</td>                <td><span id="sSender" class="showCampField"></span></td></tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="tableHolder"  style="width:775px;">
+        <div style="width:370px;float:left;">
+            <h4 style="width:775px;">Number pull criteria</h4>
+            <table class="campStatTab">
+                <tbody>
+                <tr><td style="width:200px;">Time bought:</td>                                       <td><span id="sTime" class="showCampField"></span></td></tr>
+                <tr style="height:20px;"><td></td>                                                   <td></td></tr>
+                <tr><td><strong><u>Product included</u></strong></td>                                <td><strong><u>Product Excluded</u></strong></td></tr>
+                <tr><td>1. <span id="sInclude1" class="showCampField"></span></td> <td>1. <span id="sExclude1" class="showCampField"></span></td></tr>
+                <tr><td>2. <span id="sInclude2" class="showCampField"></span></td> <td>2. <span id="sExclude2" class="showCampField"></span></td></tr>
+                <tr><td>3. <span id="sInclude3" class="showCampField"></span></td> <td>3. <span id="sExclude3" class="showCampField"></span></td></tr>
+                <tr style="height:20px;"><td></td>                                                   <td></td></tr>
+                <tr><td>Not Payed:</td>                                         <td><span id="sNotPayed" class="showCampField"></span></td></tr>
+                <tr><td>Refund made:</td>                                       <td><span id="sRefund" class="showCampField"></span></td></tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="tableHolder"  style="width:775px;">
+        <div style="width:370px;float:left;">
+            <h4 style="width:775px;">Message parameters</h4>
+            <table class="campStatTab">
+                <tbody>
+                <tr><td style="width:200px;">Sending date</td>           <td><span id="sSendDate" class="showCampField"></span></td></tr>
+                <tr><td>Price:</td>                 <td><span id="sPrice" class="showCampField"></span></td></tr>
+                <tr><td>Sent per hour:</td>         <td><span id="sPerHour" class="showCampField"></span></td></tr>
+                <tr><td>Upsell Text:</td>           <td><span id="sUpsellText" class="showCampField"></span></td></tr>
+                <tr><td>Initial Message:</td>       <td><span id="sInitial" class="showCampField"></span></td></tr>
+                <tr><td>Squeeze Message:</td>       <td><span id="sSqueeze" class="showCampField"></span></td></tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div style="width:370px;float:left;">
+        <button class="bigOrder GreyBtn" onclick="$('.blocked').hide();$('.campStat').hide();" style="margin-left:677px;cursor:pointer;width:120px;font-size:20px;height:38px;">Close</button>
+    </div>
+</div>
+
+{% endblock %}
+{% include '::footer.html.twig' %}
+{% block javascripts %}
+    <script>
+    var pageURL = '/';
+
+        jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+            "num-html-pre": function ( a ) {
+                var x = String(a).replace( /<[\s\S]*?>/g, "" );
+                return parseFloat( x );
+            },
+
+            "num-html-asc": function ( a, b ) {
+                return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+            },
+
+            "num-html-desc": function ( a, b ) {
+                return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+            }
+        } );
+        $(document).ready(function(){
+            initDataTable();
+
+            $('#datumF,#addBuyF,#addBuyT,#dateFrom,#dateTo').datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+        });
+        //**********Selekcija polja tabele - GENERALIZOVANO *******************
+        //*********************************************************************
+        var table = "CampManagement"; // OBAVEZNO PRILAGODJAVANJE TABELI
+
+        /***** inicializovanja data table *******/
+        function initDataTable(){
+            $('#example').dataTable({
+               // sDom: "",
+                "scrollCollapse" : true,
+                "scrollY":        "700px",
+//                "scrollX":        "1625px",
+//            fixedColumns:   {
+//                leftColumns: 1,
+//                rightColumns: 1
+//            },
+                "bDestroy": true,
+                "bPaginate": false,
+                "bFilter": false,
+                "bSortCellsTop": true,
+                "aaSorting": [[ 0, "asc" ]],
+                "aoColumns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ]
+            });
+        }
+
+        function showCampaignStats(cId) {
+            $('.blocked').show();
+            $('.campStat').show();
+
+            var podaci ={};
+            podaci['action']   = 'showCampaignStats';
+            podaci["cId"]   = cId;
+
+            if (podaci["cId"] == ""){
+                showError("Wrong campaign ID!");
+                return false;
+            }
+
+            $.ajax({
+                url:httpSiteURL+"CampaignsAjax",
+                type:"POST",
+                dataType:"JSON",
+                data:podaci,
+                async: true,
+                success:function(data){
+                    console.log(data);
+
+                    if(data)
+                    {
+
+
+                        $('.showCampField').empty();
+
+                        $('#sCampName').append(data.CampaignName);
+                        $('#sState').append(data.stateTitle);
+                        $('#sProduct').append(data.productTitle);
+                        $('#sRecipients').append(data.RecipientNo);
+                        $('#sSender').append(data.SenderId);
+
+                        var incPro1 = "";
+                        var incPro2 = "";
+                        var incPro3 = "";
+                        var excPro1 = "";
+                        var excPro2 = "";
+                        var excPro3 = "";
+
+                        if (data.incPro1 !== "" && data.incPro1 !== null){ incPro1 = data.incPro1 } else { incPro1 = "none" }
+                        if (data.incPro2 !== "" && data.incPro2 !== null){ incPro2 = data.incPro2 } else { incPro2 = "none" }
+                        if (data.incPro3 !== "" && data.incPro3 !== null){ incPro3 = data.incPro3 } else { incPro3 = "none" }
+                        if (data.excPro1 !== "" && data.excPro1 !== null){ excPro1 = data.excPro1 } else { excPro1 = "none" }
+                        if (data.excPro2 !== "" && data.excPro2 !== null){ excPro2 = data.excPro2 } else { excPro2 = "none" }
+                        if (data.excPro3 !== "" && data.excPro3 !== null){ excPro3 = data.excPro3 } else { excPro3 = "none" }
+
+                        if (data.notPayed == 0){ notPayed = "No" } else { notPayed = "Yes" }
+                        if (data.refundMade == 0){ refundMade = "No" } else { refundMade = "Yes" }
+
+
+                        $('#sTime').append(data.boughtFrom+' - '+data.boughtTo);
+                        $('#sInclude1').append(incPro1);
+                        $('#sInclude2').append(incPro2);
+                        $('#sInclude3').append(incPro3);
+                        $('#sExclude1').append(excPro1);
+                        $('#sExclude2').append(excPro2);
+                        $('#sExclude3').append(excPro3);
+                        $('#sNotPayed').append(notPayed);
+                        $('#sRefund').append(refundMade);
+
+                        $('#sSendDate').append(data.Datemade);
+                        $('#sPerHour').append(data.perHour+' messages');
+                        $('#sUpsellText').append(data.upsellText);
+
+                        var squeezeMes = 0;
+                        if (data.squeeze !== "" && data.squeeze !== 0) {
+                            squeezeMes = data.squeeze;
+                        } else {
+                            squeezeMes = none;
+                        }
+
+                        $('#sInitial').append('<a href="'+pageURL+'campaigns/messages?selectedmessage='+data.initial+'#'+data.initial+'" target="_blank">M-'+data.initial+'</a>');
+                        $('#sSqueeze').append('<a href="'+pageURL+'campaigns/messages?selectedmessage='+squeezeMes+'#'+squeezeMes+'" target="_blank">M-'+squeezeMes+'</a>');
+                    } else {
+
+                    }
+                }
+            });
+            return false;
+
+        }
+
+        var jsonUnubscribe = '<?= $jsonUnsub ?>';
+
+
+        function bounceUnsub() {
+
+            var podaci ={};
+            podaci['action']   = 'bounceUnsubscribe';
+            podaci["numbers"]   = jsonUnubscribe;
+
+            if (podaci["numbers"] == ""){
+                    showWarning("No numbers to unsubscribe");
+            }
+
+            $.ajax({
+                url:httpSiteURL+"CampaignsAjax",
+                type:"POST",
+                dataType:"JSON",
+                data:podaci,
+                async: true,
+                success:function(data){
+                    console.log(data);
+
+                    if(data)
+                    {
+                        showSuccess("Numbers Unsubscribed!");
+                    } else {
+                        showError("Numbers are not Unsubscribed!");
+                    }
+                }
+            });
+            return false;
+
+        }
+
+
+        $(".chosen-select-campaigns").chosen({no_results_text: "No results"});
+    </script>
+{% endblock %}
+</body>
+
+</html>

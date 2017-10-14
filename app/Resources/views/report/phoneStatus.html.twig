@@ -1,0 +1,285 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        #example tbody td{
+            font-size: 12px;
+        }
+        .greeny {
+            background-color:#97e0ae!important;
+        }
+        .tQuickLink a {
+            color: #555;
+            text-decoration: none;
+        }
+        .tQuickLink a:hover {
+            color: #000;
+            text-decoration: underline;
+        }
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color: #000;
+        }
+        input [type=text], select {
+            float: left;
+        }
+    </style>
+{% endblock %}
+<body>
+{% block body %}
+    {% set emptyarr = {'state': '', 'smsstatus': '', 'hlrstatus': '', 'twstatus': '', 'omgstatus': '', 'ordNum': '', 'phone': '', 'nonumber': ''} %}
+    {% set queryarr = app.request.query.all %}
+    {% set qp = emptyarr|merge(queryarr) %}
+
+    <div class="main">
+        <h3 style="width: 1422px" class="headline">{{ title }}</h3>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1400px;">
+            <h4></h4>
+            <form>
+                <div style="width:36%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                State:
+                            </td>
+                            <td>
+                                <select id="state" name="state" >
+                                    <option value="">ALL</option>
+                                    {% for stateInfo in _states %}
+                                        <option value="{{ stateInfo.code2 }}"> {{ stateInfo.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('state');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                SMS status:
+                            </td>
+                            <td>
+                                <select id="smsstatus" name="smsstatus" >
+                                    <option value="">ALL</option>
+                                    <option value="2">Delivered</option>
+                                    <option value="0">Undelivered</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('smsstatus');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                HLR status:
+                            </td>
+                            <td>
+                                <select id="hlrstatus" name="hlrstatus" >
+                                    <option value="">ALL</option>
+                                    <option value="1">Delivered</option>
+                                    <option value="0">Undelivered</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('hlrstatus');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Twillio status:
+                            </td>
+                            <td>
+                                <select id="twstatus" name="twstatus" >
+                                    <option value="">ALL</option>
+                                    <option value="1">Delivered</option>
+                                    <option value="0">Undelivered</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('twstatus');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                OMG status:
+                            </td>
+                            <td>
+                                <select id="omgstatus" name="omgstatus" >
+                                    <option value="">ALL</option>
+                                    <option value="1">OMG confirmed</option>
+                                    <option value="2">OMG unconfirmed</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('omgstatus');">X</div>
+                            </td>
+                        </tr>
+
+
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:30%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                Limit:
+                            </td>
+                            <td>
+                                <select id="ordNum" name="ordNum" >
+                                    <option value="">ALL</option>
+                                    <option value="100">100 Records</option>
+                                    <option value="500">500 Records</option>
+                                    <option value="1000">1000 Records</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('ordNum');">X</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                Date from:
+                            </td>
+                            <td>
+                                <input name="from" type="text" id="datumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ from }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Date to:
+                            </td>
+                            <td>
+                                <input name="to" type="text" id="datumTo" placeholder="" onclick="$(this).datepicker();"  style="width:90px;" value="{{ to }}">
+                            </td>
+                            <td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Search number:
+                            </td>
+                            <td> <input id="search_by_num"  type="text" name="phone" placeholder="Search by phone number" value="{{ qp.phone }}"></td>
+                            <td>
+                        </tr>
+                        <tr>
+                            <td>
+
+                            </td>
+                            <td>
+                                 {% set checked = '' %}
+                                 {% if qp.nonumber  == 'on' %}
+                                     {% set checked = 'checked' %}
+                                 {% endif %}
+
+                                <input type="checkbox" name="nonumber" id="nonumber" style="margin-top:5px;height:15px;width:17px;" {{ checked }}> Don't show no number orders
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:30%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="cursor:pointer;width:120px;height:40px;font-size: 16px;margin-top: 183px;">Search</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1400px;">
+            <table style="width:100%;">
+                <tbody>
+                <tr>
+                    {% for row in _states %}
+                        <td>
+                            <a href="?state={{ row.code2 }}&smsstatus={{ qp.smsstatus }}&hlrstatus={{ qp.hlrstatus }}&twstatus={{ qp.twstatus }}&omgstatus={{ qp.omgstatus }}&ordNum={{ qp.ordNum }}&from={{ from }}&to={{ to }}"> {{ row.code2 }} </a>
+                         </td>
+                    {% endfor %}
+
+                    <td style="width:10px;">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="padding: 10px 10px 0 10px;width: 1400px;">
+
+            <div class="dayTable" style="width: 1400px;">
+                {% autoescape %}
+                    {{ _html|raw }} {# var won't be escaped #}
+                {% endautoescape %}
+            </div>
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1400px;">
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    $(document).ready(function(){
+        initDataTable();
+
+        $('#datumFrom,#datumTo').datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+
+        getToOption('state','state');
+        getToOption('smsstatus','smsstatus');
+        getToOption('hlrstatus','hlrstatus');
+        getToOption('twstatus','twstatus');
+        getToOption('omgstatus','omgstatus');
+        getToOption('ordNum','ordNum');
+
+    });
+    /***** inicializovanja data table *******/
+    function initDataTable() {
+        $('#example').dataTable({
+            sDom: "",
+            "bDestroy": true,
+            "bPaginate": false,
+            "bFilter": false,
+            "bSortCellsTop": true,
+            "aaSorting": [[0, "asc"]],
+            "aoColumns": [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+
+            ]
+        });
+    }
+</script>
+{% endblock %}
+</body>
+</html>

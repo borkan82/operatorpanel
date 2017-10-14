@@ -1,0 +1,156 @@
+{% include '::header.html.twig' %}
+<body>
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+    <div class="main">
+
+    <h3 class="headline"  style="width:1420px;">{{ title }}</h3>
+
+    <div style="clear:both"></div>
+      <div class="tableHolder"  style="width:1400px;">
+        <form id="forma">
+            <h4>Add new price to list</h4>
+            <div style="float:left;width:50%;margin-top:15px;">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>
+                            State:
+                        </td>
+                        <td>
+                            <select id="country" name="country">
+                                {% for stateInfo in _states %}
+                                    <option value="{{ stateInfo.code2 }}"> {{ stateInfo.title_eng }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Price:
+                        </td>
+                        <td>
+                            <input style="width: 262px;" type="text" name="price" placeholder="Price (00.000)">
+                        </td>
+                    </tr>
+                        <td>
+                        </td>
+                        <td>
+                            <button type="button" id="addUser" class="bigOrder GreyBtn" style="width:260px;font-size: 20px;" onclick="addNewPrice();">Add New SMS price</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+    <div style="clear:both"></div>
+    <div class="tableHolder"  style="padding: 10px 10px 10px 10px;width:1400px;">
+        <div class="dayTable" style="width: 1400px;">
+            {% autoescape %}
+                {{ _html|raw }} {# var won't be escaped #}
+            {% endautoescape %}
+        </div>
+    </div>
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width:1400px;">
+    </div>
+</div>
+
+{% endblock %}
+{% include '::footer.html.twig' %}
+{% block javascripts %}
+    <script>
+    $(document).ready(function(){
+            initDataTable();
+        });
+        //*********************************************************************
+        //**********SNIMANJE KORISNIKA ****************************************
+        //*********************************************************************
+
+        function addNewPrice(){
+            var podaciForme ={};
+            podaciForme['action'] = 'addCenter';
+
+            $("form [name]").each(function (){
+                var kljuc = $(this).attr("name");
+                var vrijednost = $(this).val();
+                podaciForme[kljuc] = vrijednost;
+            });
+
+
+            if (podaciForme["country"] == "" || podaciForme["price"] == ""){
+                showWarning("You must fill out the form!");
+                return false;
+            }
+
+            $.ajax({
+                url:httpSiteURL+"SettingsAjax",
+                type:"POST",
+                dataType:"JSON",
+                data:podaciForme,
+                async: true,
+                success:function(data){
+                    if(data > 0)
+                    {
+                        $('#tabela').append('<tr>' +
+                            '<td >-</td>'+
+                            '<td >'+ podaciForme["country"] +'</td>'+
+                            '<td >'+ podaciForme["price"] +'</td>'+
+                            '<td >-</td>'+
+                            '</tr>');
+
+                        showSuccess("User added to Database!");
+                    }
+                }
+            });
+            return false;
+        }
+    //**********Selekcija polja tabele - GENERALIZOVANO *******************
+    //*********************************************************************
+        var table = "phone_order_smsprices"; // OBAVEZNO PRILAGODJAVANJE TABELI
+
+        /***** inicializovanja data table *******/
+        function initDataTable(){
+            $('#example').dataTable({
+                sDom: "",
+                "bDestroy": true,
+                "bPaginate": false,
+                "bFilter": false,
+                "bSortCellsTop": true,
+                "aaSorting": [[ 0, "asc" ]],
+                "aoColumns": [
+                    null,
+                    null,
+                    null,
+                    null
+                ]
+            });
+        }
+    </script>
+{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,344 @@
+{% include '::headerMULTI.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+{% set URL = '//domain.com/' %}
+{#proveriti obavezno koji state tu ide#}
+<input type="hidden" id="state" value="{{ stateCode }}">
+
+
+<input type="hidden" id="content" value="{{ content |json_encode() }}">
+
+{% block stylesheet %}
+    <style>
+        .checkBox{
+            border: 1px solid #ccc;
+            width:540px;
+        }
+        .answers{
+            float:left;
+            width:590px;
+        }
+        .infoCheck{
+            border: none;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+{% block javascripts5 %}
+
+    <script type="text/javascript" src="{{ asset('js/interfaceV2.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('js/translations.js') }} "></script>
+    <script>
+        var json_desc = {{ descJS | json_encode |raw}};
+        var json_upsellText = {{ upsellJS | json_encode |raw}};
+    </script>
+
+{% endblock %}
+
+<body>
+{% block body %}
+
+<div class="subtopline">
+    <div class="topLineHolder">
+        <div class="topInfoHolder">
+            <p style="margin-top:10px;margin-left:10px;border-left:1px solid #BCC3BC">{{ content[1] }} {{ korisnik.Ime }} {{ korisnik.Prezime }} <br>
+                <strong><a style="text-decoration:none;color:#000" href="{{ URL }}admin/login.php?logout=1">Logout</a></strong></p>
+        </div>
+    </div>
+</div>
+
+<div class="main" style="border-left: 1px solid #ccc;">
+    <!------------------------------------- START Conversation Flow   ------------------------------>
+    <div class="conversation_flow" id="conversation_flow" style="display:block;">
+        <div class="checkBox" style="margin-top: 25px;width:1200px;">
+            <select name="state" id="stateSelector" class="select" style="margin-left:0px; width:353px; height:35px;" onchange="selectStateToOrder();">
+                <option value="none" data-fullsku="0262-911-0252">Select state</option>
+
+
+
+                {% for statesRows in allStates %}
+                    {% set selected = ''%}
+                    {% if statesRows.code2 == stateCode %}
+                        {% set selected = 'selected'%}
+
+                    {% endif %}
+                    <option value="{{ statesRows.code2 }}" {{ selected }}> {{ statesRows.title_eng }}</option>
+                {% endfor %}
+
+            </select>
+
+
+        </div>
+
+        <!------------------------------------- 1. PITANJE  ------------------------------>
+        <div class="answers" style = "{{ stil }}">
+
+            <div class="checkBox" style="margin-top: 25px;">
+                <input name="initialPhone" id="initialPhone" type="text" placeholder="{{ content[9] }}"
+                       style="width:200px; margin-right:10px;" value="{{ predefinedPhone }}">
+                <button type="button"
+                        class="noCheckbutton initialPhone initNumYes" style="background-color: #ffe6e6 ;" onclick="checkFromPhone('initialPhone');">{{ content[6] }}</button>
+                <span id="testPodaci"></span> |
+                <span id="testCamp"></span> <span id="testProiz"></span>
+
+            </div>
+
+
+            <div class="quest_fix" id="fix_1" style="display:block;">
+                <div class="checkBox">
+                    <select name="product_f" id="product_f" class="select chosen-select-product"
+                            style="margin-left:0px; width:353px; height:35px;">
+                        <option value="">{{ content[11] }}</option>
+
+                        {% autoescape %}
+                            {{ proizvOption|raw }} {# var won't be escaped #}
+                        {% endautoescape %}
+
+
+                        <option value="252" data-fullsku="0262-911-0252">Vival Pro B</option>
+                    </select>
+                    <strong><span class="singlePrice" style="float:right;font-size: 50px;color:#555;"></span></strong>
+                    <div style="height:auto; width:330px;">
+                        <span id="pagedat"></span><br>
+                        <span id="smsdat"></span>
+                    </div>
+                    <button type="button" class="bluebutton orderType" id="sms_btn" style="width: 350px;display:block;background-color: #ffe6e6 ;float:left;" onclick="selectOrderType(2, this);">Potvrdi izbor</button>
+                    <button type="button" class="bluebutton" style="width: 148px;display:block;background-color: #ff5858 ;float:left; color:#fff;margin-left: 10px;" onclick="forceSMSprice();">Force SMS price</button>
+                </div>
+            </div>
+            <div class="container_2A" id="container_2A" style="display:block;"><!-- START ODGOVOR NARUDZBA  -->
+                <div class="conversation_cont_A0" style="width:580px;">
+
+                    <div class="quest_fix korak1" id="fix_3" style="width: 585px;display:block;">
+                        <div class="checkBox">
+                            <input name="name" id="ime" type="text" placeholder="{{ content[100] }}"
+                                   onblur=""
+                                   onfocus="elementActive(this, '{{ content[100] }}', '{{ content[101] }}')"
+                                   style="width:160px; margin-right:10px;"> <input id="surname" type="text"
+                                   placeholder="{{ content[102] }}"
+                                   onblur=""
+                                   onfocus="elementActive(this, '{{ content[102] }}', '{{ content[103] }}')"
+                                   style="width:170px; margin-right:10px;">
+                            <button type="button" class="noCheckbutton korak1b" id="korak1" style="width:140px;height:39px;background-color: #ffe6e6 ;"  onclick="fillOrderFormNew();">{{ content[6] }}</button>
+                        </div>
+
+                        <div class="checkBox">
+                            <input id="address" type="text" placeholder="{{ content[104] }}"
+                                   onblur=""
+                                   onfocus="elementActive(this, '{{ content[104] }}', '{{ content[105] }}')"
+                                   style="width:230px; margin-right:10px;">
+                            <input id="number" type="text" placeholder="{{ content[106] }}"
+                                   onblur=""
+                                   onfocus="elementActive(this, '{{ content[106] }}', '{{ content[107] }}')"
+                                   style="width:100px; margin-right:10px;" autocomplete="off">
+                        </div>
+
+                        <div class="checkBox">
+                            <input id="city" type="text" placeholder="{{ content[108] }}"
+                                   onblur=""
+                                   onfocus="elementActive(this)" style="width:230px; margin-right:10px;">
+                            <input id="postal" type="text" placeholder="{{ content[110] }}"
+                                   onblur=""
+                                   onfocus="elementActive(this, '{{ content[110] }}', '{{ content[111] }}')"
+                                   style="width:100px; margin-right:10px;">
+                        </div>
+
+                        <div class="checkBox">
+                            <input id="phone" type="text" placeholder="{{ content[112] }}"
+                                   onblur=""
+                                   onfocus="elementActive(this, '{{ content[112] }}', '{{ content[113] }}')"
+                                   style="width:356px; margin-right:10px;">
+                        </div>
+
+                        <div class="checkBox">
+                            <input id="email" type="text" placeholder="{{ content[114] }}"
+                                   style="width:356px; margin-right:10px;" >
+                        </div>
+
+                        <div class="checkBox">
+                            <textarea class="commenttextarea" id="comment1" type="text" placeholder="Komentar" style="width:354px;"></textarea>
+                        </div>
+
+                    </div>
+                    <!--Hidden lp input-->
+                    <input id="hidden_lp" type="hidden" name="landing_page">
+                    <!--Hidden ip input-->
+                    <input id="ip_address" type="hidden" name="ip">
+                    <input id="http_ua" type="hidden" name="HTTP_USER_AGENT">
+                    <input id="http_rf" type="hidden" name="HTTP_REFERER" value="http://domain.com/ver3/web/?utm_source=localoperator&utm_campaign=vipmail">
+                    <!--Hidden code id input-->
+                    <input id="phone_code_hidden" type="hidden" name="phonecode_hidden">
+                    <input id="stateHidden" type="hidden" name="state" value="{{ stateCode }}">
+                    <input id="idHidden" type="hidden" name="idKorisnika" value="{{ idKorisnika }}">
+                    <input id="postHidden" type="hidden" name="postar" value="{{ postar }} ">
+                    <input id="price" type="hidden" name="price" value="">
+                    <input id="upsellPrice" type="hidden" name="upsellPrice" value="">
+                    <input id="printPrice" type="hidden" name="printPrice" value="">
+                    <input id="printUpsellPrice" type="hidden" name="printUpsellPrice" value="">
+                    <input id="smsCampPrice" type="hidden" name="printPrice" value="">
+                    <input id="smsCampUpsellPrice" type="hidden" name="printUpsellPrice" value="">
+                    <input id="full_sku" type="hidden" name="full_sku" value="">
+                    <input id="mfs" type="hidden" value="2">
+                    <input id="freeShip" type="hidden" value="0">
+                    <input id="callId" type="hidden" value="{{ callTrack }}">
+                    <input id="panelType" type="hidden" value="multipanel">
+                    <input id="code" type="hidden" value="">
+
+                    <div class="quest_fix korak6" id="fix_6c" style="display:block;" >
+                        <button type="button" class="bluebutton"  style="width: 540px;display:block;background-color: #ffe6e6 ;" onclick="provjera_podataka()">POTVRDI PODATKE</button>
+                    </div>
+                    <div class="quest_fix" id="fix_6c1">
+                        <button type="button" class="bluebutton orderType" id="dodatni0" style="width: 132px;font-size: 15px;padding: 10px 3px 10px 3px;background-color: #ffe6e6 ;" onclick="$('#zakljuci_Button').show();addAdditionalProduct(0)">1x</button>
+                        <button type="button" class="bluebutton orderType" id="dodatni1" style="width: 132px;font-size: 15px;padding: 10px 3px 10px 3px;background-color: #ffe6e6 ;" onclick="$('#zakljuci_Button').show();addAdditionalProduct(1)">2x</button>
+                        <button type="button" class="bluebutton orderType" id="dodatni2" style="width: 132px;font-size: 15px;padding: 10px 3px 10px 3px;background-color: #ffe6e6 ;" onclick="$('#zakljuci_Button').show();addAdditionalProduct(2)">3x</button>
+                        <button type="button" class="bluebutton orderType" id="dodatni3" style="width: 132px;font-size: 15px;padding: 10px 3px 10px 3px;background-color: #ffe6e6 ;" onclick="$('#zakljuci_Button').show();addAdditionalProduct('n');">DODAJ N</button>
+                        <input id="additionalNum" type="number" style="width:45px;display:none;" onchange="checkValidAdditional();">
+                        <button type="button" class="GreyBtn" id="dodajN" style="width:60px;height:30px;margin-left:5px;display:none;" onclick="addAdditionalProduct('d');">{{ content[125] }}</button>
+                    </div>
+                </div>
+            </div>
+            <div class="confirmBox">
+                <div class="confirmOrder">
+                    <strong><span id="ocDate"></span></strong>
+                </div>
+                <div class="confirmCancel">
+                    <strong><span id="ccDate"></span></strong>
+                </div>
+            </div>
+            <div style="float:left; width:1150px; height:30px; text-align:center;">
+                <a href="?ouid={{ idKorisnika }}"><span class="newOrder" style="cursor: pointer;"></span></a>
+                {#<a href="?{{ path('MultiPanel', {'ouid': ouid} ) }}"><span class="newOrder" style="cursor: pointer;"></span></a>#}
+            </div>
+            <div class="confirm" id="confirm">
+                <strong>{{ content[46] }}></strong>
+            </div>
+        </div>
+
+        <div class="answers" style = "{{ stil }}">
+            <div class="quest_podaci pleft" id="podaci" style="display:block;">
+                <div class="podaci_cont">
+                    <div class="podatak_naziv">{{ content[100] }}:</div>
+                    <div class="podatak_sadrzaj"><strong><span class="P_ime"></span></strong><input class="infoCheck P_ime" type="text" style="width:250px;"></div>
+                </div>
+                <div class="podaci_cont">
+                    <div class="podatak_naziv">{{ content[102] }}:</div>
+                    <div class="podatak_sadrzaj"><strong><span class="P_prezime"></span> </strong>
+                        <input class="infoCheck P_prezime" type="text" style="width:250px;"></div>
+                </div>
+                <div class="podaci_cont">
+                    <div class="podatak_naziv">{{ content[116] }}:</div>
+                    <div class="podatak_sadrzaj"><strong><span class="P_adresa"></span></strong>
+                        <input class="infoCheck P_adresa" type="text" style="width:184px;">
+                        <input class="infoCheck P_number" type="text" style="width:50px;"  onkeyup="changeInputFieldValue(this,'number');"></div>
+                </div>
+                <div class="podaci_cont">
+                    <div class="podatak_naziv">{{ content[108] }}:</div>
+                    <div class="podatak_sadrzaj"><strong><span class="P_grad"></span></strong>
+                        <input class="infoCheck P_grad" type="text" style="width:250px;"></div>
+                </div>
+                <div class="podaci_cont">
+                    <div class="podatak_naziv">{{ content[110] }}:</div>
+                    <div class="podatak_sadrzaj"><strong><span class="P_postanski"></span></strong>
+                        <input class="infoCheck P_postanski" type="text" style="width:250px;"></div>
+                </div>
+                <div class="podaci_cont">
+                    <div class="podatak_naziv">{{ content[112] }}:</div>
+                    <div class="podatak_sadrzaj"><strong><span class="P_telefon"></span></strong>
+                        <input class="infoCheck P_telefon" type="text" style="width:250px;"></div>
+                </div>
+                <div class="podaci_cont">
+                    <div class="podatak_naziv">{{ content[114] }}:</div>
+                    <div class="podatak_sadrzaj"><strong><span class="P_mail"></span></strong>
+                        <input class="infoCheck P_mail" type="text" style="width:250px;" onkeyup="changeInputFieldValue(this,'email');"></div>
+                </div>
+                <div class="podaci_cont">
+                    <div class="podatak_sadrzaj" style="width:100%"><strong><span class="P_proizvod" style="font-size: 25px;"></span></strong></div>
+                </div>
+                <div class="podaci_cont">
+                    <div class="podatak_naziv">{{ content[118] }}:</div>
+                    <div class="podatak_sadrzaj" style="width:430px;line-height: inherit;">
+                        <span id="noFreePost"><strong><span style="color:#1137FE">{{ postar }} {{ valuta }}</span></strong></span>
+                        <span id="yesFreePost" style="display:none;"><strong><span style="color:#1137FE"> {{ content[119] }} </span></strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="formaCheck();" type="button" id="zakljuci_Button" class="bluebutton"
+                    style="float:left; width:350px; height:70px; font-size:23px;background-color: #ffe6e6 ;display:none;margin-right: 500px;margin-top: 50px;">
+                <a id="btn1"/>{{ content[38] }}</a>
+            </button>
+        </div>
+    </div>
+
+
+</div>
+    <span id="interfaceEnd"></span>
+
+{% endblock %}
+{% include '::footer.html.twig' %}
+
+{% autoescape %}
+    {{ _callInfoBox|raw }} {# var won't be escaped #}
+{% endautoescape %}
+
+<div class="specialPopup" style="display:none;">
+    <div class="specialHolder">
+    </div>
+    <div class="specialOffer">
+        <div class="specQuest questClick">
+            <label>
+                <strong>
+                    {{ content[400] }}
+                </strong>
+            </label>
+        </div>
+        <div class="checkBox">
+            <button type="button" id="specY" class="bluebutton"
+                    onclick="$('.specialProd').show('slow');$('#specialProd').trigger('change');"
+                    style="width:80px;">{{ content[401] }}</button>
+            <button type="button" id="specN" class="bluebutton" onclick="noSpecialOffer();"
+                    style="width:80px;">{{ content[402] }}</button>
+            <div class="specialProd" style="float: left;display:none;">
+                <select id="specialProd" style="width:300px; margin-right:10px;">
+                </select>
+                <input id="phCall_id" type="hidden" name="phCall_id" value="">
+            </div>
+        </div>
+        <div class="specQuest" id="offerTextHolder" style="display:none;">
+            <span id="offerText">{{ content[403] }}</span>
+        </div>
+        <button type="button" id="specialOrderB" class="bigOrder"
+                onclick="makeSpecialOffer();">{{ content[404] }}</button>
+    </div>
+</div>
+
+
+
+{% block javascripts6 %}
+    <script>
+
+        $(document).ready(function(){
+            getToOption('stateSelector','stateSelector');
+            var handle;
+            handle = window.setInterval(showPendingCalls, 60000);
+
+            var stateCode = '{{ stateCode }}';
+            if (typeof stateCode !== 'undefined' && stateCode !='') {
+                // your code here
+                takeServerTime('s');
+            }
+
+        });
+        function selectStateToOrder() {
+            var drzava  = $('#stateSelector option:selected').val();
+//       / takeServerTime('s');
+
+            window.location = "?state="+drzava;
+        }
+
+    </script>
+
+{% endblock %}
+</body>
+
+</html>

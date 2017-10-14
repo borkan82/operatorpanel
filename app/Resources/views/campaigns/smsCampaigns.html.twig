@@ -1,0 +1,520 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block javascripts1 %}
+    {#<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>#}
+{% endblock %}
+{% block stylesheets %}
+    {#<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />#}
+    <style>
+
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.88;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+        #example tbody td{
+            font-size: 12px;
+        }
+        .yellowLine {
+            background-color: #d8d5b5 !important;
+        }
+        .select2-container  {
+            margin-left: 3px;
+
+
+        }
+
+        input [type=text], select {
+            float: left;
+        }
+
+        tbody tfoot tr td {
+            text-align: center;
+        }
+
+    </style>
+
+
+{% endblock %}
+
+<body>
+
+{% block body %}
+    {% set emptyarr = {'state': '', 'product_id': '', 'orderType': '', 'brake': '', 'operator': ''} %}
+    {% set queryarr = app.request.query.all %}
+    {% set qp = emptyarr|merge(queryarr) %}
+
+    <div class="main" style="width:1700px;margin-left: -850px;">
+        <h3 class="headline"  style="width:1721px;">{{ title }}</h3>
+        <div style="clear:both"></div>
+        <div class="tableHolder"  style="width:1700px;">
+            <form id="forma">
+                <div style="width:370px;float:left;">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td>
+                                Camp type:
+                            </td>
+                            <td>
+                                <select id="campType" name="campType">
+                                    <option value="">All campaigns</option>
+                                    {% for key,campType in _campTypes %}
+                                        <option value="{{ key }}"> {{ campType }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('campType');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Type:
+                            </td>
+                            <td>
+                                <select id="cType" name="cType">
+                                    <option value="">All campaigns</option>
+                                    <option value="0" >Single campaigns</option>
+                                    <option value="1" >Split campaigns</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('cType');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                State:
+                            </td>
+                            <td>
+                                <select id="state" name="state">
+                                    <option value="">ALL</option>
+                                    {% for statesRows in _states %}
+                                        <option value="{{ statesRows.code2 }}"> {{ statesRows.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('state');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Products:
+                            </td>
+                            <td>
+                                <select id="product_id" name="product_id">
+                                    <option value="">ALL</option>
+                                    {% for productsRows in _products %}
+                                        <option value="{{ productsRows.id }}"> {{ productsRows.title }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('product_id');">X</div>
+                            </td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td>Campaigns:</td>
+                            <td>
+                                <select id="campaign_id" name="campaign_id">
+                                    <option value="">ALL campaigns</option>
+                                    {% for campRows in _campaigns %}
+                                            <option  value="{{ campRows.id }}"> {{ campRows.CampaignName }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('campaign_id');">X</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Date from:</td>
+                            <td>
+                                <input type="text" id="dateFrom" name="from" value="{{ from }}" placeholder="Date From" style="width:100px;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Date to:</td>
+                            <td>
+                                <input type="text" id="dateTo" name="to" value="{{ to }}" placeholder="Date To" style="width:100px;">
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="width:10%;float:left;">
+                    <table >
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:25%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                <input type="hidden" name="datum" id="datum" value="">
+                                <input type="hidden" name="brake" id="brake" value="{{ qp.brake }}">
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="margin-top: 282px; margin-left: -163px;;cursor:pointer;width:120px;height:40px;font-size: 16px;">Search</button>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </form>
+        </div>
+        <div style="clear:both"></div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1700px;">
+            <table style="width: 1700px;">
+                <tbody>
+                <tr>
+                    {% for statesRows in _states %}
+
+                        {#<td>#}
+                            {#<a style="cursor: pointer;"#}
+                               {#onclick="window.open('campaigns/smsCampaigns?state={{ statesRows.code2 }}&product_id=&camp=&dateFrom={{ from }}&dateTo={{ to }}')"#}
+                               {#href="?state={{ statesRows.code2 }}&product=&camp=&dateFrom={{ from }}&dateTo={{ to }}"#}
+
+                            {#> {{ statesRows.code2 }} </a>#}
+                        {#</td>#}
+                        <td>
+                            <a style="cursor: pointer;" onclick="linkBrake('state','{{ statesRows.code2 }}')">{{ statesRows.code2 }} </a>
+                        </td>
+                    {% endfor %}
+
+                    <td style="width:10px;"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tableHolder" style="width: 1700px;">
+            Breakdown by:
+            <button class="bigOrder BrakeBtn" onclick="getTableData('phn.date');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Date</button>
+            <button class="bigOrder BrakeBtn" onclick="getTableData('phn.cType');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Type</button>
+            <button class="bigOrder BrakeBtn" onclick="getTableData('phn.campType');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Camp Type</button>
+            <button class="bigOrder BrakeBtn" onclick="getTableData('phn.state');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">State</button>
+            <button class="bigOrder BrakeBtn" onclick="getTableData('phn.product');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Product</button>
+            <button class="bigOrder BrakeBtn" onclick="getTableData('phn.campaignId');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Campaign</button>
+
+            {#<button class="bigOrder BrakeBtn" onclick="openInNewTab('phn.date');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Date</button>#}
+            {#<button class="bigOrder BrakeBtn" onclick="openInNewTab('phn.cType');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Type</button>#}
+            {#<button class="bigOrder BrakeBtn" onclick="openInNewTab('phn.state');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">State</button>#}
+            {#<button class="bigOrder BrakeBtn" onclick="openInNewTab('phn.product');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Product</button>#}
+            {#<button class="bigOrder BrakeBtn" onclick="openInNewTab('phn.campaignId');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Campaign</button>#}
+
+
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableMainHold" style="width: 1700px;">
+        </div>
+
+        <div class="legendHolder" style="width: 1721px;">
+
+
+
+            <div class="legendBox" style="width:500px;margin-left:40px;">
+                <div class="legendItem" style="border-bottom:1px dotted #ccc;"><strong>Definitions</strong></div>
+                <div class="legendItem"><strong>CR %</strong> - How many orders were made from sent messages</div>
+                <div class="legendItem"><strong>Phone / All orders</strong> - Orders from phone call in comparison with  all orders</div>
+                <div class="legendItem"><strong>Orders / All calls</strong> - How many orders were made from calls</div>
+                <div class="legendItem"><strong>Orders / Link open</strong> - How many orders were made from opened sms link</div>
+                <div class="legendItem"><strong>Delivery %</strong> - Delivered message in comapration with sent messages</div>
+                <div class="legendItem"><strong>Not sent %</strong> - Percentage of recepients with not sent messages</div>
+            </div>
+
+            <div class="legendBox" style="width:500px;margin-left:40px;">
+                <div class="legendItem" style="border-bottom:1px dotted #ccc;"><strong>Calculation stats</strong></div>
+                <div class="legendItem"><strong>CR %</strong> - (Orders-total / Sent)*100</div>
+                <div class="legendItem"><strong>Phone / All orders</strong> - (Orders-phone / Orders-total)*100</div>
+                <div class="legendItem"><strong>Orders / All calls</strong> - (Orders-phone / Calls)*100</div>
+                <div class="legendItem"><strong>Orders / Link open</strong> - (Orders-link / Link open)*100</div>
+                <div class="legendItem"><strong>Delivery %</strong> - (Delivered / Sent)*100</div>
+                <div class="legendItem"><strong>Not sent %</strong> - ((Recip. No - Sent) / Recip. No)*100</div>
+            </div>
+
+            <div class="legendBox" style="width:500px;margin-left:40px;">
+                <div class="legendItem" style="border-bottom:1px dotted #ccc;"><strong>Calculation stats for totals</strong></div>
+                <div class="legendItem"><strong>Totals (CR %)</strong> - (Totals(Orders-total)/ Totals (Sent))*100</div>
+                <div class="legendItem"><strong>Totals (Phone / All orders)</strong> - (Totals(Orders-phone)/ Totals (Orders-total))*100</div>
+                <div class="legendItem"><strong>Totals (Orders / All calls)</strong> - (Totals(Orders-phone)/ Totals (Calls))*100</div>
+                <div class="legendItem"><strong>Totals (Orders / Link open)</strong> - (Totals(Orders-link)/ Totals (Link open))*100</div>
+                <div class="legendItem"><strong>Totals (Delivery %)</strong> - (Totals(Delivered)/ Totals (Sent))*100</div>
+                <div class="legendItem"><strong>Totals (Not sent %)</strong> - ((Totals(Recip. No)- Totals (Sent)) /Totals(Recip. No))*100</div>
+
+            </div>
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1700px;">
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+
+    <script>
+        $(document).ready(function(){
+
+            $('#dateFrom,#dateTo').datepicker({
+                dateFormat: "yy-mm-dd",
+                minDate: '2017-01-01',
+                maxDate: '{{ yesterday }}'
+            });
+//
+//            $(".js-example-placeholder-single").select2({
+//                placeholder: "Select a campaign",
+//
+//            });
+
+
+            getToOption('cType','cType');
+            getToOption('campType','campType');
+            getToOption('state','state');
+            getToOption('product_id','product_id');
+            getToOption('campaign_id','campaign_id');
+
+
+            var brakeVal = $('#brake').val();
+            if (brakeVal == "" || brakeVal == undefined){
+                getTableData('phn.campaignId');
+            } else {
+                getTableData(brakeVal);
+            }
+
+
+        });
+
+            /***** inicializovanja data table *******/
+            function initDataTable() {
+                $('#example').DataTable({
+                    "scrollCollapse" : true,
+                    "scrollY":        "700px",
+                   // "scrollX":        "2000px",
+//                    fixedColumns:   {
+//                        leftColumns: 1,
+//                        rightColumns: 1
+//                    },
+                    "paging": false,
+                    "order": [0, 'asc'],
+                    "destroy": true,
+                    "searching": true,
+                    "columns": [
+                        {},
+                        {'width':'40px'},
+                        {},
+                        {},
+                        {},
+                        {},
+                        {},
+//                        {},
+                        {},
+                        {},
+                        {},
+                        {},
+                        {},
+                        {},
+                        {},
+                        {},
+                        {},
+                        {},
+                        {},
+                        {}
+                    ]
+                });
+            }
+
+        function openInNewTab(brake){
+            var podaci ={};
+
+            podaci['brake']      = brake;
+            podaci['cType']      = $("#cType").val();
+            podaci['campType']      = $("#campType").val();
+            podaci['state']      = $("#state").val();
+            podaci['product_id'] = $("#product_id").val();
+            podaci['campaign_id']   = $("#campaign_id").val();
+
+
+            podaci['from']      = '{{ from }}';
+            podaci['to']        = '{{ to }}';
+
+            var URIschema = "";
+            $.each(podaci, function(k,v){
+                URIschema = URIschema + "" + k + "=" + v + "&";
+            });
+            var url = '?'+URIschema;
+
+            window.open(url, '_blank');
+        }
+
+        function getTableData(brake){
+            var podaci ={};
+
+            podaci['brake']      = brake;
+            podaci['cType']      = $("#cType").val();
+            podaci['campType']      = $("#campType").val();
+            podaci['state']      = $("#state").val();
+            podaci['product_id'] = $("#product_id").val();
+            podaci['campaign_id']   = $("#campaign_id").val();
+
+            $("#brake").val( podaci['brake']);
+            podaci['from']      = '{{ from }}';
+            podaci['to']        = '{{ to }}';
+
+
+
+
+            $.ajax({
+                url: httpSiteURL+"SmsCampAjax",
+                type:"GET",
+                dataType:"JSON",
+                data:podaci,
+                async: true,
+                success:function(data){
+                    if(data)
+                    {
+                        $('.tableMainHold').empty();
+                        $('.tableMainHold').append(data);
+                        initDataTable();
+
+                        //$('#example').dataTable
+                        //$('#example').dataTable.ajax.reload();
+                        var URIschema = "";
+                        $.each(podaci, function(k,v){
+                            URIschema = URIschema + "" + k + "=" + v + "&";
+                        });
+                        window.history.pushState({"html":document.html,"pageTitle":document.pageTitle},"", "smsCampaigns?"+URIschema);
+                    } else {
+                        showError("Message not sent!");
+                    }
+                }
+            });
+            return false;
+        }
+
+        function getRowTableData(brake, field, value){
+            var podaci ={};
+            podaci['brake']     = brake;
+            podaci['cType']     = $("#cType").val();
+            podaci['campType']      = $("#campType").val();
+            podaci['state']     = $("#state").val();
+            podaci['product_id']   = $("#product_id").val();
+            podaci['campaign_id']  = $("#campaign_id").val();
+
+            podaci['from']      = '{{ from }}';
+            podaci['to']        = '{{ to }}';
+
+            podaci[field] = value;
+           //  alert(podaci);
+//            $("#"+field).val(value);
+
+
+            var URIschema = "";
+            $.each(podaci, function(k,v){
+                URIschema = URIschema + "" + k + "=" + v + "&";
+            });
+            console.log(URIschema);
+
+            var url = '?'+URIschema;
+
+            window.open(url, '_blank');
+
+//            $.ajax({
+//                url: httpSiteURL+"SmsCampAjax",
+//                type:"GET",
+//                dataType:"JSON",
+//                data:podaci,
+//                async: true,
+//                success:function(data){
+//                    if(data)
+//                    {
+//                        $('.tableMainHold').empty();
+//                        $('.tableMainHold').append(data);
+//                        initDataTable();
+//
+//                        //$('#example').dataTable
+//                        //$('#example').dataTable.ajax.reload();
+//                        var URIschema = "";
+//                        $.each(podaci, function(k,v){
+//                            URIschema = URIschema + "" + k + "=" + v + "&";
+//                        });
+//
+//                        window.history.pushState({"html":document.html,"pageTitle":document.pageTitle},"", "smsCampaigns?"+URIschema);
+//                    } else {
+//                        showError("Message not sent!");
+//                    }
+//                }
+//            });
+//            return false;
+        }
+
+        function linkBrake(linkKey, linkValue){
+            var podaci ={};
+
+            podaci['brake']     = $('#brake').val();
+            podaci['cType']      = $("#cType").val();
+            podaci['campType']      = $("#campType").val();
+            podaci['state']      = $("#state").val();
+            podaci['product_id'] = $("#product_id").val();
+            podaci['campaign_id']   = $("#campaign_id").val();
+            console.log(podaci['brake']);
+
+            podaci['from']      = '{{ from }}';
+            podaci['to']        = '{{ to }}';
+
+            console.log(podaci);
+            $("#"+linkKey).val(linkValue);
+
+            podaci[linkKey]     = linkValue;
+
+
+            $.ajax({
+                url: httpSiteURL+"SmsCampAjax",
+                type:"GET",
+                dataType:"JSON",
+                data:podaci,
+                async: true,
+                success:function(data){
+                    if(data)
+                    {
+                        $('.tableMainHold').empty();
+                        $('.tableMainHold').append(data);
+                        initDataTable();
+                        //$('#example').dataTable
+                        //$('#example').dataTable.ajax.reload();
+                        var URIschema = "";
+                        $.each(podaci, function(k,v){
+                            URIschema = URIschema + "" + k + "=" + v + "&";
+                        });
+                        window.history.pushState({"html":document.html,"pageTitle":document.pageTitle},"", "smsCampaigns?"+URIschema);
+                        $('[data-toggle="popover"]').popover();
+                    } else {
+                        showError("Message not sent!");
+                    }
+                }
+            });
+            return false;
+        }
+
+        function resetSelectField(field){
+            document.getElementById(field).selectedIndex = 0
+        }
+    </script>
+{% endblock %}
+</body>
+
+</html>

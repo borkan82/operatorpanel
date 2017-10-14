@@ -1,0 +1,541 @@
+{% include '::header.html.twig' %}
+<body>
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+        #example tbody td{
+            font-size: 12px;
+        }
+        .yellowLine {
+            background-color: #d8d5b5 !important;
+        }
+        .statsData td {
+            border: 1px solid #d4d4d4;
+            background: #efefef;
+            padding: 0 8px;
+            height: 25px;
+        }
+        .statsData th {
+            border-bottom: 1px solid #ccc;
+        }
+        .statsData a {
+            color:#111!important;
+        }
+        input [type=text], select {
+            float: left;
+        }
+        .main{
+            margin-left: -700px;
+        }
+
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+    {% set emptyarr = {'state': '', 'product': '', 'orderType': '', 'brake': '', 'operator': '', 'callgroup': '', 'callcenter': '', 'campaign': '', 'order_status': '', 'datum': ''} %}
+    {% set queryarr = app.request.query.all %}
+    {% set qp = emptyarr|merge(queryarr) %}
+    <div class="main">
+        <h3 class="headline" style="width:1521px;">Payments (EUR) Summary Inbound report</h3>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1500px;">
+            <h4></h4>
+            <form>
+                <div style="width:26%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                State:
+                            </td>
+                            <td style="width:300px;">
+                                <select id="state" name="state">
+                                    <option value="">ALL</option>
+                                    {% for statesRows in _states %}
+                                        <option value="{{ statesRows.code2 }}"> {{ statesRows.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('state');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Product:
+                            </td>
+                            <td>
+                                <select id="product" name="product">
+                                    <option value="">ALL</option>
+                                    {% for productsRows in _products %}
+                                        <option value="{{ productsRows.id }}"> {{ productsRows.title }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('product');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Operator:
+                            </td>
+                            <td>
+                                <select id="operator" name="operator">
+                                    <option value="">ALL</option>
+                                    {% for userRows in _users %}
+                                        <option value="{{ userRows.id }}"> {{ userRows.name }} {{ userRows.surname }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('operator');">X</div>
+                            </td>
+                        </tr>
+                        {#<tr>#}
+                            {#<td>#}
+                                {#Call center group:#}
+                            {#</td>#}
+                            {#<td>#}
+                                {#<select id="group" name="group">#}
+                                    {#<option value="">All groups</option>#}
+                                    {#{% for centersRows in _centers %}#}
+                                        {#<option value="{{ centersRows.id }}"> {{ centersRows.name }} ({{ centersRows.state }})</option>#}
+                                    {#{% endfor %}#}
+                                {#</select>#}
+                            {#</td>#}
+                        {#</tr>#}
+                        <tr>
+                            <td>
+                                Date from:
+                            </td>
+                            <td>
+                                <input name="from" type="text" id="datumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ from }}">
+
+                                Date to:
+
+                                <input name="to" type="text" id="datumTo" placeholder="" onclick="$(this).datepicker();"  style="width:90px;" value="{{ to }}">
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:26%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                Order source:
+                            </td>
+                            <td style="width:300px;">
+                                <select id="orderType" name="orderType">
+                                    <option value="">ALL</option>
+                                    <option value="1">Page Order</option>
+                                    <option value="2">SMS Bulk order</option>
+                                    <option value="4">SMS Reorder</option>
+                                    <option value="3">Print Order</option>
+                                    <option value="5">VipMails</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('orderType');">X</div>
+                            </td>
+                        </tr>
+                        {#<tr>#}
+                            {#<td>#}
+                                {#Outcome:#}
+                            {#</td>#}
+                            {#<td>#}
+                                {#<select id="outcome" name="outcome">#}
+                                    {#<option value="">ALL</option>#}
+                                    {#<option value="1">ORDER</option>#}
+                                    {#<option value="2">UPSELL</option>#}
+                                    {#<option value="3">CANCELED</option>#}
+                                    {#<option value="4">NO ORDER</option>#}
+                                {#</select>#}
+                            {#</td>#}
+                        {#</tr>#}
+                        <tr>
+                            <td>
+                                Campaign:
+                            </td>
+                            <td>
+                                <select id="campaign" name="campaign">
+                                    <option value="">ALL</option>
+                                    {% for campRows in _campaigns %}
+                                        <option value="{{ campRows.CampaignName }}"> {{ campRows.CampaignName }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('campaign');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Order status:
+                            </td>
+                            <td>
+                                <select id="order_status" name="order_status">
+                                    <option value="">ALL</option>
+                                    {% for ostatus in _ostatuses %}
+                                        <option value="{{ ostatus.id }}"> {{ ostatus.status_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('order_status');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Call center:
+                            </td>
+                            <td>
+                                <select id="callcenter" name="callcenter">
+                                    <option value="">ALL</option>
+                                    {% for mainCentersRows in _maincenters %}
+                                        <option value="{{ mainCentersRows.id }}"> {{ mainCentersRows.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('callcenter');">X</div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:27%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                Call center group:
+                            </td>
+                            <td>
+                                <select id="callgroup" name="callgroup">
+                                    <option value="">All groups</option>
+                                    {% for centersRows in _centers %}
+                                        <option value="{{ centersRows.id }}"> {{ centersRows.name }} ({{ centersRows.state }})</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('callgroup');">X</div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:20%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                <input type="hidden" name="datum" id="datum" value="">
+                                <input type="hidden" name="brake" id="brake" value="{{ qp.brake }}">
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="margin-top:145px;cursor:pointer;width:120px;height:40px;font-size: 16px;">Search</button>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </form>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1500px;">
+            Breakdown by:
+            <button class="bigOrder BrakeBtn" onclick="getTableData('phn.date');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Date</button>
+            <button class="bigOrder BrakeBtn" onclick="getTableData('phn.state');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">State</button>
+            <button class="bigOrder BrakeBtn" onclick="getTableData('phn.product');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Product</button>
+            <button class="bigOrder BrakeBtn" onclick="getTableData('phn.operator');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Operator</button>
+            <button class="bigOrder BrakeBtn" onclick="getTableData('center.main_call_center_id');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Call center</button>
+            <button class="bigOrder BrakeBtn" onclick="getTableData('phn.orderType');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Source</button>
+            <button class="bigOrder BrakeBtn" onclick="getTableData('phn.campaignId');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Campaign</button>
+            <button class="bigOrder BrakeBtn" onclick="getTableData('tmp.order_status');" style="margin-top:0px;cursor:pointer;width:120px;height:24px;font-size: 14px;">Order status</button>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1500px;">
+            <table style="width: 100%;">
+                <tbody>
+                <tr>
+                    {% for statesRows in _states %}
+                    <td>
+                        <a onclick="linkBrake('state','{{ statesRows.code2 }}')" style="cursor:pointer;margin-right: 10px;">{{ statesRows.code2 }} </a>
+                    </td>
+                    {% endfor %}
+                    {#<a href="?state={{ statesRows.code2 }}&product={{ qp.product }}&orderType={{ qp.orderType }}&brake={{ qp.brake }}&operator={{ qp.operator }}&campaign={{ qp.campaign }}&order_status={{ qp.order_status }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">{{ statesRows.code2 }} </a>#}
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableMainHold" style="width: 1500px;">
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1500px;">
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function(){
+           
+
+            $('#datumFrom,#datumTo').datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            getToOption('state','state');
+            getToOption('product','product');
+            getToOption('operator','operator');
+            getToOption('orderType','orderType');
+            getToOption('campaign','campaign');
+            getToOption('order_status','order_status');
+            getToOption('callgroup','callgroup');
+            getToOption('callcenter','callcenter');
+
+            var brakeVal = $('#brake').val();
+            if (brakeVal == "" || brakeVal == undefined){
+                getTableData('phn.date');
+            } else {
+                getTableData(brakeVal);
+            }
+
+
+        });
+        /***** inicializovanja data table *******/
+        function initDataTable() {
+            $('#example').DataTable({
+                "scrollCollapse" : true,
+                "scrollY":        "700px",
+                // "scrollX":        "2000px",
+//                    fixedColumns:   {
+//                        leftColumns: 1,
+//                        rightColumns: 1
+//                    },
+                "paging": false,
+                "order": [0, 'desc'],
+                "destroy": true,
+                "searching": false,
+                "columns": [
+                    {},
+                    {'width':'40px'},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {}
+                ]
+            });
+        }
+
+        function openInNewTab(brake){
+            $('#brake').val(brake);
+            var podaci ={};
+            podaci['brake']     = brake;
+            podaci['state']     = $("#state").val();
+            podaci['product']   = $("#product").val();
+            podaci['operator']  = $("#operator").val();
+            podaci['callgroup'] = $("#callgroup").val();
+            podaci['callcenter']= $("#callcenter").val();
+            podaci['orderType'] = $("#orderType").val();
+            podaci['campaign']  = $("#campaign").val();
+            podaci['order_status']   = $("#order_status").val();
+
+            podaci['from']      = $("#datumFrom").val();
+            podaci['to']        = $("#datumTo").val();
+
+            var URIschema = "";
+            $.each(podaci, function(k,v){
+                URIschema = URIschema + "" + k + "=" + v + "&";
+            });
+            var url = 'summary/summaryInboundReport?'+URIschema;
+
+            window.open(url, '_blank');
+        }
+
+        function getTableData(brake){
+            $('#brake').val(brake);
+            var podaci ={};
+            podaci['brake']     = brake;
+            podaci['state']     = $("#state").val();
+            podaci['product']   = $("#product").val();
+            podaci['operator']  = $("#operator").val();
+            podaci['callgroup'] = $("#callgroup").val();
+            podaci['callcenter']= $("#callcenter").val();
+            podaci['orderType'] = $("#orderType").val();
+            podaci['campaign']  = $("#campaign").val();
+            podaci['order_status']   = $("#order_status").val();
+
+            podaci['from']      = $("#datumFrom").val();
+            podaci['to']        = $("#datumTo").val();
+
+            $.ajax({
+                url:"http://ajax/inboundOrders",
+                type:"GET",
+                dataType:"JSON",
+                data:podaci,
+                async: true,
+                success:function(data){
+                    if(data)
+                    {
+                        $('.tableMainHold').empty();
+                        $('.tableMainHold').append(data);
+                        initDataTable();
+                        //$('#example').dataTable
+                        //$('#example').dataTable.ajax.reload();
+                        var URIschema = "";
+                        $.each(podaci, function(k,v){
+                            URIschema = URIschema + "" + k + "=" + v + "&";
+                        });
+                        window.history.pushState({"html":document.html,"pageTitle":document.pageTitle},"", "summaryInboundReport?"+URIschema);
+                        $('[data-toggle="popover"]').popover();
+                    } else {
+                        showError("Message not sent!");
+                    }
+                }
+            });
+            return false;
+        }
+
+        function getRowTableData(brake, field, value){
+            var podaci ={};
+            podaci['brake']     = brake;
+            podaci['state']     = $("#state").val();
+            podaci['product']   = $("#product").val();
+            podaci['operator']  = $("#operator").val();
+            podaci['callgroup'] = $("#callgroup").val();
+            podaci['callcenter']= $("#callcenter").val();
+            podaci['orderType'] = $("#orderType").val();
+            podaci['campaign']  = $("#campaign").val();
+            podaci['order_status']   = $("#order_status").val();
+
+            podaci['from']      = $("#datumFrom").val();
+            podaci['to']        = $("#datumTo").val();
+
+            podaci[field] = value;
+            //$("#"+field).val(value);
+
+
+
+            var URIschema = "";
+            $.each(podaci, function(k,v){
+                URIschema = URIschema + "" + k + "=" + v + "&";
+            });
+            window.open("summaryInboundReport?"+URIschema);
+
+
+console.log(podaci);
+
+
+return false;
+            $.ajax({
+                url:"http://phone-sale.net/ver3/web/ajax/inboundOrders",
+                type:"GET",
+                dataType:"JSON",
+                data:podaci,
+                async: true,
+                success:function(data){
+                    if(data)
+                    {
+                        $('.tableMainHold').empty();
+                        $('.tableMainHold').append(data);
+                        initDataTable();
+                        //$('#example').dataTable
+                        //$('#example').dataTable.ajax.reload();
+                        var URIschema = "";
+                        $.each(podaci, function(k,v){
+                            URIschema = URIschema + "" + k + "=" + v + "&";
+                        });
+                        //window.history.pushState({"html":document.html,"pageTitle":document.pageTitle},"", "summaryInboundReport?"+URIschema);
+                        $('[data-toggle="popover"]').popover();
+                        window.open("summaryInboundReport?"+URIschema);
+                        //location.href = "summaryInboundReport?"+URIschema;
+                    } else {
+                        showError("Message not sent!");
+                    }
+                }
+            });
+            return false;
+        }
+
+        function redirectToInboundList(url){
+            window.open(url);
+        }
+
+        function resetSelectField(field){
+            document.getElementById(field).selectedIndex = 0
+        }
+
+
+        function linkBrake(linkKey, linkValue){
+            var podaci ={};
+            podaci['brake']     = $('#brake').val();
+            podaci['state']     = $("#state").val();
+            podaci['product']   = $("#product").val();
+            podaci['operator']  = $("#operator").val();
+            podaci['callgroup'] = $("#callgroup").val();
+            podaci['callcenter']= $("#callcenter").val();
+            podaci['orderType'] = $("#orderType").val();
+            podaci['campaign']  = $("#campaign").val();
+            podaci['order_status']   = $("#order_status").val();
+
+            podaci['from']      = $("#datumFrom").val();
+            podaci['to']        = $("#datumTo").val();
+
+            podaci[linkKey]     = linkValue;
+            $("#"+linkKey).val(linkValue);
+
+            $.ajax({
+                url:"http://phone-sale.net/ver3/web/ajax/inboundOrders",
+                type:"GET",
+                dataType:"JSON",
+                data:podaci,
+                async: true,
+                success:function(data){
+                    if(data)
+                    {
+                        $('.tableMainHold').empty();
+                        $('.tableMainHold').append(data);
+                        initDataTable();
+                        //$('#example').dataTable
+                        //$('#example').dataTable.ajax.reload();
+                        var URIschema = "";
+                        $.each(podaci, function(k,v){
+                            URIschema = URIschema + "" + k + "=" + v + "&";
+                        });
+                        window.history.pushState({"html":document.html,"pageTitle":document.pageTitle},"", "summaryInboundReport?"+URIschema);
+                        $('[data-toggle="popover"]').popover();
+                    } else {
+                        showError("Message not sent!");
+                    }
+                }
+            });
+            return false;
+        }
+    </script>
+{% endblock %}
+</body>
+
+</html>

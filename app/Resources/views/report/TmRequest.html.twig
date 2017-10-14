@@ -1,0 +1,177 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        #example tbody td{
+            font-size: 12px;
+        }
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color: #000;
+        }
+        input [type=text], select {
+            float: left;
+        }
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+{% set emptyarr = {'country': '', 'product_id': '', 'status': ''} %}
+{% set queryarr = app.request.query.all %}
+{% set qp = emptyarr|merge(queryarr) %}
+
+<div class="main">
+<h3 style="width: 1322px" class="headline">{{ title }}</h3>
+<div style="clear:both"></div>
+<div class="tableHolder" style="width: 1300px;">
+    <h4></h4>
+    <form>
+        <div style="width:36%;float:left;">
+            <table >
+                <tbody>
+                <tr>
+                    <td >
+                        State:
+                    </td>
+                    <td colspan="3">
+                        <select id="country" name="country">
+
+                            <option value="">Choose state</option>
+                            {% for stateInfo in _states %}
+                                <option value="{{ stateInfo.code2 }}"> {{ stateInfo.title_eng }}</option>
+                            {% endfor %}
+
+                        </select>
+                        <div class="resetSelectField" onclick="resetSelectField('country');">X</div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td >
+                        Products:
+                    </td>
+                    <td colspan="3">
+                        <select id="product_id" name="product_id">
+
+                            <option value="">Choose product</option>
+                            {% for productInfo in _products %}
+                                <option value="{{ productInfo.id }}"> {{ productInfo.title }}</option>
+                            {% endfor %}
+
+                        </select>
+                        <div class="resetSelectField" onclick="resetSelectField('product_id');">X</div>
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td >
+                        Status:
+                    </td>
+                    <td colspan="3">
+                        <select id="status" name="status">
+                            <option value="">Status</option>
+                            <option value="0">Waiting</option>
+                            <option value="1">Finished</option>
+
+                        </select>
+                        <div class="resetSelectField" onclick="resetSelectField('status');">X</div>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <div style="width:50%;float:left;">
+            <table >
+                <tbody>
+                <tr>
+                    <td>
+                        <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="margin-top:94px;cursor:pointer;width:120px;height:40px;font-size: 16px;">Search</button>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="width:50%;float:left;">
+            <table >
+                <tbody>
+                <tr>
+                    <td>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+</div>
+<div style="clear:both"></div>
+
+<div style="clear:both"></div>
+<div class="tableHolder" style="padding: 10px 10px 0 10px;width: 1300px;">
+
+    <div class="dayTable" style="width: 1300px;">
+        {% autoescape %}
+            {{ _html|raw }} {# var won't be escaped #}
+        {% endautoescape %}
+    </div>
+</div>
+
+
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1300px;">
+    </div>
+
+</div>
+<script>
+{% endblock %}
+{% block javascripts %}
+
+    $(document).ready(function(){
+        initDataTable();
+        getToOption('country','country');
+        getToOption('product_id','product_id');
+        getToOption('status','status');
+
+    });
+/***** inicializovanja data table *******/
+function initDataTable() {
+    $('#example').dataTable({
+        sDom: "",
+        "bDestroy": true,
+        "bPaginate": false,
+        "bFilter": false,
+        "bSortCellsTop": true,
+        "aaSorting": [[0, "asc"]],
+        "aoColumns": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+
+        ]
+    });
+}
+    </script>
+{% endblock %}
+</body>
+
+</html>

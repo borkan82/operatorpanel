@@ -1,0 +1,774 @@
+{% include '::header.html.twig' %}
+<input type="hidden" id="content" value="{{ content |json_encode() }}">
+<head>
+    {#<link href="../../css/bootstrap.min.css" rel="stylesheet" type="text/css">#}
+    {#<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">#}
+    {#<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">#}
+
+
+    <link rel="stylesheet" href="{{ asset('css/styleV3.css') }}"type="text/css" />
+    {#<link href="{{ asset('css/bootstrap-datetimepicker.min.css') }}" rel="stylesheet" type="text/css">#}
+    <link rel="icon" href="{{ asset('images/phone-icon.png') }}" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" type="text/css">
+    {% block javascript %}
+        <script>
+            var postponedText = "{{ content[77] }}";
+        </script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+
+        <script type="text/javascript" src="{{ asset('js/outbound/outboundCallPanels.js') }} "></script>
+        <script type="text/javascript" src="{{ asset('js/outbound/outboundFunctions.js') }} "></script>
+        <script type="text/javascript" src="{{ asset('js/outbound/flow1.js') }} "></script>
+    {% endblock %}
+
+    {% block stylesheets %}
+        <style>
+            .o_quest16 {
+                display:none;
+                cursor:pointer;
+            }
+            .new-call-requests tbody td {
+                background-color: #fff!important;
+            }
+            .googleBtn {
+                -webkit-box-sizing: content-box!important;
+                box-sizing: content-box!important;
+            }
+            .bootstrap-datetimepicker-widget table td.disabled, .bootstrap-datetimepicker-widget table td.disabled:hover {
+                background: none;
+                color: #f40c0c;
+                cursor: not-allowed;
+            }
+
+            .bootstrap-datetimepicker-widget table td, .bootstrap-datetimepicker-widget table td:hover {
+                background: none;
+                color: #2e9b34;
+                /*color: #34b74e;*/
+
+            }
+        </style>
+    {% endblock %}
+    {% include '::inspectlet.html.twig' %}
+</head>
+
+<body>
+{% block body %}
+
+    <div class="main" style="border-left: 1px solid #ccc;margin-bottom: 300px;">
+        <!------------------------------------- START Conversation Flow   ------------------------------>
+        <div class="conversation_flow">
+            <table class="new-call-requests">
+                <thead>
+                <tr>
+                    <th>{{ content[0] }}</th>
+                    <th>{{ content[1] }}</th>
+                    <th>{{ content[2] }}</th>
+                    <th>{{ content[3] }}</th>
+                    <th colspan="7">{{ content[4] }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ data['submitDate'] }}</td>
+                    <td><span id="callerPhone">{{ data['phone'] }}</span></td>
+                    <td><b>{{ data['name'] }}</b></td>
+                    <td>{{ data['prTitle'] }}</td>
+                    <td>{{ data['price'] }}</td>
+                    <td><button class="green-success-btn btn"   onclick="$('#operatorPanel').show();changeFlag({{ userId }},1);scrollToTarget();">{{ content[5] }}</button></td>
+                    <td><button class="orange-warning-btn btn"  onclick="changeFlag({{ userId }},2);">{{ content[6] }}</button></td>
+                    <td><button class="red-alert-btn btn"       onclick="changeFlag({{ userId }},4);">{{ content[7] }}</button></td>
+                    <td><button class="red-alert-btn btn"     onclick="cancelOutbound();">{{ content[8] }}</button></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="conversation_flow" id="conversation_flow" style="width:800px!important;">
+            <input type="hidden" id="recordId" value="{{ userId }}">
+            <input type="hidden" id="quantity" value="1">
+            <input type="hidden" id="price" value="{{ data['price'] }}">
+            <input type="hidden" id="upsell" value="{{ data['upsellPrice'] }}">
+            <input type="hidden" id="calcPrice" value="{{ data['price'] }}">
+            <input type="hidden" id="prodName" value="{{ data['prTitle'] }}">
+            <input type="hidden" id="mfs" value="3">
+            <input type="hidden" id="freeShip" value="1">
+            <input type="hidden" id="full_sku" value="{{ productSKU }}">
+            <input type="hidden" id="hasPost" value="1">
+            <input type="hidden" id="stateCode" value="{{ state }}">
+            <input type="hidden" id="operator" value="{{ operatorId }}">
+
+            <input type="hidden" id="dynCustomerName" value="{{ customerName }}">
+            <input type="hidden" id="dynProduct" value="{{ productName }}">
+            <input type="hidden" id="dynCurrency" value="{{ centerInfo['infoCurrency'] }}">
+            <input type="hidden" id="dynPostar" value="{{ centerInfo['postar'] }}">
+            <input type="hidden" id="dynPriceTwo" value="{{ forTwo }}">
+            <input type="hidden" id="dynPriceThree" value="{{ forThree }}">
+            <input type="hidden" id="dynUpsell" value="{{ data['upsellPrice'] }}">
+
+            <input type="hidden" id="qOne" value="{{ one }}">
+            <input type="hidden" id="qTwo" value="{{ two }}">
+            <input type="hidden" id="qThree" value="{{ three }}">
+
+            <input type="hidden" id="outReqType" value="{{ outType }}">
+            <input type="hidden" id="rpdID" value="{{ rpdID }}">
+
+
+            <div class="operatorPanel" id="operatorPanel" style="width:800px;float:left;display:none;" onclick="step1();">
+                <div class="quest_cont" id="o_quest1">
+                    <label for="answer" id="first_Con">
+                        <strong>
+                            {{ content['adcombo'][0] }}
+                        </strong>
+                    </label>
+                </div>
+
+                <div class="checkBox" id="o_quest2" style="display:none">
+                    <button type="button" class="bluebutton" id="" style="width: auto;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="bstep1();">{{ content[75] }}</button>
+                    <button type="button" class="bluebutton" id="" style="width: auto;margin-top: 5px;margin-left: 50px;height:40px;background-color: #ffe6e6 ;" onclick="bstep2();">{{ content[76] }}</button>
+                    <button type="button" class="bluebutton" id="" style="width: auto;margin-top: 5px;margin-left: 50px;height:40px;background-color: #ffe6e6 ;" onclick="bstep3();">{{ content[11] }}</button>
+                </div>
+
+                <div class="quest_cont" id="o_quest3" style="display:none" onclick="step2();">
+                    <label for="answer" id="first_Con">
+                        <strong>{{ content['adcombo'][1] }}</strong>
+                    </label>
+                </div>
+                <div class="checkBox" id="o_quest4" style="display:none">
+                    <button type="button" class="bluebutton" id="" style="width: 200px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="bstep4();">{{ content[12] }}</button>
+                    <button type="button" class="bluebutton" id="noCall" style="width: 200px;margin-top: 5px;margin-left: 40px;height:40px;background-color: #ffe6e6 ;" onclick="bstep5();">{{ content[13] }}</button>
+                    <input id="pickToCall" class="pickDate" type="text" placeholder="YYYY-MM-DD" style="width:100px; margin-left:40px;display:none;">
+                    <input id="pickTimeToCall" class="pickDate" type="text" placeholder="HH:mm:ss" style="width:80px; margin-left:40px;display:none;">
+                    <button type="button" class="bluebutton pickDate" id="" style="width: 200px;margin-top: 5px;margin-left: 40px;height:40px;background-color: #ffe6e6 ;display:none;" onclick="changeTimeToCall(1, {{ workingHours['wtFrom'] }}, {{ workingHours['wtTo'] }});">{{ content[14] }}</button>
+                </div>
+
+
+                <div class="quest_cont" id="o_quest4a" style="display:none" onclick="step3();">
+                    <label for="answer" id="first_Con">
+                        <strong>{{ content['adcombo'][2] }}</strong>
+                    </label>
+                </div>
+                <div class="checkBox" id="o_quest4b" style="display:none">
+                    <button type="button" class="bluebutton" id="" style="width: 250px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="bstep6();">{{ content[15] }}</button>
+                </div>
+
+                <!-- ANSWER WRONG PERSON SECTION -->
+
+                <div class="quest_cont" id="o_quest0" style="display:none" onclick="step4();">
+                    <label for="answer" id="first_Con">
+                        <strong>
+                            {{ content['adcombo'][3] }}
+                        </strong>
+                    </label>
+                </div>
+                <div class="checkBox" id="o_quest0a" style="display:none">
+                    <button type="button" class="bluebutton" id="" style="width: 120px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="bstep7();">{{ content[9] }}</button>
+                    <button type="button" class="bluebutton" id="" style="width: 150px;margin-top: 5px;margin-left: 80px;height:40px;background-color: #ffe6e6 ;" onclick="bstep8();">{{ content[10] }}</button>
+                </div>
+
+                <div class="quest_cont" id="o_quest0b" style="display:none" onclick="step5();">
+                    <label for="answer" id="first_Con">
+                        <strong>
+                            {{ content['adcombo'][4] }}
+                        </strong>
+                    </label>
+                </div>
+                <div class="checkBox" id="o_quest0c" style="display:none">
+                    <button type="button" class="bluebutton" id="" style="width: 120px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="bstep9();">{{ content[9] }}</button>
+                    <button type="button" class="bluebutton" id="" style="width: 150px;margin-top: 5px;margin-left: 80px;height:40px;background-color: #ffe6e6 ;" onclick="bstep10();">{{ content[10] }}</button>
+                </div>
+
+                <!-- ANSWER WRONG PERSON SECTION -->
+
+                <!-- ANSWER NO SECTION -->
+                <div class="quest_cont" id="o_quest5" style="display:none" onclick="step6();">
+                    <label for="answer" id="first_Con">
+                        <strong>{{ content['adcombo'][5] | raw }}</strong>
+                    </label>
+                </div>
+                <div class="checkBox" id="o_quest6" style="display:none">
+                    <button type="button" class="bluebutton" id="" style="width: 200px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="bstep11();">{{ content[12] }}</button>
+                    <button type="button" class="bluebutton" id="" style="width: 200px;margin-top: 5px;margin-left: 40px;height:40px;background-color: #ffe6e6 ;" onclick="bstep12();">{{ content[13] }}</button>
+                </div>
+
+                <div class="quest_cont" id="o_quest5a" style="display:none" onclick="step7();">
+                    <label for="answer">
+                        <strong>{{ content[43] }}</strong>
+                    </label>
+                </div>
+                <div class="checkBox" id="o_quest5b" style="display:none">
+                    <button type="button" class="bluebutton" id="" style="width: 250px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="cancelOutbound();">{{ content[15] }}</button>
+                </div>
+
+                <div class="quest_cont" id="o_quest5c" style="display:none" onclick="step8();">
+                    <label for="answer" id="first_Con">
+                        <strong>{{ content['adcombo'][6] }}</strong>
+                    </label>
+                </div>
+                <div class="checkBox" id="o_quest5d" style="display:none">
+                    <button type="button" class="bluebutton" id="noCall2" style="width: 200px;margin-top: 5px;margin-right: 40px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="bstep13();">{{ content['adcombo'][7] }}</button>
+                    <button type="button" class="bluebutton" id="" style="width: 200px;margin-top: 5px;height:40px;background-color: #ffe6e6 ;" onclick="bstep14();">{{ content['adcombo'][8] }}</button>
+                    <input id="pickToCall2" class="pickDate2" type="text" placeholder="YYYY-MM-DD" style="width:100px; margin-left:40px;display:none;">
+                    <input id="pickTimeToCall2" class="pickDate2" type="text" placeholder="HH:mm:ss" style="width:80px; margin-left:40px;display:none;">
+                    <button type="button" class="bluebutton pickDate2" id="" style="width: 200px;margin-top: 5px;margin-left: 40px;height:40px;background-color: #ffe6e6 ;display:none;" onclick="changeTimeToCall(2, {{ workingHours['wtFrom'] }}, {{ workingHours['wtTo'] }});">{{ content[14] }}</button>
+                </div>
+
+                <div class="quest_cont" id="o_quest5e" style="display:none" onclick="step9();">
+                    <label for="answer" id="first_Con">
+                        <strong>{{ content['adcombo'][2] }}</strong>
+                    </label>
+                </div>
+                <div class="checkBox" id="o_quest5f" style="display:none">
+                    <button type="button" class="bluebutton" id="" style="width: 250px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="bstep6();">{{ content[15] }}</button>
+                </div>
+                <!-- END ANSWER NO SECTION -->
+
+                <div class="quest_cont" id="o_quest7" style="display:none" onclick="step10();">
+                    <label for="answer" id="first_Con">
+                        <strong>{{ content['adcombo'][9] }}</strong>
+                    </label>
+                </div>
+
+                <div class="quest_cont" id="o_quest8" style="display:none" onclick="step11();">
+                    <label for="answer" id="first_Con">
+                        <strong>{{ content['adcombo'][10] }}</strong>
+                    </label>
+                </div>
+
+                <div class="checkBox" id="o_quest9" style="display:none">
+                    <button type="button" class="bluebutton" id="" style="width: 200px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="bstep15();">{{ content[9] }}</button>
+                    <button type="button" class="bluebutton" id="" style="width: 200px;margin-top: 5px;margin-left: 40px;height:40px;background-color: #ffe6e6 ;" onclick="bstep16();">{{ content[10] }}</button>
+                </div>
+
+                <div class="quest_cont" id="o_quest9a" style="display:none" onclick="step13();">
+                    <label for="answer" id="first_Con">
+                        <strong>{{ content['adcombo'][11] }}</strong>
+                    </label>
+                </div>
+                <div class="checkBox" id="o_quest9a1" style="display:none">
+                    <input id="numYears1" class="numYear" type="text" style="width:100px; margin-left:10px;">
+                    <button type="button" class="bluebutton" id="" style="width: 200px;margin-top: 5px;margin-left: 5px;height:40px;background-color: #ffe6e6 ;" onclick="bstep17();">{{ content[14] }}</button>
+                    <button type="button" class="bluebutton" id="" style="width: auto;margin-top: 5px;height:40px;background-color: #ffe6e6 ;" onclick="bstep17();">{{ content['adcombo'][26] }}</button>
+
+                </div>
+
+                <div class="quest_cont" id="o_quest9b" style="display:none" onclick="step14();">
+                    <label for="answer" id="first_Con">
+                        <strong>{{ content['adcombo'][12] }}</strong>
+                    </label>
+                </div>
+                <div class="checkBox" id="o_quest9b1" style="display:none">
+                    <input id="numYears2" class="numYear" type="text" style="width:100px; margin-left:10px;">
+                    <button type="button" class="bluebutton" id="" style="width: 200px;margin-top: 5px;margin-left: 40px;height:40px;background-color: #ffe6e6 ;" onclick="bstep17();">{{ content[14] }}</button>
+                    <button type="button" class="bluebutton" id="" style="width: auto;margin-top: 5px;margin-left: 40px;height:40px;background-color: #ffe6e6 ;" onclick="bstep17();">{{ content['adcombo'][26] }}</button>
+
+                </div>
+
+                <div class="quest_cont" id="o_quest10" style="display:none" onclick="step15();">
+                    <label for="answer" id="first_Con">
+                        <strong>{{ content['adcombo'][13] }}</strong>
+                    </label>
+                </div>
+                <div class="checkBox" id="o_quest11" style="display:none">
+                    <button type="button" class="bluebutton" id="" style="width: 200px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="bstep18();">{{ content[9] }}</button>
+                    <button type="button" class="bluebutton" id="" style="width: 200px;margin-top: 5px;margin-left: 40px;height:40px;background-color: #ffe6e6 ;" onclick="bstep19();">{{ content[10] }}</button>
+                </div>
+
+                {#<!-- FLOW ZA PRVU GRUPU REORDABLE PROIZVODA, slim, goslimmer, phirago ..... etc  GRUPA id - 1 productdescription-->#}
+
+                {% if data['prGroup'] == 1 %}
+
+                    <div class="quest_cont" id="o_quest14" style="display:none" onclick="$('#o_quest15').show();">
+                        <label for="answer" id="first_Con">
+                            <strong><span id="outQtext">{{ data['outQ'] }}</span></strong>
+                        </label>
+                    </div>
+                    <div class="checkBox" id="o_quest15" style="display:none;padding-left: 0px">
+                        <button type="button" class="bluebutton" id="outB1" style="width: 200px;margin-top: 5px;margin-left: 10px;height:auto;background-color: #ffe6e6 ;" onclick="$('.oq1').show();$('.oq2').hide();$('.oq3').hide();">{{ data['outQ1'] | raw }}</button>
+                        <button type="button" class="bluebutton" id="outB2" style="width: 200px;margin-top: 5px;margin-left: 40px;height:auto;background-color: #ffe6e6 ;" onclick="$('.oq1').hide();$('.oq2').show();$('.oq3').hide();">{{ data['outQ2'] | raw }}</button>
+                        <button type="button" class="bluebutton" id="outB3" style="width: 200px;margin-top: 5px;margin-left: 40px;height:auto;background-color: #ffe6e6 ;" onclick="$('.oq1').hide();$('.oq2').hide();$('.oq3').show();">{{ data['outQ3'] | raw }}</button>
+                        <div class="clear"></div>
+                        <div class="quest_cont o_quest16 oq1" onclick="$('.oq5').show();">
+                            <STRONG>
+                                <span id="outQ1text">{{ data['outA1'] | raw}}</span>
+                            </STRONG>
+                        </div>
+                        <div class="quest_cont o_quest16 oq2" onclick="$('.oq5').show();">
+                            <STRONG>
+                                <span id="outQ2text">{{ data['outA2'] | raw }}</span>
+                            </STRONG>
+                        </div>
+                        <div class="quest_cont o_quest16 oq3" onclick="$('.oq5').show();">
+                            <STRONG>
+                                <span id="outQ3text">{{ data['outA3'] | raw }}</span>
+                            </STRONG>
+                        </div>
+    
+                {#<!-- FLOW ZA DRUGU GRUPU NON REORDABLE PROIZVODA nilsmoke, snore terminator etc...  -->#}
+                {% elseif data['prGroup'] == 2 %}
+    
+                        <div class="quest_cont" id="o_quest14" style="display:none" onclick="$('#o_quest15').show();$('.oq1').show();">
+    
+                            <strong>
+                                <span id="outQtext"></span><span id="outQ1text">{{ data['outA1'] | raw }}</span>
+                            </strong>
+    
+                        </div>
+                        <div class="checkBox" id="o_quest15" style="display:none;padding-left: 0px">
+    
+                            <div class="quest_cont o_quest16 oq1" onclick="$('.oq5').show();">
+                                <STRONG>
+                                    <span id="outQ3text"></span><span id="outQ2text">{{ data['outA2'] | raw }}</span>
+                                </STRONG>
+                            </div>
+
+                {% endif %}
+
+                        <div class="clear"></div>
+                        <div id="deliveryTextBox" class="quest_cont o_quest16 oq4" onclick="$('.oq5').show();">
+                            <STRONG>
+                                {{ content['adcombo'][15] | raw }}
+                            </STRONG>
+
+                        </div>
+                        <div class="clear"></div>
+                        <div id="lastTextBox" class="quest_cont o_quest16 oq5" onclick="$('#o_quest17').show();">
+                            <STRONG>
+                                {{ content['adcombo'][16] }}
+                            </STRONG>
+                        </div>
+                    </div>
+
+
+                    {#//o_quest40a#}
+                    {% if postdata['name'] is empty or postdata['surname'] is empty or postdata['address'] is empty or postdata['houseno'] is empty or postdata['postcode'] is empty or postdata['city'] is empty or postdata['telephone'] is empty or postdata['email'] is empty %}
+                        {%  set toOpen = 'o_quest31' %}
+                        {#$toOpen = 'o_quest31';#}
+                    {% else %}
+                        {% set  toOpen = 'o_quest40a' %}
+                        {#$toOpen = 'o_quest40a' ;#}
+                    {% endif %}
+                    <div class="checkBox" id="o_quest17" style="display:none">
+                        <button type="button" class="bluebutton qb1" id="qb1" style="width: 135px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="$('#{{ toOpen }} ').show();changeOutboundQuantity(1);">{{ content['adcombo'][17] }}</button>
+                        <button type="button" class="bluebutton qb2" id="qb2" style="width: 135px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="$('#{{ toOpen }} ').show();changeOutboundQuantity(2);">{{ content['adcombo'][18] }}</button>
+                        <button type="button" class="bluebutton qb3" id="qb3" style="width: 135px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="$('#{{ toOpen }} ').show();changeOutboundQuantity(3);">{{ content['adcombo'][19] }}</button>
+                        <button type="button" class="bluebutton qb4" id="qb4" style="width: 135px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="$('#{{ toOpen }} ').show();changeOutboundQuantity('n');">{{ content['adcombo'][20] }}</button>
+                        <input id="additionalNum" type="number" style="width:45px;display:none;" onchange="checkValidAdditional();">
+                        <button type="button" class="GreyBtn" id="dodajN" style="width:60px;height:30px;margin-left:5px;display:none;font-size: 14px;" onclick="changeOutboundQuantity('d');">{{ content[36] }}</button>
+                    </div>
+
+                    <div class="firstPriceBox" id="firstPriceBox" style="float:left;width:770px;margin: 5px 0 ;border: 1px solid #000;padding:0 5px;display:none;">
+                        <span class="priceFirst" id="priceFirst" style="font-size: 15px;font-weight: bold;"></span>
+                    </div>
+
+                    <div class="quest_cont" id="o_quest31" style="display:none" onclick="$('#o_quest32').show();">
+                        <label for="answer" id="first_Con">
+                            <strong>{{ content[44] }}</strong>
+                        </label>
+                    </div>
+                    <div class="checkBox" style="display:none" id="o_quest32">
+                        <input name="name" id="ime" type="text" placeholder="{{ content[45] }}"
+                               {#value="{{ postdata["name"] ?  {{ postdata["name"] }}) : '' }}"#}
+                               value="{{ postdata.name ?  postdata.name : '' }}"
+                               onblur=""
+                               onfocus="elementActive(this, '{{ content[45] }}', '{{ content[46] }}')"
+                               style="width:260px; margin-right:10px;">
+
+                        <input id="surname" type="text" placeholder="{{ content[47] }}"
+                               value="{{ postdata.surname ? postdata.surname : '' }}"
+                               onblur=""
+                               onfocus="elementActive(this, '{{ content[47] }}', '{{ content[48] }}')"
+                               style="width:260px; margin-right:10px;">
+
+                        <button type="button" class="noCheckbutton korak1b" id="korak1" style="width:150px;height:39px;background-color: #ffe6e6 ;"  onclick="openNextField('korak2')">{{ content[14] }}</button>
+                    </div>
+
+                    <div class="quest_cont korak2" id="o_quest33" style="display:none;" onclick="$('#o_quest34').show();">
+                        <label for="answer" id="first_Con">
+                            <strong>{{ content[49] | raw }}</strong>
+                        </label>
+                    </div>
+                    <div class="checkBox" style="display:none;" id="o_quest34">
+                         <input id="address" type="text" placeholder="{{ content[50] }}"
+                             value="{{ postdata.address ? postdata.address : '' }}"
+                             onblur=""
+                             onfocus="elementActive(this, '{{ content[50] }}', '{{ content[51] }}')"
+                             style="width:356px; margin-right:10px;">
+                         <input id="number" type="text" placeholder="{{ content[52] }}"
+                             value="{{ postdata.houseno ?  postdata.houseno : '' }}"
+                             onblur=""
+                             onfocus="elementActive(this, '{{ content[52] }}', '{{ content[53] }}')"
+                             style="width:100px; margin-right:10px;" autocomplete="off">
+
+                         <button type="button" class="noCheckbutton korak2b" id="korak2" style="width: 120px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="openNextField('korak3');">{{ content[14] }}</button>
+                    </div>
+
+                    <div class="quest_cont korak3" id="o_quest35" style="display:none" onclick="$('#o_quest36').show();">
+                        <label for="answer" id="first_Con">
+                            <strong>{{ content[54] }}</strong>
+                        </label>
+                    </div>
+                    <div class="checkBox" style="display:none" id="o_quest36">
+                        <input id="city" type="text" placeholder="{{ content[55] }}"
+                            value="{{ postdata.city ? postdata.city : '' }}"
+                            onblur=""
+                            onfocus="elementActive(this)"
+                            style="width:220px; margin-right:10px;">
+                        <input id="postal" type="text" placeholder="{{ content[57] }}"
+                            value="{{ postdata.postcode ?  postdata.postcode : '' }}"
+                            onblur=""
+                            onfocus="elementActive(this, '{{ content[57] }}', '{{ content[58] }}')"
+                            style="width:100px; margin-right:10px;">
+                        <button type="button" class="noCheckbutton korak3b" id="korak3" style="width: 115px;margin-top: 5px;margin-left: 0px;height:40px;background-color: #ffe6e6 ;" onclick="openNextField('korak4');">{{ content[14] }}</button>
+                        <div class="googleBtn" onclick="gMapCheck();">{{ content[59] }}</div>
+                    </div>
+
+                    <div class="quest_cont korak4" id="o_quest37" style="display:none;" onclick="$('#o_quest38').show();">
+                        <label for="answer" id="first_Con">
+                            <strong>{{ content[60] }}</strong>
+                        </label>
+                    </div>
+                    <div class="checkBox" style="display:none" id="o_quest38">
+                        <input id="phone" type="text" placeholder="{{ content[61] }}"
+                               value="{{ data['phone'] }}"
+                               onblur=""
+                               onfocus="elementActive(this, '{{ content[61] }}', '{{ content[62] }}')"
+                               style="width:356px; margin-right:10px;">
+                        <button type="button" class="noCheckbutton korak4b" id="korak4" style="width: 120px;margin-top: 5px;margin-left: 0px;height:40px;background-color: #ffe6e6 ;" onclick="openNextField('korak5')">{{ content[14] }}</button>
+                        <button type="button" class="bluebutton"  onclick="$('#o_quest39').show();" style="background-color: #ffe6e6 ;height:40px;width:230px!important">{{ content[64] }}</button>
+                    </div>
+
+                    <div class="quest_cont korak5" id="o_quest39" style="display:none" onclick="$('#o_quest40').show();">
+                        <label for="answer" id="first_Con">
+                            <strong>{{ content[65] }}</strong>
+                        </label>
+                    </div>
+                    <div class="checkBox" id="o_quest40" style="display:none" >
+                        <input id="email" type="text" placeholder="{{ content[63] }}"
+                               value="{{ postdata.email ? postdata.email : '' }}"
+                               style="width:356px; margin-right:10px;" >
+                        <button type="button" class="noCheckbutton korak5b" id="korak5" style="width:120px;margin-top: 5px;margin-left: 0px;height:40px;background-color: #ffe6e6 ;" onclick="openNextField('korak6');">{{ content[14] }}</button>
+
+                        <button type="button" id="noMail" class="bluebutton" style="width:230px;background-color: #ffe6e6 ;height:40px;" onclick="$('#o_quest40a').show();">{{ content[66] }}</button>
+                    </div>
+
+                    <div class="quest_fix korak6" id="o_quest40a" style="display:none;" >
+
+                        <div class="quest_cont" id="quest_provjera" onclick="provjera_podataka_outbound();" step="order14">
+                            <label for="answer" id=""><strong>{{ content[67] }}</strong></label>
+                        </div>
+                        <div class="quest_podaci pleft" id="podaci">
+                            <div class="podaci_cont">
+                                <div class="podatak_naziv">{{ content[45] }}:</div>
+                                <div class="podatak_sadrzaj"><strong><span class="P_ime"></span></strong><input class="infoCheck P_ime" type="text" style="width:250px;" onkeyup="changeInputFieldValue(this,'ime');"></div>
+                            </div>
+                            <div class="podaci_cont">
+                                <div class="podatak_naziv">{{ content[47] }}:</div>
+                                <div class="podatak_sadrzaj"><strong><span class="P_prezime"></span></strong><input class="infoCheck P_prezime" type="text" style="width:250px;" onkeyup="changeInputFieldValue(this,'surname');"></div>
+                            </div>
+                            <div class="podaci_cont">
+                                <div class="podatak_naziv">{{ content[50] }}:</div>
+                                <div class="podatak_sadrzaj"><strong><span class="P_adresa"></span></strong><input class="infoCheck P_adresa" type="text" style="width:184px;" onkeyup="changeInputFieldValue(this,'address');"> <input class="infoCheck P_number" type="text" style="width:50px;"  onkeyup="changeInputFieldValue(this,'number');"></div>
+                            </div>
+                            <div class="podaci_cont">
+                                <div class="podatak_naziv">{{ content[55] }}:</div>
+                                <div class="podatak_sadrzaj"><strong><span class="P_grad"></span></strong><input class="infoCheck P_grad" type="text" style="width:250px;"  onkeyup="changeInputFieldValue(this,'city');"></div>
+                            </div>
+                            <div class="podaci_cont">
+                                <div class="podatak_naziv">{{ content[57] }}:</div>
+                                <div class="podatak_sadrzaj"><strong><span class="P_postanski"></span></strong><input class="infoCheck P_postanski" type="text" style="width:250px;"  onkeyup="changeInputFieldValue(this,'postal');"></div>
+                            </div>
+                            <div class="podaci_cont">
+                                <div class="podatak_naziv">{{ content[61] }}:</div>
+                                <div class="podatak_sadrzaj"><strong><span class="P_telefon"></span></strong><input class="infoCheck P_telefon" type="text" style="width:250px;" onkeyup="changeInputFieldValue(this,'phone');"></div>
+                            </div>
+                            <div class="podaci_cont">
+                                <div class="podatak_naziv">{{ content[63] }}:</div>
+                                <div class="podatak_sadrzaj"><strong><span class="P_mail"></span></strong><input class="infoCheck P_mail" type="text" style="width:250px;" onkeyup="changeInputFieldValue(this,'email');"></div>
+                            </div>
+                            <div class="podaci_cont">
+                                <div class="podatak_naziv">{{ content[24] }}:</div>
+                                <div class="podatak_sadrzaj"><strong><span class="P_proizvod"></span></strong></div>
+                            </div>
+                            <div class="podaci_cont">
+                                <div class="podatak_naziv">{{ content[25] }}:</div>
+                                <div class="podatak_sadrzaj" style="width:430px;">
+                                    <span id="noFreePost"><strong>{{ content[26] }} <span style="color:#1137FE">{{ centerInfo.postar }} {{ centerInfo.infoCurrency }}</span> {{ content[27] | raw }}</strong></span>
+                                    <span id="yesFreePost" style="display:none;"><strong><span style="color:#1137FE"> {{ content[68] }} </span></strong></span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="quest_cont" id="o_quest41" style="display:none"  onclick="$('#o_quest42').show();">
+                        <label for="answer" id="first_Con" >
+                            <strong>{{ content['adcombo'][22] }}</strong>
+                        </label>
+                    </div>
+                    <div class="korak6a2" style="display:none;" id="o_quest42">
+
+                        <textarea class="commenttextarea" id="comment1" type="text" style="margin-left: 25px;width: 353px;" placeholder="{{ content[29] }}"></textarea>
+
+                        <button type="button" class="noCheckbutton korak6b" id="korak6" style="width: 120px;margin-top: 0px;margin-left: 7px;height:40px;background-color: #ffe6e6 ;float:left;" onclick="checkIfUpsellMade();">{{ content[14] }}</button>
+                        <button type="button" class="bluebutton" id="" style="width: 235px;margin-top: 0px;margin-left: 5px;height:40px;background-color: #ffe6e6 ;float:left;" onclick="checkIfUpsellMade();">{{ content[30] }}</button>
+                    </div>
+
+                    <div class="quest_cont" id="o_quest42a" style="display:none" onclick="$('#o_quest42b').show();">
+                        <label for="answer">
+                            <strong>{{ content['adcombo'][23] }}</strong>
+                        </label>
+                    </div>
+                    <div class="checkBox" id="o_quest42b" style="display:none">
+                        <button type="button" class="bluebutton" id="" style="width: 200px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="$('#o_quest43').show();$('#o_quest44').hide();">{{ content['adcombo'][24] }}</button>
+                        <button type="button" class="bluebutton" id="" style="width: 200px;margin-top: 5px;margin-left: 40px;height:40px;background-color: #ffe6e6 ;" onclick="$('#o_quest44').show();$('#o_quest43').hide();">{{ content['adcombo'][25] }}</button>
+                    </div>
+
+                    <div class="checkBox" id="o_quest43" style="display:none">
+                        <button type="button" class="bluebutton qb1" id="" style="width: 135px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="$('#o_quest44').show();changeOutboundQuantity(1);">{{ content['adcombo'][17] }}</button>
+                        <button type="button" class="bluebutton qb2" id="" style="width: 135px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="$('#o_quest44').show();changeOutboundQuantity(2);">{{ content['adcombo'][18] }}</button>
+                        <button type="button" class="bluebutton qb3" id="" style="width: 135px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="$('#o_quest44').show();changeOutboundQuantity(3);">{{ content['adcombo'][19] }}</button>
+                        <button type="button" class="bluebutton qb4" id="" style="width: 135px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="$('#o_quest44').show();changeOutboundQuantity('n');">{{ content['adcombo'][20] }}</button>
+                        <input id="additionalNum2" type="number" style="width:45px;display:none;" onchange="checkValidAdditionalSecond();">
+                        <button type="button" class="GreyBtn" id="dodajN2" style="width:60px;height:30px;margin-left:5px;display:none;font-size: 14px;" onclick="changeOutboundQuantity('d2');$('#o_quest44').show();">{{ content[36] }}</button>
+
+                    </div>
+                    <div class="firstPriceBox" style="float:left;width:770px;margin: 5px 0 ;border: 1px solid #000;padding:0 5px;display:none;">
+                        <span class="priceFirst" style="font-size: 15px;font-weight: bold;"></span>
+                    </div>
+
+                    <div class="quest_cont" id="o_quest44" style="display:none" step="order9"  onclick="$('#zakljuci').show();">
+                        <label for="answer" id=""><strong>{{ content[31] }}</strong></label>
+                    </div>
+
+
+                    <div class="quest_cont korak8" id="o_quest45" step="order15" style="display:none;" onclick="$('#zakljuci').show();">
+                        <label for="answer" id=""><strong>{{ content[37] }}</strong></label>
+                    </div>
+
+                    <div class="checkBox" style="width:1190px;display:none;margin-top: 150px;" id="o_quest50">
+                        <div style="float:left;position:relative;">
+                            <button onclick="formaCheckOutbound();" type="button" id="zakljuci" class="bluebutton"
+                                    style="float:left; width:350px; height:70px; font-size:23px;background-color: #ffe6e6 ;display:none;">
+                                <a id="btn1"/>{{ content[38] }}</a>
+                            </button>
+                            <div class="clear"></div>
+                            <button type="button" id="" class="bluebutton" onclick="cancelOutbound();"
+                                    style="width:350px; height:50px; font-size:23px; margin-top:10px;line-height:30px;background-color: #ffe6e6 ;">
+                                <a id="btn1"/>{{ content[39] }}</a>
+                            </button>
+                            <div class="clear"></div>
+                            <button type="button" id="buttonDeliveryDate" class="bluebutton" onclick="bstep20();"
+                                    style="width:350px; height:50px; font-size:23px; margin-top:10px;line-height:30px;background-color: #ffe6e6 ;">
+                                <a id="btn1"/>{{ content[78] }}</a>
+                            </button>
+                            <div class="clear"></div>
+                            <button disabled="true"  class="bluebutton"  id="delivDate" style=" display:none; width: 350px;  margin-top: 5px;  margin-left: 0px; font-size: 20px;   height: 50px;background-color: #ffe6e6 ;" onclick="">Datum željene isporuke: </button>
+
+                            <input id="postponedDeliv" class="pickDate" type="text"  placeholder="YYYY-MM-DD" style="width:115px; margin-left: 30px; margin-top: 25px;display:none" >
+                            <button  class="bluebutton" id="appendToText" style=" display:none; width: 140px;margin-top: 5px;margin-left: 21px;height:40px;background-color: #ffe6e6 ;" onclick="bstep21();">Potvrdi</button>
+                    </div>
+
+
+                </div>
+
+                <div class="confirm" id="confirm">
+                    <strong>{{ content[40] }}</strong>
+                </div>
+                <div class="confirm" id="cancel">
+                    <strong>{{ content[41] }}</strong>
+                </div>
+                <div class="confirm" id="callConfirm">
+                    <strong>{{ content[42] }}</strong>
+                </div>
+
+            </div>
+
+            <!------------ END Conversation Flow   -------------->
+
+            <div class="FAQholder" id="FAQholder" >
+                <div id="campaignsdiv">
+
+                    <div class="faqBox" id="fix_10" style="padding:0px; width:300px;">
+
+                        {% if data['outDQ1'] is not empty and  data['outAQ1'] is not empty %}
+                            <div class="faqQuest" onclick="$('.rightLine').hide();$('#faq0').show();" style="margin-top: 1px!important;">
+                                {{ data['outDQ1'] | raw }}
+                            </div>
+                            <div class="quest_cont_drugo rightLine" id="faq0" faq-id="1" style="height:55px; margin-top: 5px;display:none;">
+                                {{ data['outAQ1'] | raw }}
+                            </div>
+                        {%  endif %}
+
+                        {% if data['outDQ2'] is not empty and  data['outAQ2'] is not empty %}
+                            <div class="faqQuest" onclick="$('.rightLine').hide();$('#faq1').show();" >
+                                {{ data['outDQ2'] | raw}}
+                            </div>
+                            <div class="quest_cont_drugo rightLine" id="faq1" faq-id="1" step="other1" style="height:55px; margin-top: 5px;display:none;">
+                                {{ data['outAQ2']  | raw}}
+                            </div>
+                        {%  endif %}
+
+                        {% if data['outDQ3'] is not empty and  data['outAQ3'] is not empty %}
+                            <div class="clear"></div>
+                            <div class="faqQuest" onclick="$('.rightLine').hide();$('#faq2').show();">
+                                {{ data['outDQ3']  | raw}}
+                            </div>
+                            <div class="quest_cont_drugo rightLine" id="faq2" faq-id="2" step="other2" style="height:55px; margin-top: 10px;display:none;">
+                                {{ data['outAQ3']  | raw}}
+                            </div>
+                        {%  endif %}
+
+                        {% if data['outDQ4'] is not empty and  data['outAQ4'] is not empty %}
+
+                            <div class="clear"></div>
+                            <div class="faqQuest" onclick="$('.rightLine').hide();$('#faq3').show();">
+                                {{ data['outDQ4']  | raw}}
+                            </div>
+                            <div class="quest_cont_drugo rightLine" id="faq3" faq-id="3" step="other3" style="height:55px; margin-top: 10px;display:none;">
+                                {{ data['outAQ4']  | raw}}
+                            </div>
+                        {%  endif %}
+
+                        {% if data['outDQ5'] is not empty and  data['outAQ5'] is not empty %}
+                            <div class="clear"></div>
+                            <div class="faqQuest" onclick="$('.rightLine').hide();$('#faq4').show();">
+                                {{ data['outDQ5']  | raw}}
+                            </div>
+                            <div class="quest_cont_drugo rightLine" id="faq4" faq-id="4" step="other4" style="height:55px; margin-top: 10px;display:none;">
+                                {{ data['outAQ5']  | raw}}
+                            </div>
+                        {%  endif %}
+
+                        <div class="clear"></div>
+                        <div class="faqQuest" onclick="$('.rightLine').hide();$('#faq5').show();">
+                            {{ content[69] }}
+                        </div>
+                        <div class="quest_cont_drugo rightLine" id="faq5" faq-id="5" step="other5" style="height:55px; margin-top: 10px;display:none;">
+                            {{ content[70] | raw }}
+                        </div>
+
+                        <div class="clear"></div>
+                        <div class="faqQuest" onclick="$('.rightLine').hide();$('#faq6').show();">
+                            {{ content[71] }}
+                        </div>
+                        <div class="quest_cont_drugo rightLine" id="faq6" faq-id="6" step="other6" style="height:55px; margin-top: 10px;display:none;">
+                            {{ content[72] | raw}}
+                        </div>
+
+                        <div class="clear"></div>
+                        <div class="faqQuest" onclick="$('.rightLine').hide();$('#faq7').show();">
+                            {{ content[73] }}
+                        </div>
+                        <div class="quest_cont_drugo rightLine" id="faq7" faq-id="7" step="other7" style="height:55px; margin-top: 10px;display:none;">
+                            {{ content[74] | raw }}
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div><!------------ END MAIN   -------------->
+        <span id="interfaceEnd"></span>
+
+   
+{% endblock %}
+{% include '::footer.html.twig' %}
+
+{% block javascripts6 %}
+    <script>
+        $(document).ready(function(){
+            var maxDate = new Date();
+            maxDate.setDate(maxDate.getDate()+30);
+
+            $('#pickToCall,#pickToCall2').datetimepicker({format: 'YYYY-MM-DD',daysOfWeekDisabled: [0, 6], minDate:new Date()});
+            $('#pickTimeToCall,#pickTimeToCall2').datetimepicker({format: 'HH:mm:ss'});
+
+            $('#postponedDeliv').datetimepicker({format: 'YYYY-MM-DD',daysOfWeekDisabled: [0, 6], minDate:new Date(), maxDate:maxDate});
+            $('#postponedDeliv').val('');
+
+            var outQt = $('#outQtext').html();
+            outQt = changeDynamicVars(outQt);
+            $('#outQtext').empty();
+            $('#outQtext').append(outQt);
+
+            var outQ1t = $('#outQ1text').html();
+            outQ1t = changeDynamicVars(outQ1t);
+            $('#outQ1text').empty();
+            $('#outQ1text').append(outQ1t);
+
+            var outQ2t = $('#outQ2text').html();
+            outQ2t = changeDynamicVars(outQ2t);
+            $('#outQ2text').empty();
+            $('#outQ2text').append(outQ2t);
+
+            var outQ3t = $('#outQ3text').html();
+            outQ3t = changeDynamicVars(outQ3t);
+            $('#outQ3text').empty();
+            $('#outQ3text').append(outQ3t);
+
+            var outB1t = $('#outB1').html();
+            if (outB1t != undefined) {
+                outB1t = changeDynamicVars(outB1t);
+                $('#outB1').empty();
+                $('#outB1').append(outB1t);
+            }
+
+            var outB2t = $('#outB2').html();
+            if (outB2t != undefined) {
+                outB2t = changeDynamicVars(outB2t);
+                $('#outB2').empty();
+                $('#outB2').append(outB2t);
+            }
+
+            var outB3t = $('#outB3').html();
+            if (outB3t != undefined){
+                outB3t = changeDynamicVars(outB3t);
+                $('#outB3').empty();
+                $('#outB3').append(outB3t);
+            }
+
+
+        });
+
+        function changeDynamicVars(text){
+
+            var customer    = $('#dynCustomerName').val();
+            var product     = $('#dynProduct').val();
+            var forTwo      = $('#dynPriceTwo').val();
+            var forThree    = $('#dynPriceThree').val();
+            var upsellPrice = $('#dynUpsell').val();
+            var currency    = $('#dynCurrency').val();
+
+            var quantOne    = $('#qOne').val();
+            var quantTwo    = $('#qTwo').val();
+            var quantThree  = $('#qThree').val();
+
+            text = text.replace(/#customerName/g, customer);
+            text = text.replace(/#productName/g, product);
+            text = text.replace(/#forTwo/g, forTwo);
+            text = text.replace(/#forThree/g, forThree);
+            text = text.replace(/#upsellPrice/g, upsellPrice);
+            text = text.replace(/#infoCurrency/g, currency);
+
+            text = text.replace(/#quantOne/g, quantOne);
+            text = text.replace(/#quantTwo/g, quantTwo);
+            text = text.replace(/#quantThree/g, quantThree);
+
+            return text;
+
+        }
+
+
+    </script>
+
+{% endblock %}
+</body>
+
+</html>

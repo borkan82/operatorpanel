@@ -1,0 +1,242 @@
+{% set URL = '//domain.com/ver3/web/' %}
+{% set ROOT = '/var/www/sites/domain.com/htdocs/ver3/web/' %}
+{% set IMG_PATH = URL ~ 'images/'  %}
+{% set JS_PATH = URL ~ 'js/'  %}
+{% set CSS_PATH = URL ~ 'css/'  %}
+{% set ouid =''  %}
+{% set viewClass =''  %}
+
+
+{% if user is defined and user.state is defined and user.role == 'U' and user.role != 'D'%}
+    {% set viewClass = "noView" %}
+{% else %}
+    {% set viewClass = "" %}
+{% endif %}
+
+<div class="leftSide">
+
+    <div class="navHolder">
+        {% if user is not defined  or (user.role != 'U' and user.role != 'D')%}
+            <div class="mItem me1{{ viewClass }}"><a href="{{ URL }}">Dashboard</a></div>
+        {% endif %}
+
+
+            <div class="mItem me2">IN Panel
+                <div class="subContainer subMenu2" style="display:none;">
+                {% if user is defined and user.state is defined and user.role == 'U'%}
+                    {% set ouid =  user.ouid %}
+                    <div class="subItem"><a href="{{ URL }}inbound/index/{{ user.state }}?ouid={{ ouid }}">Local Panel</a></div>
+                {% else %}
+                    {% set ouid = '' %}
+
+                        <div class="subItem"><a href="{{ URL }}inbound/index/HR?ouid={{ ouid }}">Croatia</a></div>
+                        <div class="subItem"><a href="{{ URL }}inbound/index/BA?ouid={{ ouid }}">Bosnia and Hercegovina</a></div>
+                        <div class="subItem"><a href="{{ URL }}inbound/index/RS?ouid={{ ouid }}">Serbia</a></div>
+                        <div class="subItem"><a href="{{ URL }}inbound/index/MK?ouid={{ ouid }}">Macedonia</a></div>
+                        <div class="subItem"><a href="{{ URL }}inbound/index/SI?ouid={{ ouid }}">Slovenia</a></div>
+                        <div class="subItem"><a href="{{ URL }}inbound/index/BG?ouid={{ ouid }}">Bulgaria</a></div>
+                        <div class="subItem"><a href="{{ URL }}inbound/index/RO?ouid={{ ouid }}">Romania</a></div>
+                        <div class="subItem"><a href="{{ URL }}inbound/index/LV?ouid={{ ouid }}">Latvia</a></div>
+                        <div class="subItem"><a href="{{ URL }}inbound/index/IT?ouid={{ ouid }}">Italy</a></div>
+                        <div class="subItem"><a href="{{ URL }}inbound/index/DE?ouid={{ ouid }}">Germany</a></div>
+                        <div class="subItem"><a href="{{ URL }}inbound/index/EE?ouid={{ ouid }}">Estonia</a></div>
+                        <div class="subItem"><a href="{{ URL }}inbound/index/HU?ouid={{ ouid }}">Hungary</a></div>
+                        <div class="subItem"><a href="{{ URL }}inbound/index/LT?ouid={{ ouid }}">Lithuania</a></div>
+                        <div class="subItem"><a href="{{ URL }}inbound/index/GR?ouid={{ ouid }}">Greece</a></div>
+                        <div class="subItem"><a href="{{ URL }}inbound/index/PL?ouid={{ ouid }}">Poland</a></div>
+                        <div class="subItem"><a href="{{ URL }}inbound/index/CZ?ouid={{ ouid }}">Czech republic</a></div>
+                        <div class="subItem"><a href="{{ URL }}inbound/index/SK?ouid={{ ouid }}">Slovakia</a></div>
+                        <div class="subItem" style="line-height: 0px;height: 10px;">________________________</div>
+                        <div class="subItem"><a href="{{ URL }}inbound/MultiPanel?ouid={{ ouid }}">MULTI panel</a></div>
+
+                {% endif %}
+                </div>
+            </div>
+
+
+
+            <div class="mItem me3">OUT Panel
+                <div class="subContainer subMenu3" style="display:none;">
+                {% if user is defined and user.state is defined and user.role == 'U' and user.role != 'D'%}
+                    {% set ouid =  user.ouid %}
+                    <div class="subItem"><a href="{{ URL }}outbound/index/{{ user.state }}?ouid={{ ouid }}">Local Panel</a></div>
+                {% else %}
+                    {% set ouid =  '' %}
+
+                        <div class="subItem"><a href="{{ URL }}outbound/index/HR?ouid={{ ouid }}">Croatia</a></div>
+                        <div class="subItem"><a href="{{ URL }}outbound/index/BA?ouid={{ ouid }}">Bosnia and Hercegovina</a></div>
+                        <div class="subItem"><a href="{{ URL }}outbound/index/RS?ouid={{ ouid }}">Serbia</a></div>
+                        <div class="subItem"><a href="{{ URL }}outbound/index/MK?ouid={{ ouid }}">Macedonia</a></div>
+                        <div class="subItem"><a href="{{ URL }}outbound/index/SI?ouid={{ ouid }}">Slovenia</a></div>
+                        <div class="subItem"><a href="{{ URL }}outbound/index/BG?ouid={{ ouid }}">Bulgaria</a></div>
+                        <div class="subItem"><a href="{{ URL }}outbound/index/RO?ouid={{ ouid }}">Romania</a></div>
+                        <div class="subItem"><a href="{{ URL }}outbound/index/LV?ouid={{ ouid }}">Latvia</a></div>
+                        <div class="subItem"><a href="{{ URL }}outbound/index/IT?ouid={{ ouid }}">Italy</a></div>
+                        <div class="subItem"><a href="{{ URL }}outbound/index/DE?ouid={{ ouid }}">Germany</a></div>
+                        <div class="subItem"><a href="{{ URL }}outbound/index/EE?ouid={{ ouid }}">Estonia</a></div>
+                        <div class="subItem"><a href="{{ URL }}outbound/index/HU?ouid={{ ouid }}">Hungary</a></div>
+                        <div class="subItem"><a href="{{ URL }}outbound/index/LT?ouid={{ ouid }}">Lithuania</a></div>
+                        <div class="subItem"><a href="{{ URL }}outbound/index/GR?ouid={{ ouid }}">Greece</a></div>
+                        <div class="subItem"><a href="{{ URL }}outbound/index/PL?ouid={{ ouid }}">Poland</a></div>
+                        <div class="subItem"><a href="{{ URL }}outbound/index/CZ?ouid={{ ouid }}">Czech republic</a></div>
+                        <div class="subItem"><a href="{{ URL }}outbound/index/SK?ouid={{ ouid }}">Slovakia</a></div>
+
+                {% endif %}
+                </div>
+            </div>
+
+
+{% if user is not defined  or (user.role != 'U' and user.role != 'D')%}
+    <div class="mItem me4{{ viewClass }}">Daily Offer
+        <div class="subContainer subMenu4" style="display:none;">
+            <div class="subItem"><a href="{{ URL }}admin/specialOffer.php?state=HR">Croatia</a></div>
+            <div class="subItem"><a href="{{ URL }}admin/specialOffer.php?state=BA">Bosnia and Hercegovina</a></div>
+            <div class="subItem"><a href="{{ URL }}admin/specialOffer.php?state=RS">Serbia</a></div>
+            <div class="subItem"><a href="{{ URL }}admin/specialOffer.php?state=MK">Macedonia</a></div>
+            <div class="subItem"><a href="{{ URL }}admin/specialOffer.php?state=SI">Slovenia</a></div>
+            <div class="subItem"><a href="{{ URL }}admin/specialOffer.php?state=BG">Bulgaria</a></div>
+            <div class="subItem"><a href="{{ URL }}admin/specialOffer.php?state=RO">Romania</a></div>
+            <div class="subItem"><a href="{{ URL }}admin/specialOffer.php?state=LV">Latvia</a></div>
+            <div class="subItem"><a href="{{ URL }}admin/specialOffer.php?state=IT">Italy</a></div>
+            <div class="subItem"><a href="{{ URL }}admin/specialOffer.php?state=DE">Germany</a></div>
+            <div class="subItem"><a href="{{ URL }}admin/specialOffer.php?state=EE">Estonia</a></div>
+            <div class="subItem"><a href="{{ URL }}admin/specialOffer.php?state=HU">Hungary</a></div>
+            <div class="subItem"><a href="{{ URL }}admin/specialOffer.php?state=LT">Lithuania</a></div>
+            <div class="subItem"><a href="{{ URL }}admin/specialOffer.php?state=GR">Greece</a></div>
+            <div class="subItem"><a href="{{ URL }}admin/specialOffer.php?state=PL">Poland</a></div>
+            <div class="subItem"><a href="{{ URL }}admin/specialOffer.php?state=CZ">Czech republic</a></div>
+            <div class="subItem"><a href="{{ URL }}admin/specialOffer.php?state=SK">Slovakia</a></div>
+        </div>
+    </div>
+    <div class="mItem me5{{ viewClass }}">In Statistics
+        <div class="subContainer subMenu5" style="display:none;">
+            <div class="subItem"><a href="{{ URL }}statsin/viewData">Order list</a></div>
+            <div class="subItem"><a href="{{ URL }}statsin/operator">Operator stats</a></div>
+            <div class="subItem"><a href="{{ URL }}statsin/inboundCharts">Inbound charts</a></div>
+            <div class="subItem"><a href="{{ URL }}statsin/projectedStatistic">Projected Statistic</a></div>
+            <div class="subItem"><a href="{{ URL }}statsin/callCenter?group=1">Call Center stats</a></div>
+            <div class="subItem"><a href="{{ URL }}statsin/statChart">Stats chart</a></div>
+        </div>
+    </div>
+    <div class="mItem me6{{ viewClass }}">Out Statistics
+        <div class="subContainer subMenu6" style="display:none;">
+            <div class="subItem"><a href="{{ URL }}statsout/viewData">Order list</a></div>
+            <div class="subItem"><a href="{{ URL }}statsout/operator">Operator stats</a></div>
+            <div class="subItem"><a href="{{ URL }}statsout/outboundCharts">Outbound charts</a></div>
+            <div class="subItem"><a href="{{ URL }}statsout/projectedStatistic">Projected Statistic</a></div>
+            <div class="subItem"><a href="{{ URL }}statsout/callCenter?group=1">Call Center stats</a></div>
+            <div class="subItem"><a href="{{ URL }}statsout/validation">Outbound validation</a></div>
+            <div class="subItem"><a href="{{ URL }}statsout/notCalled">Not called Report</a></div>
+        </div>
+    </div>
+    <div class="mItem me11{{ viewClass }}">Summary
+        <div class="subContainer subMenu11" style="display:none;">
+            {#<div class="subItem"><a href="{{ URL }}summary/orders">Orders (num)</a></div>#}
+            {#<div class="subItem"><a href="{{ URL }}summary/ordersEur">Orders (eur)</a></div>#}
+            {#<div class="subItem"><a href="{{ URL }}summary/ordersDocument">Orders (status)</a></div>#}
+            {#<div class="subItem"><a href="{{ URL }}summary/summaryReport">Payments (EUR) Summary</a></div>#}
+            <div class="subItem"><a href="{{ URL }}summary/report">Sales report</a></div>
+            <div class="subItem"><a href="{{ URL }}summary/summaryInboundReport">Summary Inbound Payments</a></div>
+            <div class="subItem"><a href="{{ URL }}summary/summaryOutboundReport">Summary Outbound Payments</a></div>
+            <div class="subItem"><a href="{{ URL }}campaigns/smsCampaigns">Summary SMS campaigns</a></div>
+        </div>
+    </div>
+    <div class="mItem me7">Campaigns
+        <div class="subContainer subMenu7" style="display:none;">
+            <div class="subItem{{ viewClass }}"><a href="{{ URL }}campaigns/addBulk">Add Bulk campaign</a></div>
+            <div class="subItem{{ viewClass }}"><a href="{{ URL }}campaigns/addReorder">Add Reorder campaign</a></div>
+            <div class="subItem{{ viewClass }}"><a href="{{ URL }}campaigns/addSplit">Add Split test campaign</a></div>
+            <div class="subItem{{ viewClass }}" style="line-height: 0px;height: 10px;">________________________</div>
+            <div class="subItem{{ viewClass }}"><a href="{{ URL }}campaigns/campaigns">Stats Bulk campaign</a></div>
+            <div class="subItem{{ viewClass }}"><a href="{{ URL }}campaigns/reorder">Stats Reorder campaign</a></div>
+            <div class="subItem{{ viewClass }}"><a href="{{ URL }}campaigns/split">Stats Split test campaign</a></div>
+            <div class="subItem{{ viewClass }}" style="line-height: 0px;height: 10px;">________________________</div>
+            <div class="subItem{{ viewClass }}"><a href="{{ URL }}campaigns/messages">Add msg</a></div>
+            <div class="subItem{{ viewClass }}"><a href="{{ URL }}campaigns/messagePerformance">Stats msg</a></div>
+            <div class="subItem{{ viewClass }}"><a href="{{ URL }}campaigns/shortLinks">Stats Short links</a></div>
+            <div class="subItem{{ viewClass }}"><a href="{{ URL }}campaigns/bulkShortLinks">Stats Bulk Short links</a></div>
+            <div class="subItem{{ viewClass }}" style="line-height: 0px;height: 10px;">________________________</div>
+            <div class="subItem"><a href="{{ URL }}campaigns/suppression">Suppression List</a></div>
+            <div class="subItem{{ viewClass }}" style="line-height: 0px;height: 10px;">________________________</div>
+            <div class="subItem"><a href="{{ URL }}campaigns/smsDifference">SMS/Order difference</a></div>
+        </div>
+    </div>
+    <div class="mItem me8{{ viewClass }}">Settings
+        <div class="subContainer subMenu8" style="display:none;">
+            {% if user is not defined  or (user.role != 'U' and user.role != 'D')%}
+                <div class="subItem"><a href="{{ URL }}settings/users">Users</a></div>
+                <div class="subItem"><a href="{{ URL }}settings/callCenters">Call centers</a></div>
+                <div class="subItem"><a href="{{ URL }}settings/callCenterCosts">Call center costs</a></div>
+                <div class="subItem"><a href="{{ URL }}settings/smsPrices">SMS prices</a></div>
+                <div class="subItem"><a href="{{ URL }}settings/productDescription">Product Description</a></div>
+                <div class="subItem"><a href="{{ URL }}settings/productPrices">Product Prices</a></div>
+                <div class="subItem"><a href="{{ URL }}settings/reorderLinks">SMS Reorder Links</a></div>
+                <div class="subItem"><a href="{{ URL }}settings/outboundSwitchProducts">Switch Products - Outbound</a></div>
+            {% endif %}
+                <div class="subItem"><a href="{{ URL }}settings/productProfiles">Products profiles</a></div>
+        </div>
+    </div>
+
+    <div class="mItem me9{{ viewClass }}">Reports/Logs
+        <div class="subContainer subMenu9" style="display:none;">
+            <div class="subItem"><a href="{{ URL }}report/smsSent">Sent SMS</a></div>
+            <div class="subItem"><a href="{{ URL }}report/phoneStatus">SMS/HLR Verification</a></div>
+            <div class="subItem"><a href="{{ URL }}report/twillioStatus">Twillio Verification</a></div>
+            <div class="subItem"><a href="{{ URL }}report/smsAnalytics">SMS Analytics</a></div>
+            <div class="subItem"><a href="{{ URL }}report/callTrack">Call Track</a></div>
+            <div class="subItem"><a href="{{ URL }}report/TmRequest">TM Request</a></div>
+            <div class="subItem"><a href="{{ URL }}report/userLogs">User Logs</a></div>
+            <div class="subItem"><a href="{{ URL }}report/callers">Callers</a></div>
+        </div>
+    </div>
+{% endif %}
+
+<div class="mItem me10"><a href="{{ path('login', {'logout': '1'}) }}">Logout</a></div>
+
+</div>
+</div>
+<div class="leftSideBottom" style="z-index: 1900;">
+    <div class="navHolder" style="line-height: 9px;color:#fff;width: 1175px;margin-left: -600px;text-align: right;">
+        {% if user is defined and (user.role == 'U' or user.role == 'D') %}
+            User: <b>{{ user.username }}</b> | Version: <b>3.0</b>
+        {% endif %}
+    </div>
+</div>
+{% if user is not defined  or (user.role != 'U' and user.role != 'D')%}
+    <div class="mainMbut">
+        <span class = "mainMenuBut" onmouseover="$('#mmb').show();" onmouseout="$('#mmb').hide();" onclick="$('.leftNav').toggle('display');"></span> <span id="mmb" class = "menuText">FAVORITES</span>
+    </div>
+
+    <div class="leftNav">
+        <div class = "leftNavHolder">
+            <span class = "menuIcon1" onmouseover="$('#mt1').show();" onmouseout="$('#mt1').hide();" onclick="window.location = '{{ URL }}';"></span> <span id="mt1" class = "menuText"><a href="{{ URL }}report/smsSent"></a>Home</span>
+            <span class = "menuPlaceholder">IN</span>
+            <span class = "menuIcon2" onmouseover="$('#mt2').show();" onmouseout="$('#mt2').hide();" onclick="window.location = '{{ URL }}statsin/viewData';"></span> <span id="mt2" class = "menuText">Order List</span>
+            <span class = "menuIcon3" onmouseover="$('#mt3').show();" onmouseout="$('#mt3').hide();" onclick="window.location = '{{ URL }}statsin/inboundChart';"></span> <span id="mt3" class = "menuText">Order Chart</span>
+            <span class = "menuIcon4" onmouseover="$('#mt4').show();" onmouseout="$('#mt4').hide();" onclick="window.location = '{{ URL }}statsin/operator';"></span> <span id="mt4" class = "menuText">Operator stats</span>
+
+            <span class = "menuPlaceholder">OUT</span>
+            <span class = "menuIcon2" onmouseover="$('#mt5').show();" onmouseout="$('#mt5').hide();" onclick="window.location = '{{ URL }}statsout/viewData';"></span> <span id="mt5" class = "menuText">Order List</span>
+            <span class = "menuIcon3" onmouseover="$('#mt6').show();" onmouseout="$('#mt6').hide();" onclick="window.location = '{{ URL }}statsout/inboundChart';"></span> <span id="mt6" class = "menuText">Order Chart</span>
+            <span class = "menuIcon4" onmouseover="$('#mt7').show();" onmouseout="$('#mt7').hide();" onclick="window.location = '{{ URL }}statsout/operator';"></span> <span id="mt7" class = "menuText">Operator stats</span>
+
+            <span class = "menuPlaceholder">SUM</span>
+            <span class = "menuIcon6" onmouseover="$('#mt9').show();" onmouseout="$('#mt9').hide();" onclick="window.location = '{{ URL }}summary/summaryReport';"></span> <span id="mt9" class = "menuText">Payments Report</span>
+            <span class = "menuIcon7" onmouseover="$('#mt10').show();" onmouseout="$('#mt10').hide();" onclick="window.location = '{{ URL }}summary/report';"></span> <span id="mt10" class = "menuText">Sales Report</span>
+
+            <span class = "menuPlaceholder"></span>
+            <span class = "menuIcon5" onmouseover="$('#mt8').show();" onmouseout="$('#mt8').hide();"  onclick="window.location = '{{ URL }}login?logout=1';"></span> <span id="mt8" class = "menuText">Logout</span>
+        </div>
+    </div>
+{% endif %}
+
+{% block javascripts %}
+<script>
+    $(document).ready(function(){
+        $('#mmb,#mt1,#mt2,#mt3,#mt4,#mt5,#mt6,#mt7,#mt8,#mt9,#mt10').hide();
+    });
+</script>
+{% endblock %}
+{#<?php#}
+
+    {#?>#}

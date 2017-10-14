@@ -1,0 +1,198 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.1.2/css/fixedHeader.dataTables.min.css">
+    <style>
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+
+        .main {
+        left: 0!important;
+        margin-left: 10px!important;
+        width: auto!important;
+
+        }
+        .leftSide {
+
+        z-index: 0;
+        }
+        .tableHolder {
+            width: auto !important;
+            border: none;
+        }
+        .pull-left{float:left!important;}
+        .subContainer {
+            z-index:9999!important;
+        }
+    </style>
+{% endblock %}
+{% block javascripts1 %}
+<script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.1.2/js/dataTables.fixedHeader.min.js"></script>
+{% endblock %}
+<body>
+{% block body %}
+    <div class="" >
+        <h3 class="headline"  style="width:1010px;">{{ title }} settings</h3>
+        <div style="clear:both"></div>
+        <div class="tableHolder"  style="width:317%!important">
+            <form id="forma">
+                <div style="width:370px;float:left;">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td>
+
+                            </td>
+                            <td>
+                                <div style="float:left;width:40px;height:20px;background-color:#CFC;margin-bottom: 15px;margin-right: 10px;"></div> Product in stock - Base price
+                                <div style="clear:both"></div>
+                                <div style="float:left;width:40px;height:20px;background-color:#FFC;margin-bottom: 15px;margin-right: 10px;"></div> Product in stock - Upsell price
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td>
+                                State :
+                            </td>
+                            <td>
+                                <select id="state" name="state">
+                                    <option value="">All states</option>
+
+                                    {% for stateInfo in _states %}
+                                        {% set selected = ''%}
+                                        {% if stateInfo.code2 == state %}
+                                            {% set selected = 'selected'%}
+                                        {% endif %}
+
+                                        <option value="{{ stateInfo.code2 }}" {{ selected }}> {{ stateInfo.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div style="width:500px;float:left;">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td>
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="margin-top:100px;margin-top:80px;cursor:pointer;width:90px;font-size:14px;height:31px;">Search</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder"  style="padding: 10px 10px 10px 10px;width:317%!important;">
+            <div class="dayTable" >
+                {% autoescape %}
+                    {{ _html|raw }} {# var won't be escaped #}
+                {% endautoescape %}
+    </div>
+            </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width:1010px;">
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts2 %}
+    <script>
+    $(document).ready(function(){
+        getToOption('state','state');
+
+           $('#example').DataTable( {
+               "dom": '<"pull-left"f><"pull-right"l>tip',
+                fixedHeader: true,
+               bottom: true,
+               zTop: 5,
+               zBottom: 5,
+               bPaginate: false
+            } );
+
+            $('.leftSideBottom,.mainMbut').hide();
+
+            //initDataTable();
+        });
+
+    //**********Selekcija polja tabele - GENERALIZOVANO *******************
+    //*********************************************************************
+        var table = "phone_order_prices"; // OBAVEZNO PRILAGODJAVANJE TABELI
+
+        /***** inicializovanja data table *******/
+        function initDataTable(){
+            $('#example').dataTable({
+                fixedHeader: true,
+                sDom: "",
+                "bDestroy": true,
+                "bPaginate": false,
+                "bFilter": false,
+                "bSortCellsTop": true,
+                "aaSorting": [[ 0, "asc" ]],
+                "aoColumns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ],
+
+
+            });
+        }
+    </script>
+{% endblock %}
+</body>
+
+</html>

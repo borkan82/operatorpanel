@@ -1,0 +1,531 @@
+{% include '::header.html.twig' %}
+<body>
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+        #example tbody td{
+            font-size: 12px;
+        }
+        .yellowLine {
+            background-color: #d8d5b5 !important;
+        }
+        .titleBox {
+        width:100px;
+        height:30px;
+        line-height:30px;
+        font-size:14px;
+        }
+        .listBox {
+            width:100px;
+            height:29px;
+            line-height:30px;
+            font-size:14px;
+        }
+        .sirokiBox {
+            width:233px;
+        }
+        .tableLine {
+            height: 30px;
+        }
+        .dLeft {
+            margin-left:30px;
+            float:left;
+            width:300px;
+
+        }
+        .dRight {
+            margin-left:20px;
+            float:left;
+            width:300px;
+
+        }
+        table tfoot td {
+            background-color: #bbb;
+            text-align: center;
+            font-weight: bold;
+
+        }
+        .chosen-container.chosen-container-single {
+            width: 150px !important;
+        }
+        .testMessageHolder {
+            position:fixed;
+            width: 500px;
+            height: 100px;
+            top: 50%;
+            left:50%;
+            margin-top:-50px;
+            margin-left:-250px;
+            background-color: #ddd;
+            border: 1px solid #999;
+            padding:10px;
+        }
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+    <div class="main">
+        <h3 class="headline"  style="width:1301px;">{{ title }}</h3>
+        <div style="clear:both"></div>
+        <div class="tableHolder"  style="width:1280px;">
+            <form id="forma">
+                <h4>Add new reorder campaign</h4>
+                <div style="float:left;width:50%;margin-top:15px;">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td>
+                                State:
+                            </td>
+                            <td>
+                                <select id="country" name="country">
+                                    <option value="">Choose state</option>
+                                    {% for statesRows in _states %}
+                                        <option data-state-id ="{{ statesRows.id }}" value="{{ statesRows.code2 }}"> {{ statesRows.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Product:
+                            </td>
+                            <td>
+                                <select id="product" name="product">
+                                {% for productsRows in _products %}
+                                    <option value="{{ productsRows.id }}"> {{ productsRows.title }}</option>
+                                {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                CampName:
+                            </td>
+                            <td>
+                                <input type="text" id="campName" name="campName" placeholder="Campaign name">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                CampLink:
+                            </td>
+                            <td>
+                                <input type="text" id="campLink" name="campLink" placeholder="http://" disabled="disabled">
+                            </td>
+                        </tr>
+
+                        <tr style="height:20px;">
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Price:
+                            </td>
+                            <td>
+                                <input type="text" id="price" name="price" placeholder="" style="width:150px;" value="0">
+                                <input type="checkbox" id="priceCheck" value="1" style="margin-top: 10px;width: 15px;height:15px;" checked>
+                                <span style="font-size: 9px">Enable free shipping 1x order</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Upsell price:
+                            </td>
+                            <td>
+                                <input type="text" id="upPrice" name="upPrice" placeholder="" style="width:150px;" value="0">
+                                <input type="text" id="minimalUpsell" name="minimalUpsell" placeholder="" style="width:18px;" value="0">
+                                <span style="font-size: 9px">Minimal products for free shipping</span>
+                            </td>
+                        </tr>
+                        <tr style="height:20px;">
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Campaign date:
+                            </td>
+                            <td>
+                                <input id="datumF" type="text" name="sentDate" placeholder="Sending date">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                After days:
+                            </td>
+                            <td>
+                                <input type="number" min="0" max="364" name="afterDays" placeholder="Num of days after reorder needs to be sent" value="30">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Sending hours:
+                            </td>
+                            <td>
+                                <input type="number" name="hoursH" min="0" max="23" placeholder="00" style="width:50px" value="10"> : <input type="number" name="hoursM" min="0" max="59" placeholder="00" style="width:50px" value="00">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Campaign status:
+                            </td>
+                            <td>
+                                <select id="activeSel" name="activeSel" >
+                                    <option value="">Choose status</option>
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div style="clear:both"></div>
+                <div style="float:left;width:33%;margin-top:15px;margin-right:200px;">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td colspan="2">
+                                <div style="float:left;margin-top:10px;width: 150px;"><strong>Message to send</strong></div> <button type="button" id="testMessage" class="bigOrder GreyBtn" style="width:63px;font-size:12px;margin-top:5px;float:right;margin-right:28px;height:27px;" onclick="$('.blocked').show();$('.testMessageHolder').show();$('#testB1').show();">Test</button>
+                                <textarea id="endMessageBox" name="endMessageBox" style="width:374px;height:75px;margin-top:5px;float:left;background-color: #ddd;" disabled></textarea>
+                                <div style="float:left;width:250px;">Encoding: <span id="charSet" style="color:red">n/a</span> | Chars: <span id="charCount">0</span></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+
+
+                            </td>
+                            <td>
+                                <input type="hidden" id="centerPhone" value="">
+                                <input type="hidden" id="centerMail" value="">
+                                <input type="hidden" id="centerCurrency" value="">
+                                <button type="button" id="addOffer" class="bigOrder" style="width:260px;font-size: 20px;" onclick="addCampaign();">Add Campaign</button>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="messageSelectionListBoxOLD" style="float:left;width:33%;margin-top:15px;">
+                    <table>
+                        <tbody>
+
+                        <tr>
+                            <td colspan="2">
+                                <strong><span id="messageInfo">Found 0 Messages</span></strong>
+                                </br>
+                                <span id="messageContainer"></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width:1280px;">
+        </div>
+    </div>
+    <div class="testMessageHolder" style="display:none;z-index: 3000">
+        <strong>Enter destination number</strong><br>
+
+        <input type="text" id="testNumber"  placeholder="0038765xxxxxx" style="width:290px;"><br>
+        <button type="button" class="bigOrder GreyBtn" style="width:80px;font-size:13px;margin-top:5px;float:left;margin-left:5px;height:40px;" onclick="$('.blocked').hide();$('.testMessageHolder').hide();$('#testB1,#testB2').hide();">Cancel</button>
+        <button type="button" id="testB1" class="bigOrder GreyBtn" style="width:150px;font-size:13px;margin-top:5px;float:left;margin-left:5px;height:40px;display:none;" onclick="testMessage(1);">Send Message</button>
+        <button type="button" id="testB2" class="bigOrder GreyBtn" style="width:150px;font-size:13px;margin-top:5px;float:left;margin-left:5px;height:40px;display:none;" onclick="testMessage(2);">Send Message</button>
+
+    </div>
+
+{% endblock %}
+{% include '::footer.html.twig' %}
+{% block javascripts %}
+    <script>
+    function getCampainLink(){
+        var podaciForme ={};
+        podaciForme['action'] = 'getCampainLink';
+        podaciForme['state_id'] = $("#country :selected").attr('data-state-id');
+        podaciForme['product_id'] = $("#product :selected").val();
+        console.log(podaciForme);
+
+
+
+        $.ajax({
+            url:"adapter.php",
+            type:"POST",
+            dataType:"JSON",
+            data:podaciForme,
+            async: true,
+            success:function(data){
+                console.log(data);
+                $('#campLink').val(data);
+
+            }
+        });
+        return false;
+    }
+    $(document).ready(function(){
+        getCampainLink();
+
+        $('#datumF').datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+
+        $('#country,#product').change(function(){
+            getCampainLink();
+            getProductMessages();
+            getSenderId();
+        });
+
+
+    });
+
+    //*********************************************************************
+    //**********SNIMANJE KAMPANJE *****************************************
+    //*********************************************************************
+
+
+    function addCampaign(){
+        var podaciForme ={};
+        podaciForme['action'] = 'addReorderCampaign';
+        podaciForme['selectedmessage'] = selektovana;
+
+        $("form [name]").each(function (){
+            var kljuc = $(this).attr("name");
+            var vrijednost = $(this).val();
+            podaciForme[kljuc] = vrijednost;
+        });
+        podaciForme["freeShipping"] = 0;
+        console.log(podaciForme);
+
+
+        if (($('#charSet').text() == "" || $('#charSet').text() == undefined ) && $('#endMessageBox').val().length > 160) {
+            showWarning("Message needs to be max 160 Chars!");
+            return false;
+        }
+//        else if ($('#charSet').text() !== "" && $('#charSet').text() !== undefined) {
+//            showWarning("Message has non-GSM characters!");
+//            return false;
+//        }
+
+        if (podaciForme["campName"] == "" || podaciForme["campLink"] == "" || podaciForme["recNum"] == "" || podaciForme["senderId"] == "" || podaciForme["sentDate"] == "" || podaciForme["endMessageBox"] == "" || podaciForme["afterDays"] == "" || podaciForme["hoursH"] == "" || podaciForme["hoursM"] == "" || podaciForme["activeSel"] == ""){
+            showWarning("You must fill out the form!");
+            return false;
+        }
+        if($("#priceCheck").is(':checked')){
+            podaciForme["freeShipping"] = 1;
+        }
+
+        $.ajax({
+            url:"adapter.php",
+            type:"POST",
+            dataType:"JSON",
+            data:podaciForme,
+            async: true,
+            success:function(data){
+                if(data > 0)
+                {
+                    showSuccess("New campaign Added to database!");
+                }  else if (data == "-5") {
+                    showError("This campaign name allready exists!");
+                }
+            }
+        });
+        return false;
+    }
+
+    function getProductMessages(){
+        $('#messageInfo').empty();
+        $('#messageInfo').append("Found 0 Messages!");
+        $('#messageContainer').empty();
+        var tState = $('#country option:selected').val();
+        var tProduct = $('#product option:selected').val();
+        var tData = {action:"getMessageList",state:tState, product:tProduct};
+        $.ajax({
+            url:"adapter.php",
+            type:"POST",
+            dataType:"JSON",
+            data:tData,
+            async: true,
+            success:function(data){
+
+                if(data.length > 0) {
+                    $('#messageSelectionListBox').show();
+                    for (var i = 0; i < data.length; i++) {
+                        var button = '<div class="productMessage" style="width:460px;float:left;">' +
+                            '<div class="" style="width:30px;height:55px;padding-top: 46px;float:left;font-size:11px;vertical-align: middle;margin-top:1px;border:1px solid #ccc;background-color:#EDEDED;">M'+data[i].idOrigin+'</div>' +
+                            '<div class="initialMessage ListBtn initial'+data[i].idNum+'" style="width:355px;float:left;height: 50px;">'+data[i].initialMessage+'</div>' +
+                            '<button type="button" class="bigOrder ListBtn" id="mess'+data[i].idNum+'" style="width:357px;margin-left:0px;float:left;" onclick="selectMessage(this,' + data[i].idNum + ',1);" value="'+data[i].idNum+'">' + data[i].message + '</button>'+
+                            '<input type="hidden" class="mess'+data[i].idNum+'" placeholder="" style="width:20px;height:47px;padding-left:5px;margin-left:5px;margin-top: 54px;" value="09" min="09" max="14">'+
+                            '</div>';
+
+                        $('#messageContainer').append(button);
+                    }
+                    $('#messageInfo').empty();
+                    $('#messageInfo').append("Found "+data.length+" messages!");
+                }
+            }
+        });
+        return false;
+    }
+
+    var messageObj = {};
+    var mainMessage = "";
+    var selektovana = "";
+    function selectMessage(obj,idNum,pos){
+        selektovana = idNum;
+        messageObj = {};
+        $('.selectedMessageTr').removeClass("selectedMessageTr");
+        $('#endMessageBox').val("");
+
+        messageObj[idNum] = $('.mess'+idNum).val();
+        obj.className += " selectedMessageTr";
+        $('.mess'+idNum).attr("disabled","disabled");
+        var buttonText = obj.textContent;
+        $('#endMessageBox').val(buttonText);
+        mainMessage = buttonText;
+
+        $(".initial"+idNum).addClass("selectedMessageTr");
+
+        //AKO KRENE VISE PORUKA OVO TREBA ODKOMENTARISATI A GORNJI DIO BRISATI
+//        var preAction = obj.classList.contains("selectedMessageTr");
+//
+//        if (preAction == false){
+//            messageObj[idNum] = $('.mess'+idNum).val();
+//            obj.className += " selectedMessageTr";
+//            $('.mess'+idNum).attr("disabled","disabled");
+//            var buttonText = obj.textContent;
+//            if (pos == 1){
+//                $('#endMessageBox').val(buttonText);
+//                mainMessage = buttonText;
+//            } else {
+//                $('#endMessageBox2').val(buttonText);
+//            }
+//
+//            $(".initial"+idNum).addClass("selectedMessageTr");
+//        } else {
+//            var buttonIdent = obj.id;
+//            console.log(buttonIdent);
+//            $('#'+buttonIdent).removeClass("selectedMessageTr");
+//            $('.mess'+idNum).removeAttr("disabled");
+//            delete messageObj[idNum];
+//            if (pos == 1){
+//                $('#endMessageBox').val("");
+//            } else {
+//                $('#endMessageBox2').val("");
+//            }
+//            $(".initial"+idNum).removeClass("selectedMessageTr");
+//        }
+        makeEndMessage(pos);
+        console.log(messageObj);
+        console.log(selektovana);
+
+    }
+
+    function makeEndMessage(pos){
+        if (pos == 1){
+            var tekstPoruke = $('#endMessageBox').val();
+        } else {
+            var tekstPoruke = $('#endMessageBox2').val();
+        }
+
+        var cijena = $('#price').val();
+        var phone = $('#centerPhone').val();
+        var mail = $('#centerMail').val();
+
+        var endMessage = "";
+
+
+        //OVAJ DIO TREBA DEBAGOVATI ILI PRESPOJITI NA MESSAGE ID POVLACENJE PORUKE
+//        endMessage = tekstPoruke.replace("[[price]]", cijena);
+//        endMessage = endMessage.replace("[[phone]]", phone);
+//        endMessage = endMessage.replace("[[mail]]", mail);
+//        endMessage = endMessage.replace("[[contact.name]]", "TestName");
+        endMessage = tekstPoruke;
+        var countEnd = endMessage.length;
+        if (pos == 1) {
+            var mObjekat = $('#endMessageBox');
+            $('#endMessageBox').val(endMessage);
+            $('#countEnd').empty();
+            $('#countEnd').append(countEnd);
+
+        } else {
+            var mObjekat = $('#endMessageBox2');
+            $('#endMessageBox2').val(endMessage);
+            $('#countEnd2').empty();
+            $('#countEnd2').append(countEnd);
+        }
+        countCharsCamp(mObjekat,pos);
+    }
+
+    function testMessage(pos){
+
+        var podaci ={};
+        podaci['action']   = 'sendTestMessage';
+        //podaci["state"]    = $('#testState option:selected').val();
+        podaci["number"]   = $('#testNumber').val();
+
+        if (pos == 1){
+            podaci["message"]  = $('#endMessageBox').val();
+        } else {
+            podaci["message"]  = $('#endMessageBox2').val();
+        }
+
+        if (podaci["number"] == "" || podaci["message"] == ""){
+            showWarning("You must enter all data!");
+            return false;
+        }
+
+        $.ajax({
+            url:"adapter.php",
+            type:"POST",
+            dataType:"JSON",
+            data:podaci,
+            async: true,
+            success:function(data){
+                if(data)
+                {
+                    showSuccess("Message sent!");
+                    $('.testMessageHolder').hide();$('#testB1,#testB2').hide();
+                    $('.blocked').hide();
+                } else {
+                    showError("Message not sent!");
+                }
+            }
+        });
+        return false;
+    }
+    </script>
+{% endblock %}
+</body>
+
+</html>

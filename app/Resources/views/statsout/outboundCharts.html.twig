@@ -1,0 +1,542 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        .tQuickLink a {
+            color: #555;
+            text-decoration: none;
+        }
+        .tQuickLink a:hover {
+            color: #000;
+            text-decoration: underline;
+        }
+        .statsData td {
+            border: 1px solid #ccc;
+            background: #ddd;
+            padding: 0 8px;
+            height: 25px;
+        }
+        .statsData th {
+            border-bottom: 1px solid #ccc;
+        }
+         body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+        #example tbody td{
+            font-size: 12px;
+        }
+        .yellowLine {
+            background-color: #d8d5b5 !important;
+        }
+        input [type=text], select {
+            float: left;
+        }
+    </style>
+{% endblock %}
+{% block javascripts %}
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+{% endblock %}
+
+{% block javascripts1 %}
+    <script type="text/javascript">
+        $(function () {
+            Highcharts.chart('panel-performance', {
+                chart: {
+                    type: 'bar'
+                },
+                title: {
+                    text: 'Outbound Panel Performance'
+                },
+                subtitle: {
+                    text: 'Source: <a href=""/</a>'
+                },
+                xAxis: {
+                        categories:  [ {{ stateCategories|raw }} ],
+                    title: {
+                        text: null
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                            title: {
+                        text: 'avg. call value',
+                                align: 'high'
+                    },
+                    labels: {
+                        overflow: 'justify'
+                    }
+                },
+                tooltip: {
+                    valueSuffix: ''
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                            align: 'right',
+                            verticalAlign: 'top',
+                            x: -40,
+                            y: 20,
+                            floating: true,
+                            borderWidth: 1,
+                            backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+                            shadow: true
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    name: 'Order Fill Break',
+                    data: [ {{ ordFillBreakSeries|raw }} ]
+                }, {
+                    name: 'Cancell',
+                    data: [ {{ cancelSeries|raw }} ]
+                }, {
+                    name: 'Reorder call',
+                    data: [ {{ reordCallSeries|raw }} ]
+
+                }, {
+                    name: 'Undecided call',
+                    data: [ {{ undecCallSeries|raw }} ]
+
+                }, {
+                    name: 'Sms Link',
+                    data: [ {{ smsLinkSeries|raw }} ]
+
+                }, {
+                    name: 'Undecided presell',
+                    data: [ {{ undecidedPresellSeries|raw }} ]
+
+                }]
+            });
+        });
+    </script>
+{% endblock %}
+
+{% if _type == 7 %}
+{% block javascripts2 %}
+
+    <script type="text/javascript">
+        $(function () {
+            Highcharts.chart('products-chart', {
+                chart: {
+                    type: 'bar'
+                },
+                title: {
+                    text: 'Reorder call Orders'
+                },
+                subtitle: {
+                    text: 'Source: < W 45>'
+    //                        text: 'Source: <<?php //echo $value['name']; ?>// W 45>'
+                },
+                xAxis: {
+                    categories:  [ {{ recallCategor|raw }} ],
+                    title: {
+                        text: null
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'order% per product',
+                        align: 'high'
+                    },
+                    labels: {
+                        overflow: 'justify'
+                    }
+                },
+                tooltip: {
+                    valueSuffix: ''
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'top',
+                    x: -40,
+                    y: 40,
+                    floating: true,
+                    borderWidth: 1,
+                    backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+                    shadow: true
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    name: 'GoSlimmer Patch',
+                    data: [ {{ recallSlimSeries|raw }} ]
+                },{
+                    name: 'Vein Stopper',
+                    data: [ {{ recallVeinSeries|raw }} ]
+                },{
+                    name: 'Phirago',
+                    data: [ {{ recallPhirSeries|raw }} ]
+                },{
+                    name: 'Turbo Max Blue',
+                    data: [ {{ recallTurbomaxSeries|raw }} ]
+                }]
+            });
+        });
+    </script>
+{% endblock %}
+{% endif %}
+
+{% if conditionForChart == 1 %}
+{% block javascripts3 %}
+    <script>
+    $(function () {
+            Highcharts.chart('{{ chartTypeShortName }}', {
+                chart: {
+                    type: 'bar'
+                },
+                title: {
+                    text: '{{ chartTypeName }}'
+                },
+                subtitle: {
+                    text: 'Source: <{{ chartTypeName }} W 45>'
+    //                        text: 'Source: <<?php //echo $value['name']; ?>// W 45>'
+                },
+                xAxis: {
+                    categories:  [ {{ typeChartsCategories|raw }} ],
+                    title: {
+                        text: null
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'value',
+                        align: 'high'
+                    },
+                    labels: {
+                        overflow: 'justify'
+                    }
+                },
+                tooltip: {
+                    valueSuffix: ''
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'top',
+                    x: -40,
+                    y: 30,
+                    floating: true,
+                    borderWidth: 1,
+                    backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+                    shadow: true
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    name: 'Order %',
+                    data: [ {{ ordPercSeries |raw }} ]
+                }, {
+                    name: 'Avg call value €',
+                    data: [ {{ avgcallValSeries|raw }} ]
+                }]
+            });
+        });
+    </script>
+{% endblock %}
+{% endif %}
+
+<body>
+{% block body %}
+ {% set emptyarr = {'state': '', 'ordType': '', 'ordStatus': '', 'subStatus': '', 'product': '', 'ordNum': '', 'user': '', 'group': ''} %}
+    {% set queryarr = app.request.query.all %}
+    {% set qp = emptyarr|merge(queryarr) %}
+    <div class="main">
+        <h3 class="headline" style="width:1421px;">{{ title }}bound</h3>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1400px;">
+            <h4></h4>
+            <form>
+                <div style="width:100%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                State:
+                            </td>
+                            <td style="    width: 300px;">
+                                 <select id="state" name="state">
+                                    <option value="">ALL</option>
+                                    {% for stateInfo in _states %}
+                                        <option value="{{ stateInfo.code2 }}"> {{ stateInfo.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('state');">X</div>
+                            </td>
+                        </tr>
+                        
+                         <tr>
+                            <td >
+                                Call type:
+                            </td>
+                            <td colspan="3">
+                                <select id="ordType" name="ordType">
+                                <option value="">ALL</option>
+                                   {% for type in _types %}
+                                        <option value="{{ type.id }}"> {{ type.title }}</option>
+                                   {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('ordType');">X</div>
+                            </td>
+                            <td>
+                                 <a href="?state={{ qp.state }}&ordType=&product={{ qp.product }}&from={{ from }}&to={{ to }}"  style="margin-right: 10px;">ALL</a>
+                                {% for typet in _types %}
+                                    <a href="?state={{ qp.state }}&ordType={{ typet.id }}&product={{ qp.product }}&from={{ from }}&to={{ to }}"  style="margin-right: 10px;">{{ typet.title }}</a>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                Product:
+                            </td>
+                            <td>
+                               <select id="product" name="product">
+                                    <option value="">ALL</option>
+                                    {% for productInfo in _products %}
+                                        <option value="{{ productInfo.id }}"> {{ productInfo.title }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('product');">X</div>
+                            </td>
+                        </tr>
+                         <tr>
+                            <td>
+                                Date from:
+                            </td>
+                            <td>
+                                <input name="from" type="text" id="datumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ from }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Date to:
+                            </td>
+                            <td>
+                                <input name="to" type="text" id="datumTo" placeholder=""onclick="$(this).datepicker();"  style="width:90px;" value="{{ to }}">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:44%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="  margin-top: -40px; margin-left: 194px;cursor:pointer;width:120px;height:40px;font-size: 16px;">Search</button>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:50%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+       <div style="clear:both"></div>
+        <div class="tableHolder" style="padding: 10px;width: 1400px;">
+            <table class="statsData" style="width: 100%;font-size: 14px;border-spacing: 4px;">
+                <tbody>
+                <tr style="height:30px;!important">
+                    <th style="text-align:left;padding: 0 10px;"></th>
+                    <th colspan="2" style="text-align:center;">Volumes</th>
+                    <th colspan="2" style="text-align:center;">Percentages</th>
+                    <th colspan="2" style="text-align:center;">Sum values</th>
+                    <th colspan="2" style="text-align:center;">Average values</th>
+                    <th colspan="2" style="text-align:center;">Average costs</th>
+                    <th colspan="2" style="text-align:center;">Durations</th>
+                </tr>
+                    <tr>
+                        <th rowspan="3" style="text-align:left;padding: 0 10px;">Total Calls</th>
+                        <td style="text-align:left;">Requests:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.callCount }}</strong></td>
+                        <td colspan="2" style="text-align:left;"></td>
+                        <td colspan="2" style="text-align:left;"></td>
+                        <td colspan="2" style="text-align:left;"></td>
+                        <td style="text-align:left;">Total monthly costs:</td>
+                        <td style="background: #fff;text-align:right;"><strong>{{ headerTable.callCosts }} €</strong></td>
+                        <td style="text-align:left;">Sum call duration:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.totalDuration }}</strong></td>
+
+                    </tr>
+                    <tr>
+
+                        <td style="text-align:left;">Calls:</td>
+                        <td style="background: #fff;text-align:right;"><strong>{{ headerTable.callMade }}</strong></td>
+                        <td colspan="2" style="text-align:left;"></td>
+                        <td colspan="2" style="text-align:left;"></td>
+                        <td colspan="2" style="text-align:left;"></td>
+                        <td colspan="2" style="text-align:left;"></td>
+                        <td colspan="2" style="text-align:left;"></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:left;">Answered:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.countAnswered }}</strong></td>
+                        <td style="text-align:left;">Answered</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.answerPercent }} %</strong></td>
+                        <td colspan="2" style="text-align:left;"></td>
+                        <td style="text-align:left;">Average call value:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.perCall }} €</strong></td>
+                        <td style="text-align:left;">Cost per call:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.costpercall }} €</strong></td>
+                        <td style="text-align:left;">Avg call duration:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.avgCallDuration }}</strong></td>
+                    </tr>
+                    <tr>
+                        <th style="text-align:left;padding: 0 10px;">Orders</th>
+                        <td style="text-align:left;">Orders:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.countFinish }}</strong></td>
+
+                        <td style="text-align:left;">Order:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.orderPercent }} %</strong></td>
+
+                        <td style="text-align:left;">Sum order value:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.orderSum|round(2, 'floor') }} €</strong></td>
+
+                        <td style="text-align:left;">Avg order value:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.perOrder }} €</strong></td>
+
+                        <td style="text-align:left;">Cost per order:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.costperorder }} €</strong></td>
+
+                        <td style="text-align:left;">Avg order call duration:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.avgOrderDuration }}</strong></td>
+                    </tr>
+                    <tr>
+                        <th style="text-align:left;padding: 0 10px;">Upsells</th>
+                        <td style="text-align:left;">Upsells:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.upsellsCount }}</strong></td>
+
+                        <td style="text-align:left;">Upsell:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.upsellPercent }} %</strong></td>
+
+                        <td style="text-align:left;">Sum upsell value:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.upsellPriceDiff|round(2, 'floor') }} €</strong></td>
+
+                        <td style="text-align:left;">Avg upsell value:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.upsellValue }} €</strong></td>
+
+                        <td colspan="4">
+                    </tr>
+                    <tr>
+
+                        <th style="text-align:left;padding: 0 10px;">Other</th>
+                        <td style="text-align:left;"> Other:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.countOther }}</strong></td>
+
+                        <td style="text-align:left;">Other:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.otherPercent }} %</strong></td>
+
+                        <td colspan="8">
+                    </tr>
+                    <tr>
+
+                        <th style="text-align:left;padding: 0 10px;">Cancel</th>
+                        <td style="text-align:left;padding: 0 10px;"> Canceled:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.countCancell }}</strong></td>
+
+                        <td style="text-align:left;">Canceled:</td>
+                        <td style="background: #eee;text-align:right;"><strong>{{ headerTable.cancelPercent }} %</strong></td>
+
+
+                        <td colspan="8">
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        {% if _type == 7 %}
+            <div style="clear:both"></div>
+            <div class="tableHolder" style="padding: 10px;width: 1400px;">
+            <div id="products-chart" style="min-width: 1400px; max-width: 1000px; height: 515px; margin: 0 auto"></div>
+            </div>
+        {% endif %}
+
+        {% if conditionForChart == 1 %}
+             <div style="clear:both"></div>
+            <div class="tableHolder" style="padding: 10px;width: 1400px;">
+            <div id="{{ chartTypeShortName }}" style="min-width: 1400px; max-width: 1000px; height: 515px; margin: 0 auto"></div>
+            </div>
+        {% endif %}
+
+         <div style="clear:both"></div>
+            <div class="tableHolder" style="padding: 10px;width: 1400px;">
+            <div id="panel-performance" style="min-width: 1400px; max-width: 1000px; height: 500px; margin: 0 auto"></div>
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1400px;">
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts4 %}
+    <script>
+        $(document).ready(function(){
+
+        $('#datumFrom,#datumTo').datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+
+        getToOption('state','state');
+        getToOption('ordType','ordType');
+        getToOption('product','product');
+
+    });
+
+    </script>
+{% endblock %}
+</body>
+
+</html>

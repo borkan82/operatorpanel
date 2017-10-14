@@ -1,0 +1,74 @@
+
+
+{% set URL = '//domain.com/ver3/web/' %}
+{% set ROOT = '//domain.com/ver3/web/' %}
+{% set DOWNLOAD = '/var/www/sites/domain.com/htdocs/ver3/web/Download' %}
+{% set IMG_PATH = URL ~ 'images/'  %}
+{% set JS_PATH = URL ~ 'js/'  %}
+{% set CSS_PATH = URL ~ 'css/'  %}
+
+
+{#$ouid = "";#}
+{#if (isset($_SESSION['phUser']['ouid']) && !empty($_SESSION['phUser']['ouid'])){#}
+    {#$ouid = $_SESSION['phUser']['ouid'];#}
+{#}#}
+
+{#?>#}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" >
+<meta http-equiv="content-type" content="text/html;charset=utf-8">
+<head>
+    {% block head %}
+        <meta name="ROBOTS" content="NOINDEX,NOFOLLOW,NOARCHIVE,NOSNIPPET" />
+        {#<title>{% block title "Phone Order Panel"%}</title>#}
+        <title>{% if title is defined %} {{ title }} | {% endif %} Call operator panel</title>
+        {#<title>{{ site.title }} | {% block page_title %}Call operator panel{% endblock %}</title>#}
+        <meta name="description" content="Call operator panel" />
+
+
+    {% block stylesheets %}
+        <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="{{ asset('css/styleV2.css') }}"type="text/css" />
+    <link rel="stylesheet" href="{{ asset('css/chosen.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/font-awesome-4.7.0/css/font-awesome.min.css') }}"type="text/css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+    {% endblock %}
+        <link rel="icon" href="{{ asset('images/phone-multi.png') }}" type="image/png">
+        {% if state is defined %}
+    <input type="hidden" id="countryLocation" value = {{ stateCode }}>
+
+        {% endif %}
+
+    {% block javascripts %}
+
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.12.3.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+        <script type="text/javascript" src="{{ asset('js/chosen.jquery.min.js')}}"></script>
+        <script>
+
+            var countryLocation = $('#countryLocation').val(); // Definisan state operatora koji koristi panel - za JS
+            var httpSiteURL = "//domain.com/ver3/web/"; // Definisan URL stranice koji se koristi za JS
+            var ajaxResponseVar;
+        </script>
+        {#<script type="text/javascript" src="{{ asset('js/translations.js') }} "></script>#}
+        <script type="text/javascript" src="{{ asset('js/functionsV2.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/menuV2.js') }}"></script>
+
+        <!-- ZA TEBELE -->
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+    {% endblock %}
+
+    {% endblock %}
+</head>
+
+

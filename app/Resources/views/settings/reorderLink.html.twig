@@ -1,0 +1,270 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        .titleBox {
+            width:100px;
+            height:30px;
+            line-height:30px;
+            font-size:14px;
+        }
+        .listBox {
+            width:100px;
+            height:29px;
+            line-height:30px;
+            font-size:14px;
+        }
+        .sirokiBox {
+            width:233px;
+        }
+        .tableLine {
+            height: 30px;
+        }
+        .subItem a:hover {
+            color: #fff!important;
+            text-decoration: none!important;
+        }
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+
+<div class="main" style="left: 33%; width: 1870px" >
+
+    <h3 class="headline"  style="width: 1837px; margin-top: 33px; margin-bottom: 56px;">Reorder Links</h3>
+
+    <div style="clear:both"></div>
+
+    <div class="tableHolder"  style="width:37%;height: 213px; margin-right: 5px;">
+        <form style="height: 215px;">
+            <h4>Search bar</h4>
+            <table style="position: relative;    margin-top: 32px;">
+                <tbody>
+                    <tr>
+                        <td>
+                            Search by product:
+                        </td>
+                        <td style="margin-left: 23px; width: 350px;">
+                            <select style="margin-left: 23px; width: 350px;" name="product_search" id="product_search">
+                                <option value="">Choose product</option>
+                                {% for productInfo in _products %}
+                                    <option value="{{ productInfo.id }}"> {{ productInfo.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr style="float: right; position: absolute; right: 0;">
+                        <td >
+                            <button type="button" class="bigOrder GreyBtn" onclick='SearchFormSimple.search(this);' style="width: 150px; height:35px; width: 120px;height: 40px;font-size: 16px;margin-top: 22px; float: right">Search</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <div class="tableHolder"  style="width: 61%; height: 213px;">
+        <form id="forma">
+            <h4>Add link to product</h4>
+            <div style="float:left;width:auto;margin-top:15px;">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                State:
+                            </td>
+                            <td style="margin-left: 23px; width: 350px;">
+                                <select style="margin-left: 28px; width: 350px;" id="state" name="state">
+                                    {% for stateInfo in _states %}
+                                        <option data-state-id ="{{ stateInfo.id }}" value="{{ stateInfo.code2 }}"> {{ stateInfo.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Product:
+                            </td>
+                            <td style="margin-left: 23px; width: 350px;">
+                                <select style="margin-left: 28px; width: 350px;" id="product" name="product">
+                                    {% for productInfo in _products %}
+                                        <option value="{{ productInfo.id }}"> {{ productInfo.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <button type="submit" onclick="addNewLink();" class="bigOrder" style="width:260px;font-size: 20px;margin-left: -260px; margin-top: -47px"> Add new product Link</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Link:
+                            </td>
+                            <td>
+                                <input style=" margin-left: 28px; width: 943px; height: 43px" type="text" id="link" name="link" placeholder="http://">
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+        </form>
+    </div>
+
+    <div style="clear:both"></div>
+    <div class="tableHolder"  style="padding: 10px 10px 7px 10px;width:1839px;">
+        <div class="dayTable" style="width: 1818px;">
+        </div>
+    </div>
+    <div class="legendHolder" style="width:1839px;">
+    </div>
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width:1839px;">
+    </div>
+</div>
+{% endblock %}
+{% include '::footer.html.twig' %}
+{% block javascripts %}
+    <script>
+        $('#example').on('click', '[data-action="edit"]', function(e) {
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            var target = $(this).is('[data-action="edit"]') ? $(this) : $(this).closest('[data-action="edit"]');
+
+            var productId = target.attr('data-product-id');
+            var stateId = target.attr('data-state-id');
+            var state = target.attr('data-state');
+            var product = target.attr('data-product-title');
+            var link = target.attr('data-link');
+
+            $('#show-state').text(state);
+            $('#show-product').text(product);
+
+            var editLinkDialog = $('#edit-link-dialog');
+
+            editLinkDialog.find('[name="product-id"]').val(productId);
+            editLinkDialog.find('[name="product-name"]').val(product);
+            editLinkDialog.find('[name="state-id"]').val(stateId);
+            editLinkDialog.find('[name="state"]').val(state);
+            editLinkDialog.find('[name="link-update"]').val(link);
+
+            editLinkDialog.modal('show');
+        });
+
+
+        function updateLink() {
+
+            var podaciUpdate ={};
+            podaciUpdate['action'] = 'editProductLink';
+            podaciUpdate['editLInk'] = $('#link-update').val();
+            podaciUpdate['stateId'] = $('[name="state-id"]').attr('value');
+            podaciUpdate['productId'] = $('[name="product-id"]').attr('value');
+
+            var state = $('[name="state"]').attr('value');
+            var product = $('[name="product-name"]').attr('value');
+
+            $.ajax({
+                url:"adapter.php",
+                type:"POST",
+                dataType:"JSON",
+                data:podaciUpdate,
+                async: true,
+                success:function(data){
+                    console.log('proslo');
+                }
+            });
+            return false;
+        }
+
+
+        function addNewLink(){
+            var podaciForme ={};
+            podaciForme['action'] = 'addProductLink';
+
+            $("form [name]").each(function (){
+                var kljuc = $(this).attr("name");
+                var vrijednost = $(this).val();
+                podaciForme[kljuc] = vrijednost;
+            });
+            podaciForme['state_id'] = $("#state :selected").attr('data-state-id');
+            console.log(podaciForme);
+
+            var title = $("#product :selected").text();
+            console.log(title);
+            if (podaciForme["state_id"] == "" || podaciForme["product"] == "" || podaciForme["link"] == ""){
+                showWarning("You must fill out the form!");
+                return false;
+            }
+
+            $.ajax({
+                url:"adapter.php",
+                type:"POST",
+                dataType:"JSON",
+                data:podaciForme,
+                async: true,
+                success:function(data){
+                    counter = {{ counter }};
+                    counter++;
+                    if(data > 0)
+                    {
+                        console.log('proslo');
+                    }
+                    else { showError("Error, already exist"); }
+                }
+            });
+            return false;
+        }
+        $(document).ready(function(){
+
+            //initDataTable();
+
+            $('#example').DataTable({
+                "paging": false,
+                "ordering": true,
+                "searching": false,
+                //"lengthMenu": [[100, 250, 500, -1], [100, 250, 500, "All"]]
+            });
+        });
+
+    </script>
+{% endblock %}
+</body>
+
+</html>
+<form name = 'editLink' method="post"  id="edit-link-dialog" class="modal fade form-horizontal" tabindex="-1" role="dialog">
+    <input type="hidden" name="task" value="update">
+    <input type="hidden" name="product-id" value="">
+    <input type="hidden" name="state-id" value="">
+    <input type="hidden" name="product-name" value="">
+    <input type="hidden" name="state" value="">
+
+    <div class="modal-dialog" style="margin-top: 8%;">
+        <div class="modal-content" style="width: 750px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Edit link</h4>
+            </div>
+            <fieldset class="modal-body">
+                <div class="modal-body colour-switcher">
+                    <p>Are you sure you want to edit link for product: <strong><span id="show-product"></span></strong> (<strong><span id="show-state"></span></strong>)</p>
+                </div>
+                <div class="form-group">
+                    <label style="margin-left: -110px;" class="col-md-3 control-label" for="link-update">Link</label>
+                    <div class="col-md-9">
+                        <input type="text" name="link-update" id="link-update" class="form-control input-md" required="required">
+                    </div>
+                </div>
+            </fieldset>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <!--                <input type="button" onclick="updateLink();" value="update" class="btn btn-success"><i class="glyphicon glyphicon-save"></i>-->
+                <button type="submit" onclick="updateLink();" class="btn btn-success"><i class="glyphicon glyphicon-save"></i> Update</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</form><!-- /.modal -->

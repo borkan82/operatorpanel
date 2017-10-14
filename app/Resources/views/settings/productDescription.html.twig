@@ -1,0 +1,1007 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+
+        .titleBox {
+        width:100px;
+        height:30px;
+        line-height:30px;
+        font-size:14px;
+        }
+
+        .listBox {
+            width:100px;
+            height:29px;
+            line-height:30px;
+            font-size:14px;
+        }
+        .sirokiBox {
+            width:233px;
+        }
+        .tableLine {
+            height: 30px;
+        }
+        .alignLeft { text-align: left!important; }
+
+        .tabAlignLeft {
+            text-align: left;
+        }
+        .stateClick{
+            cursor:pointer;
+        }
+        .translationHolder{
+            display:none;
+            position:fixed;
+            width:1200px;
+            height:890px;
+            top:50%;
+            left:50%;
+            margin-left:-600px;
+            margin-top:-410px;
+            padding:15px;
+            border: 1px solid #eee;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px #888888;
+            z-index: 2000;
+        }
+        .countryBox{
+            display:none;
+            position:fixed;
+            width:435px;
+            height:200px;
+            top:50%;
+            left:50%;
+            margin-left:-217px;
+            margin-top:-55px;
+            padding:15px;
+            border: 1px solid #eee;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px #888888;
+            z-index: 2005;
+        }
+        .translationLineHolder{
+            float:left;
+            width:580px;
+            height:auto;
+            padding:4px 0;
+        }
+        .stateClick{
+            color:#444;
+        }
+        .stateClick:hover{
+            text-decoration: underline;
+        }
+        .existTrans{
+            color:#090;
+        }
+        .chosen-container.chosen-container-single {
+            width: 260px !important;
+        }
+        .testMessageHolder {
+            position:fixed;
+            width: 513px;
+            height: 190px;
+            top: 50%;
+            left:50%;
+            margin-top:-95px;
+            margin-left:-250px;
+            background-color: #ddd;
+            border: 1px solid #999;
+            padding:15px;
+            z-index: 2000;
+        }
+        .lastTranslation{
+            margin-left: 20px;
+            float:left;
+            font-size: 16px;
+            font-weight: bold;
+            cursor:pointer;
+
+        }
+        .allTranslations{
+            width: 280px;
+            margin-left: 20px;
+            float:left;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .eachTrans{
+            font-size: 12px;
+            font-weight: normal;
+            color: #bbb;
+            cursor:pointer;
+        }
+        .lastTranslation .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+
+            /* Position the tooltip */
+            position: absolute;
+            z-index: 1;
+        }
+
+        .lastTranslation:hover .tooltiptext {
+            visibility: visible;
+        }
+
+        .fieldSelectCheck {
+            height: 20px;
+            width: 20px;
+            margin: 0px 5px;
+
+        }
+        .fieldSelectCheckAll {
+            height: 20px;
+            width: 20px;
+            margin: 0px 5px;
+
+        }
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+    <div class="main">
+
+    <h3 class="headline"  style="width:1420px;">{{ title }}</h3>
+    <div style="clear:both"></div>
+    <div class="tableHolder"  style="padding: 10px 10px 10px 10px;width:1400px;">
+        <div class="dayTable" style="width: 1400px;">
+            {% autoescape %}
+                {{ _html|raw }} {# var won't be escaped #}
+            {% endautoescape %}
+        </div>
+    </div>
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width:1400px;">
+    </div>
+</div>
+
+<div class="translationHolder">
+    <div class="translationLineHolder" style="width:1200px;">
+        <h2 style="margin: 5px 0px;"><span class="transLang"></span> - Translation</h2>
+    </div>
+    <div style="clear:both"></div>
+<div class="translationLineHolder"  style="border-top:1px solid #ccc">
+
+    <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+        <div style="float:left;width:100px;">
+            <span style="float:left;">Product text:</span>
+        </div>
+        <textarea class="inputFieldObject" id="transText" name="transText" style="width:410px;height:100px;float:left;"></textarea>
+        <input class="chtransText fieldSelectCheck" type="checkbox">
+    </div>
+
+    <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+        <div style="float:left;width:100px;">
+            <span style="float:left;">Flow Question 1:</span>
+        </div>
+        <textarea class="inputFieldObject" id="outQ1" name="outQ1" style="width:410px;height:70px;float:left;"></textarea>
+        <input class="choutQ1 fieldSelectCheck" type="checkbox">
+    </div>
+
+    <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+        <div style="float:left;width:100px;">
+            <span style="float:left;">Flow Question 2:</span>
+        </div>
+        <textarea class="inputFieldObject" id="outQ2" name="outQ2" style="width:410px;height:70px;float:left;"></textarea>
+        <input class="choutQ2 fieldSelectCheck" type="checkbox">
+    </div>
+
+    <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+        <div style="float:left;width:100px;">
+            <span style="float:left;">Flow Question 3:</span>
+        </div>
+        <textarea class="inputFieldObject" id="outQ3" name="outQ3" style="width:410px;height:70px;float:left;"></textarea>
+        <input class="choutQ3 fieldSelectCheck" type="checkbox">
+    </div>
+
+    <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+        <div style="float:left;width:100px;">
+            <span style="float:left;">FAQ Question 1:</span>
+        </div>
+        <textarea class="inputFieldObject" id="outDQ1" name="outDQ1" style="width:410px;height:50px;float:left;"></textarea>
+        <input class="choutDQ1 fieldSelectCheck" type="checkbox">
+    </div>
+
+    <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+        <div style="float:left;width:100px;">
+            <span style="float:left;">FAQ Question 2:</span>
+        </div>
+        <textarea class="inputFieldObject" id="outDQ2" name="outDQ2" style="width:410px;height:50px;float:left;"></textarea>
+        <input class="choutDQ2 fieldSelectCheck" type="checkbox">
+    </div>
+
+    <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+        <div style="float:left;width:100px;">
+            <span style="float:left;">FAQ Question 3:</span>
+        </div>
+        <textarea class="inputFieldObject" id="outDQ3" name="outDQ3" style="width:410px;height:50px;float:left;"></textarea>
+        <input class="choutDQ3 fieldSelectCheck" type="checkbox">
+    </div>
+
+    <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+        <div style="float:left;width:100px;">
+            <span style="float:left;">FAQ Question 4:</span>
+        </div>
+        <textarea class="inputFieldObject" id="outDQ4" name="outDQ4" style="width:410px;height:50px;float:left;"></textarea>
+        <input class="choutDQ4 fieldSelectCheck" type="checkbox">
+    </div>
+
+    <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+        <div style="float:left;width:100px;">
+            <span style="float:left;">FAQ Question 5:</span>
+        </div>
+        <textarea class="inputFieldObject" id="outDQ5" name="outDQ4" style="width:410px;height:50px;float:left;"></textarea>
+        <input class="choutDQ5 fieldSelectCheck" type="checkbox">
+    </div>
+
+</div>
+<div class="translationLineHolder"  style="border-top:1px solid #ccc">
+    <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+        <div style="float:left;width:100px;">
+            <span style="float:left;">Main Question:</span>
+        </div>
+        <textarea class="inputFieldObject" id="outQ" name="outQ" style="width:410px;height:100px;float:left;"></textarea>
+        <input class="choutQ fieldSelectCheck" type="checkbox">
+    </div>
+
+    <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+        <div style="float:left;width:100px;">
+            <span style="float:left;">Flow Answer 1:</span>
+        </div>
+        <textarea class="inputFieldObject" id="outA1" name="outA1" style="width:410px;height:70px;float:left;"></textarea>
+        <input class="choutA1 fieldSelectCheck" type="checkbox">
+    </div>
+
+    <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+        <div style="float:left;width:100px;">
+            <span style="float:left;">Flow Answer 2:</span>
+        </div>
+        <textarea class="inputFieldObject" id="outA2" name="outA2" style="width:410px;height:70px;float:left;"></textarea>
+        <input class="choutA2 fieldSelectCheck" type="checkbox">
+    </div>
+
+    <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+        <div style="float:left;width:100px;">
+            <span style="float:left;">Flow Answer 3:</span>
+        </div>
+        <textarea class="inputFieldObject"id="outA3" name="outA3" style="width:410px;height:70px;float:left;"></textarea>
+        <input class="choutA3 fieldSelectCheck" type="checkbox">
+    </div>
+
+    <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+        <div style="float:left;width:100px;">
+            <span style="float:left;">FAQ Answer 1:</span>
+        </div>
+        <textarea class="inputFieldObject" id="outAQ1" name="outAQ1" style="width:410px;height:50px;float:left;"></textarea>
+        <input class="choutAQ1 fieldSelectCheck" type="checkbox">
+    </div>
+
+    <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+        <div style="float:left;width:100px;">
+            <span style="float:left;">FAQ Answer 2:</span>
+        </div>
+        <textarea class="inputFieldObject" id="outAQ2" name="outAQ2" style="width:410px;height:50px;float:left;"></textarea>
+        <input class="choutAQ2 fieldSelectCheck" type="checkbox">
+    </div>
+
+    <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+        <div style="float:left;width:100px;">
+            <span style="float:left;">FAQ Answer 3:</span>
+        </div>
+        <textarea class="inputFieldObject" id="outAQ3" name="outAQ3" style="width:410px;height:50px;float:left;"></textarea>
+        <input class="choutAQ3 fieldSelectCheck" type="checkbox">
+    </div>
+
+    <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+        <div style="float:left;width:100px;">
+            <span style="float:left;">FAQ Answer 4:</span>
+        </div>
+        <textarea class="inputFieldObject" id="outAQ4" name="outAQ4" style="width:410px;height:50px;float:left;"></textarea>
+        <input class="choutAQ4 fieldSelectCheck" type="checkbox">
+    </div>
+
+    <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+        <div style="float:left;width:100px;">
+            <span style="float:left;">FAQ Answer 5:</span>
+        </div>
+        <textarea class="inputFieldObject" id="outAQ5" name="outAQ5" style="width:410px;height:50px;float:left;"></textarea>
+        <input class="choutAQ5 fieldSelectCheck" type="checkbox">
+    </div>
+
+</div>
+<div class="checkAllHolder" style="width:800px;float:left;margin: 5px 0px;padding-left: 93px;">
+    <input class="fieldSelectCheckAll" type="checkbox"> Select all for translation
+</div>
+    <div class="translationLineHolder" style="border-top:1px solid #ccc;width:1160px;">
+        <input type="hidden" id="trState" class="trState" value="">
+        <input type="hidden" id="trAct" class="trAct" value="">
+        <input type="hidden" id="traID" class="traID" value="">
+        <input type="hidden" id="descriptionId" class="descriptionId" value="">
+        <button class="bigOrder GreyBtn" id="sendTMbtn" onclick="$('.countryBox').show();" style="margin-left:10px;margin-top:0px;cursor:pointer;width:auto;font-size:14px;height:40px;float:left;">Send to translation</button>
+        <button class="bigOrder GreyBtn" id="getTMbtn" onclick="getTMtranslation();" style="margin-left:10px;margin-top:0px;cursor:pointer;width:auto;font-size:14px;height:40px;float:left;">Get translation</button>
+        <span class="allTranslations">Translations:
+            {% for stateInfo in _states %}
+                <span class="eachTrans last{{ stateInfo.code2 }}"> {{ stateInfo.code2 }} </span>
+            {% endfor %}
+        </span>
+        <span class="lastTranslation">Last translation sent: <span class="lastTranstext">Not sent</span><span class="tooltiptext"></span></span>
+        <button class="bigOrder GreyBtn" onclick="$('.blocked').hide();$('.translationHolder').hide();$('.selectedTranslation').removeClass('selectedTranslation');" style="margin-left:10px;margin-top:0px;cursor:pointer;width:150px;font-size:14px;height:31px;float:right;">Close window</button>
+        <button class="bigOrder GreyBtn" onclick="controlText();" style="margin-left:10px;margin-top:0px;cursor:pointer;width:150px;font-size:14px;height:31px;float:right;">Add Text</button>
+    </div>
+
+</div>
+<div class="countryBox"  style="border-top:1px solid #ccc">
+    <div style="width:100%;float:left;"><span style="cursor:pointer;height: 20px;border: 1px solid #000;border-radius: 13px;float: right;font-size: 18px;width: 20px;text-align: center;padding-left: 1px;" onclick="$('.countryBox').hide();">X</span></div>
+
+    <select id="translationState" name="translationState" data-placeholder="Choose a country..." style="float:left;width:435px!important;" multiple class="chosen-select">
+
+<!--    <select id="translationState" name="translationState" style="float:left;margin-top: 30px;">-->
+<!--        <option value="">Choose state</option>-->
+        {% for stateInfo in _states %}
+            <option value="{{ stateInfo.code2 }}"> {{ stateInfo.title_eng }}</option>
+        {% endfor %}
+    </select>
+
+    <button class="bigOrder GreyBtn" onclick="sendToTranslation();" style="margin-left:10px;margin-top:30px;cursor:pointer;width:auto;font-size:14px;height:40px;float:left;">Send to translation</button>
+
+</div>
+
+{% endblock %}
+{% include '::footer.html.twig' %}
+{% block javascripts %}
+    <script>
+    $(document).ready(function(){
+            initDataTable();
+
+            $('.fieldSelectCheckAll').click(function(){
+               if ($('.fieldSelectCheckAll').prop('checked')){
+                    $('.fieldSelectCheck').each(function() {
+                        this.checked = true;
+                    });
+                } else {
+                    $('.fieldSelectCheck').each(function() {
+                        this.checked = false;
+                    });
+                }
+            });
+
+            $(".chosen-select").chosen({no_results_text: "Oops, nothing found!"});
+        });
+        //*********************************************************************
+        //**********SNIMANJE TEKSTA ****************************************
+        //*********************************************************************
+
+        function addProductText(){
+            var podaciForme ={};
+            podaciForme['action'] = 'addProductText';
+
+            $("form [name]").each(function (){
+                var kljuc = $(this).attr("name");
+                var vrijednost = $(this).val();
+                podaciForme[kljuc] = vrijednost;
+            });
+
+
+            if (podaciForme["country"] == "" || podaciForme["product"] == "" || podaciForme["productText"] == ""){
+                showWarning("You must fill out the form!");
+                return false;
+            }
+
+            $.ajax({
+                url:httpSiteURL+"SettingsAjax",
+                type:"POST",
+                dataType:"JSON",
+                data:podaciForme,
+                async: true,
+                success:function(data){
+                    if(data > 0)
+                    {
+                        $('#tabela').append('<tr>' +
+                            '<td >-</td>'+
+                            '<td >'+ podaciForme["country"] +'</td>'+
+                            '<td >'+ podaciForme["product"] +'</td>'+
+                            '<td >'+ podaciForme["productText"] +'</td>'+
+                            '<td >-</td>'+
+                            '</tr>');
+
+                        showSuccess("Description added to Database!");
+                    } else if (data < 0 ){
+                        showError("This Description allready exists!");
+                    }
+                }
+            });
+            return false;
+        }
+    //**********Selekcija polja tabele - GENERALIZOVANO *******************
+    //*********************************************************************
+        var table = "productDescription"; // OBAVEZNO PRILAGODJAVANJE TABELI
+
+        /***** inicializovanja data table *******/
+        function initDataTable(){
+            $('#example').dataTable({
+                sDom: "",
+                "sDom": 'T<"clear">lfrtip',
+                "bDestroy": true,
+                "bPaginate": false,
+                "bFilter": true,
+                "bSortCellsTop": true,
+                "aaSorting": [[ 0, "asc" ]],
+                "aoColumns": [
+                    {"width": "10%"},
+                    {"width": "20%"},
+                    {"width": "35%", "sClass": "alignLeft"},
+                    {"width": "40%"}
+
+                ]
+            });
+        }
+
+    //**********Pokazi prevod za poruku *******************
+    //*********************************************************************
+        function showTextTranslation(obj,act) {
+            var transState = obj.textContent;
+            var transID = obj.getAttribute("data-trid");
+            var preAction = obj.classList.contains("existTrans");
+            obj.className += " selectedTranslation";
+
+            $('#transText').val('');
+            $(".transLang").empty();
+            $(".transLang").append(transState);
+            $(".inputFieldObject").val('');
+
+            $(".trAct").val(act);
+            $(".traID").val(transID);
+            $(".trState").val(transState);
+            $('textarea').css('background','#FFF');
+            $('.eachTrans').css('color','#BBB');
+
+            $(".chosen-select").val('').trigger('chosen:updated');
+
+            if (transState == "BA"){
+                $('#sendTMbtn').show();
+                $('#getTMbtn').hide();
+                $('.allTranslations').show();
+                $('.lastTranslation').hide();
+                $('.checkAllHolder').show();
+                $('.fieldSelectCheck').show();
+                $('.fieldSelectCheckAll').show();
+            } else {
+                $('#sendTMbtn').hide();
+                $('#getTMbtn').show();
+                $('.allTranslations').hide();
+                $('.lastTranslation').show();
+                $('.checkAllHolder').hide();
+                $('.fieldSelectCheck').hide();
+                $('.fieldSelectCheckAll').hide();
+            }
+            $('#descriptionId').val('');
+            if(preAction == true){
+
+                var selektovan = {action:"getTextTrans",state:transState, pID:transID};
+                $.ajax({
+                    url:httpSiteURL+"SettingsAjax",
+                    type:"POST",
+                    dataType:"JSON",
+                    data:selektovan,
+                    async: true,
+                    success:function(data){
+                        $('#transText').val('');
+                        $('#descriptionId').val(data.id);
+
+                        var div = document.createElement("div");
+
+
+                        div.innerHTML = data.productText;
+                        var text = div.textContent || div.innerText || "";
+                        $('#transText').val(text);
+
+                        div.innerHTML = data.outQ;
+                        text = div.textContent || div.innerText || "";
+                        $('#outQ').val(text);
+
+                        div.innerHTML = data.outQ1;
+                        text = div.textContent || div.innerText || "";
+                        $('#outQ1').val(text);
+
+                        div.innerHTML = data.outQ2;
+                        text = div.textContent || div.innerText || "";
+                        $('#outQ2').val(text);
+
+                        div.innerHTML = data.outQ3;
+                        text = div.textContent || div.innerText || "";
+                        $('#outQ3').val(text);
+
+                        div.innerHTML = data.outA1;
+                        text = div.textContent || div.innerText || "";
+                        $('#outA1').val(text);
+
+                        div.innerHTML = data.outA2;
+                        text = div.textContent || div.innerText || "";
+                        $('#outA2').val(text);
+
+                        div.innerHTML = data.outA3;
+                        text = div.textContent || div.innerText || "";
+                        $('#outA3').val(text);
+
+                        div.innerHTML = data.outDQ1;
+                        text = div.textContent || div.innerText || "";
+                        $('#outDQ1').val(text);
+
+                        div.innerHTML = data.outDQ2;
+                        text = div.textContent || div.innerText || "";
+                        $('#outDQ2').val(text);
+
+                        div.innerHTML = data.outDQ3;
+                        text = div.textContent || div.innerText || "";
+                        $('#outDQ3').val(text);
+
+                        div.innerHTML = data.outDQ4;
+                        text = div.textContent || div.innerText || "";
+                        $('#outDQ4').val(text);
+
+                        div.innerHTML = data.outDQ5;
+                        text = div.textContent || div.innerText || "";
+                        $('#outDQ5').val(text);
+
+                        div.innerHTML = data.outAQ1;
+                        text = div.textContent || div.innerText || "";
+                        $('#outAQ1').val(text);
+
+                        div.innerHTML = data.outAQ2;
+                        text = div.textContent || div.innerText || "";
+                        $('#outAQ2').val(text);
+
+                        div.innerHTML = data.outAQ3;
+                        text = div.textContent || div.innerText || "";
+                        $('#outAQ3').val(text);
+
+                        div.innerHTML = data.outAQ4;
+                        text = div.textContent || div.innerText || "";
+                        $('#outAQ4').val(text);
+
+                        div.innerHTML = data.outAQ5;
+                        text = div.textContent || div.innerText || "";
+                        $('#outAQ5').val(text);
+
+
+                        $('.lastTranstext').empty();
+                        $('.tooltiptext').empty();
+
+
+                        if(data.sentTime != null) {
+                            var lastTrans   = data.sentTime;
+                            var lastGetTrans= data.getTime;
+                            var TMpull      = data.TMPullBack;
+
+                            $('.lastTranstext').append(lastTrans);
+
+
+                            if (TMpull == 1){
+                                $('.lastTranstext').css("color","#0b0");
+                                $('.tooltiptext').append("Recieved: "+lastGetTrans);
+                            } else {
+                                $('.lastTranstext').css("color","#ffa700");
+                                $('.tooltiptext').append("No translation recieved");
+                            }
+
+                        } else {
+                            $('.lastTranstext').css("color","#000");
+                            $('.lastTranstext').append("Not sent");
+                            $('.tooltiptext').append("No translation recieved");
+
+                        }
+
+                        var getExistingTrans = data.existing;
+
+                        $.each(getExistingTrans, function( key, value ) {
+                            if (value != null) {
+                                $('.last'+key).css('color','#FB0');
+                            }
+
+                            if (value == 1) {
+                                $('.last'+key).css('color','#090');
+                            }
+                        });
+
+
+                        $('.blocked').show();
+                        $(".translationHolder").show();
+                    }
+                });
+                return false;
+
+            }
+            $('.blocked').show();
+            $(".translationHolder").show();
+        }
+    // ******************************************************************************************
+    // ***************  ADD / EDIT MESSAGE function *********************************************
+    // ******************************************************************************************
+
+        function controlText() {
+            var tranID = $(".traID").val();   // ID originalne BA poruke za koju je izabran prevod
+            var transLan = $(".transLang").text();  // State code prevoda koji je izabran
+            var trAct = $(".trAct").val();  // akcija koja se radi Update ili New
+            var productText = $('#transText').val();
+            var foutQ = $('#outQ').val();
+            var foutQ1 = $('#outQ1').val();
+            var foutQ2 = $('#outQ2').val();
+            var foutQ3 = $('#outQ3').val();
+            var foutA1 = $('#outA1').val();
+            var foutA2 = $('#outA2').val();
+            var foutA3 = $('#outA3').val();
+            var foutDQ1 = $('#outDQ1').val();
+            var foutDQ2 = $('#outDQ2').val();
+            var foutDQ3 = $('#outDQ3').val();
+            var foutDQ4 = $('#outDQ4').val();
+            var foutDQ5 = $('#outDQ5').val();
+            var foutAQ1 = $('#outAQ1').val();
+            var foutAQ2 = $('#outAQ2').val();
+            var foutAQ3 = $('#outAQ3').val();
+            var foutAQ4 = $('#outAQ4').val();
+            var foutAQ5 = $('#outAQ5').val();
+
+            var textData = {state:transLan, pID:tranID, productText:productText, outQ:foutQ, outQ1:foutQ1, outQ2:foutQ2, outQ3:foutQ3,
+                outA1:foutA1, outA2:foutA2, outA3:foutA3, outDQ1:foutDQ1, outDQ2:foutDQ2, outDQ3:foutDQ3, outDQ4:foutDQ4, outDQ5:foutDQ5,
+                outAQ1:foutAQ1, outAQ2:foutAQ2, outAQ3:foutAQ3, outAQ4:foutAQ4, outAQ5:foutAQ5};
+            if (trAct == "update") {
+
+                textData.action = "updateTextTrans";
+                $.ajax({
+                    url:httpSiteURL+"SettingsAjax",
+                    type:"POST",
+                    dataType:"JSON",
+                    data:textData,
+                    async: true,
+                    success:function(data){
+                        $(".translationHolder").hide();
+                        $('.blocked').hide();
+                        if (data > 0) {
+                            showSuccess("Translation succesfully updated!");
+                        } else {
+                            showError("Translation not updated!");
+                        }
+                        $(".selectedTranslation").removeClass("selectedTranslation");
+                    }
+                });
+                return false;
+
+            } else if(trAct == "new"){
+                textData.action = "newTextTrans";
+                $.ajax({
+                    url:httpSiteURL+"SettingsAjax",
+                    type:"POST",
+                    dataType:"JSON",
+                    data:textData,
+                    async: true,
+                    success:function(data){
+                        $('.blocked').hide();
+                        $(".translationHolder").hide();
+                        if (data > 0) {
+                            showSuccess("Translation succesfully added!");
+                            $(".selectedTranslation").css("color","#0c0");
+
+                        } else {
+                            showError("Translation not added!");
+                        }
+                        $(".selectedTranslation").removeClass("selectedTranslation");
+                    }
+                });
+                return false;
+            } else {
+                alert("Error in sending action for translation");
+            }
+
+
+
+        }
+
+        // ******************************************************************************************
+        // ***************  Slanje teksta na prevod *************************************************
+        // ******************************************************************************************
+
+        function sendToTranslation(){
+            var transState      = $('#translationState').val();
+
+            var transProduct    = $('#traID').val();
+            var descriptionId   = $('#descriptionId').val();
+
+            var translationObj = {};
+            translationObj.action   = "sendToTranslation";
+            translationObj.state    = transState;
+            translationObj.product  = transProduct;
+            translationObj.descId   = descriptionId;
+
+            if ($('.chtransText').prop('checked') && $('#transText').val() != "") {
+                translationObj.fOutP    = $('#transText').val();
+            }
+            if ($('.choutQ').prop('checked') && $('#outQ').val() != "") {
+                translationObj.foutQ    = $('#outQ').val();
+            }
+
+            if ($('.choutQ1').prop('checked') && $('#outQ1').val() != "") {
+                translationObj.foutQ1   = $('#outQ1').val();
+            }
+
+            if ($('.choutQ2').prop('checked') && $('#outQ2').val() != "") {
+                translationObj.foutQ2   = $('#outQ2').val();
+            }
+
+            if ($('.choutQ3').prop('checked') && $('#outQ3').val() != "") {
+                translationObj.foutQ3   = $('#outQ3').val();
+            }
+
+            if ($('.choutA1').prop('checked') && $('#outA1').val() != "") {
+                translationObj.foutA1   = $('#outA1').val();
+            }
+
+            if ($('.choutA2').prop('checked') && $('#outA2').val() != "") {
+                translationObj.foutA2   = $('#outA2').val();
+            }
+
+            if ($('.choutA3').prop('checked') && $('#outA3').val() != "") {
+                translationObj.foutA3   = $('#outA3').val();
+            }
+
+            if ($('.choutDQ1').prop('checked') && $('#outDQ1').val() != "") {
+                translationObj.foutDQ1  = $('#outDQ1').val();
+            }
+
+            if ($('.choutDQ2').prop('checked') && $('#outDQ2').val() != "") {
+                translationObj.foutDQ2  = $('#outDQ2').val();
+            }
+
+            if ($('.choutDQ3').prop('checked') && $('#outDQ3').val() != "") {
+                translationObj.foutDQ3  = $('#outDQ3').val();
+            }
+
+            if ($('.choutDQ4').prop('checked') && $('#outDQ4').val() != "") {
+                translationObj.foutDQ4  = $('#outDQ4').val();
+            }
+
+            if ($('.choutDQ5').prop('checked') && $('#outDQ5').val() != "") {
+                translationObj.foutDQ5  = $('#outDQ5').val();
+            }
+
+            if ($('.choutAQ1').prop('checked') && $('#outAQ1').val() != "") {
+                translationObj.foutAQ1  = $('#outAQ1').val();
+            }
+
+            if ($('.choutAQ2').prop('checked') && $('#outAQ2').val() != "") {
+                translationObj.foutAQ2  = $('#outAQ2').val();
+            }
+
+            if ($('.choutAQ3').prop('checked') && $('#outAQ3').val() != "") {
+                translationObj.foutAQ3  = $('#outAQ3').val();
+            }
+
+            if ($('.choutAQ4').prop('checked') && $('#outAQ4').val() != "") {
+                translationObj.foutAQ4  = $('#outAQ4').val();
+            }
+
+            if ($('.choutAQ5').prop('checked') && $('#outAQ5').val() != "") {
+                translationObj.foutAQ5  = $('#outAQ5').val();
+            }
+
+            if (transState == ""){
+                showError("State not selected!");
+                return false;
+            }
+
+            $('.loaderGreen').show();
+            $.ajax({
+                url:httpSiteURL+"SettingsAjax",
+                type:"POST",
+                dataType:"JSON",
+                data:translationObj,
+                async: true,
+                success:function(data){
+                    console.log(data);
+                    if (data.statusnum > 0) {
+                        showSuccess("Translation succesfully sent!");
+                    } else if (data.statusnum == "-3") {
+                        showWarning("There are pending translations for "+data.stvalue+" !");
+                    } else {
+                        showError("Translation not sent!");
+                    }
+                    $('.loaderGreen').hide();
+                    $('.countryBox').hide();
+                }
+            });
+            return false;
+
+        }
+
+        function getTMtranslation(){
+            var transProduct    = $('#traID').val();
+            var transState      = $('#trState').val();
+
+            var translationObj = {};
+            translationObj.action   = "getTMtranslation";
+            translationObj.state    = transState;
+            translationObj.product  = transProduct;
+
+
+            $('.loaderGreen').show();
+            $.ajax({
+                url:httpSiteURL+"SettingsAjax",
+                type:"POST",
+                dataType:"JSON",
+                data:translationObj,
+                async: true,
+                success:function(data){
+                    ajaxResponseVar = data;
+
+                    if (data == "[]" || data == "" || data == "-5") {
+                        showWarning("No translation recieved!");
+                    } else if (data){
+
+                        updateFromTM(data.outP,data.outQ,data.outQ1,data.outQ2,data.outQ3,data.outA1,data.outA2,data.outA3,data.outDQ1,data.outDQ2,data.outDQ3,data.outDQ4,data.outDQ5,data.outAQ1,data.outAQ2,data.outAQ3,data.outAQ4,data.outAQ5)
+                        showSuccess("Translation succesfully recieved!");
+                    } else {
+                        showError("Translation not recieved!");
+                    }
+                    $('.loaderGreen').hide();
+                }
+            });
+            return false;
+        }
+
+        function updateFromTM(outP,outQ,outQ1,outQ2,outQ3,outA1,outA2,outA3,outDQ1,outDQ2,outDQ3,outDQ4,outDQ5,outAQ1,outAQ2,outAQ3,outAQ4,outAQ5) {
+            var div = document.createElement("div");
+    console.log(outQ1);
+            if (outP != "" && outP != null && outP != undefined) {
+                div.innerText = outP;
+                var text = div.textContent || div.innerText || "";
+                $('#transText').val(text);
+                $('#transText').css("background","#cfc");
+            }
+
+            if (outQ != "" && outQ != null && outQ != undefined) {
+                div.innerText = outQ;
+                text = div.textContent || div.innerText || "";
+                $('#outQ').val(text);
+                $('#outQ').css("background","#cfc");
+            }
+
+            if (outQ1 != "" && outQ1 != null && outQ1 != undefined) {
+                div.innerText = outQ1;
+                text = div.textContent || div.innerText || "";
+                $('#outQ1').val(text);
+                $('#outQ1').css("background","#cfc");
+            }
+
+            if (outQ2 != "" && outQ2 != null && outQ2 != undefined) {
+                div.innerText = outQ2;
+                text = div.textContent || div.innerText || "";
+                $('#outQ2').val(text);
+                $('#outQ2').css("background","#cfc");
+            }
+
+            if (outQ3 != "" && outQ3 != null && outQ3 != undefined) {
+                div.innerText = outQ3;
+                text = div.textContent || div.innerText || "";
+                $('#outQ3').val(text);
+                $('#outQ3').css("background","#cfc");
+            }
+
+            if (outA1 != "" && outA1 != null && outA1 != undefined) {
+                div.innerText = outA1;
+                text = div.textContent || div.innerText || "";
+                $('#outA1').val(text);
+                $('#outA1').css("background","#cfc");
+            }
+
+            if (outA2 != "" && outA2 != null && outA2 != undefined) {
+                div.innerText = outA2;
+                text = div.textContent || div.innerText || "";
+                $('#outA2').val(text);
+                $('#outA2').css("background","#cfc");
+            }
+
+            if (outA3 != "" && outA3 != null && outA3 != undefined) {
+                div.innerText = outA3;
+                text = div.textContent || div.innerText || "";
+                $('#outA3').val(text);
+                $('#outA3').css("background","#cfc");
+            }
+
+            if (outDQ1 != "" && outDQ1 != null && outDQ1 != undefined) {
+                div.innerText = outDQ1;
+                text = div.textContent || div.innerText || "";
+                $('#outDQ1').val(text);
+                $('#outDQ1').css("background","#cfc");
+            }
+            if (outDQ2 != "" && outDQ2 != null && outDQ2 != undefined) {
+                div.innerText = outDQ2;
+                text = div.textContent || div.innerText || "";
+                $('#outDQ2').val(text);
+                $('#outDQ2').css("background","#cfc");
+            }
+
+            if (outDQ3 != "" && outDQ3 != null && outDQ3 != undefined) {
+                div.innerText = outDQ3;
+                text = div.textContent || div.innerText || "";
+                $('#outDQ3').val(text);
+                $('#outDQ3').css("background","#cfc");
+            }
+
+            if (outDQ4 != "" && outDQ4 != null && outDQ4 != undefined) {
+                div.innerText = outDQ4;
+                text = div.textContent || div.innerText || "";
+                $('#outDQ4').val(text);
+                $('#outDQ4').css("background","#cfc");
+            }
+
+            if (outDQ5 != "" && outDQ5 != null && outDQ5 != undefined) {
+                div.innerText = outDQ5;
+                text = div.textContent || div.innerText || "";
+                $('#outDQ5').val(text);
+                $('#outDQ5').css("background","#cfc");
+            }
+
+            if (outAQ1 != "" && outAQ1 != null && outAQ1 != undefined) {
+                div.innerText = outAQ1;
+                text = div.textContent || div.innerText || "";
+                $('#outAQ1').val(text);
+                $('#outAQ1').css("background","#cfc");
+            }
+
+            if (outAQ2 != "" && outAQ2 != null && outAQ2 != undefined) {
+                div.innerHTML = outAQ2;
+                text = div.textContent || div.innerText || "";
+                $('#outAQ2').val(text);
+                $('#outAQ2').css("background","#cfc");
+            }
+
+            if (outAQ3 != "" && outAQ3 != null && outAQ3 != undefined) {
+                div.innerText = outAQ3;
+                text = div.textContent || div.innerText || "";
+                $('#outAQ3').val(text);
+                $('#outAQ3').css("background","#cfc");
+            }
+
+            if (outAQ4 != "" && outAQ4 != null && outAQ4 != undefined) {
+                div.innerText = outAQ4;
+                text = div.textContent || div.innerText || "";
+                $('#outAQ4').val(text);
+                $('#outAQ4').css("background","#cfc");
+            }
+
+            if (outAQ5 != "" && outAQ5 != null && outAQ5 != undefined) {
+                div.innerText = outAQ5;
+                text = div.textContent || div.innerText || "";
+                $('#outAQ5').val(text);
+                $('#outAQ5').css("background","#cfc");
+            }
+        }
+    </script>
+{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,191 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        #example tbody td{
+            font-size: 12px;
+        }
+        .greeny {
+            background-color:#97e0ae!important;
+        }
+        .tQuickLink a {
+            color: #555;
+            text-decoration: none;
+        }
+        .tQuickLink a:hover {
+            color: #000;
+            text-decoration: underline;
+        }
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color: #000;
+        }
+        input [type=text], select {
+            float: left;
+        }
+    </style>
+{% endblock %}
+<body>
+{% block body %}
+    {% set emptyarr = {'state': '', 'phone': '', 'logoutType': ''} %}
+    {% set queryarr = app.request.query.all %}
+    {% set qp = emptyarr|merge(queryarr) %}
+
+
+    <div class="main">
+
+        <h3 style="width: 1322px" class="headline">{{ title }}</h3>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1300px;">
+            <h4></h4>
+            <form>
+                <div style="width:36%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                State:
+                            </td>
+                            <td>
+                                <select id="state" name="state" >
+                                    <option value="">ALL</option>
+
+                                    {% for stateInfo in _states %}
+                                        <option value="{{ stateInfo.code2 }}"> {{ stateInfo.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('state');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Sex:
+                            </td>
+                            <td>
+                                {#<select id="sex" name="sex" >#}
+                                    {#<option value="">ALL</option>#}
+                                    {#<option value="0">Male</option>#}
+                                    {#<option value="1">Female</option>#}
+                                    <input style="margin-left: 4px; width: 20px;" type="checkbox" name="sex" value="0"> Male
+                                    <input style="margin-left: 25px; width: 20px;" type="checkbox" name="sex" value="1"> Female<br>
+                                    {#<input style="margin-left: 25px; width: 20px;" type="checkbox" name="sex" value="1" checked> Female<br>#}
+                                {#</select>#}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Number on page:
+                            </td>
+                            <td>
+                                <select id="ordNum" name="ordNum">
+                                    {#<option value="10000">ALL</option>#}
+                                    <option value="500">500 orders</option>
+                                    <option value="1000">1000 orders</option>
+                                    <option value="1500">1500 orders</option>
+                                    <option value="50000">50000 orders</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('ordNum');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Search number:
+                            </td>
+                            <td> <input style=" width: 262px;"id="search_by_num"  type="text" name="phone" placeholder="Search by phone number" value="{{ qp.phone }}"></td>
+                            <td>
+                        </tr>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                Date from:
+                            </td>
+                            <td>
+                                <input name="from" type="text" id="datumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ from }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Date to:
+                            </td>
+                            <td>
+                                <input name="to" type="text" id="datumTo" placeholder="" onclick="$(this).datepicker();"  style="width:90px;" value="{{ to }}">
+                            </td>
+                            <td>
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="margin-left: -124px;margin-top:0px;cursor:pointer;width: 120px;height:40px;font-size:16px;">Search</button>
+                            </td>
+                        </tr>
+
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="width:50%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="padding: 10px 10px 0 10px;width: 1300px;">
+
+            <div class="dayTable" style="width: 1300px;">
+                {% autoescape %}
+                    {{ _html|raw }} {# var won't be escaped #}
+                {% endautoescape %}
+            </div>
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1300px;">
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function(){
+            $('#example').DataTable({
+                "paging": false,
+                "ordering": true,
+                "searching": true,
+                //"lengthMenu": [[100, 250, 500, -1], [100, 250, 500, "All"]]
+            });
+           // initDataTable();
+
+            $('#loginfrom,#loginto').datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            getToOption('state','state');
+            //getToOption('opratorGroup','opratorGroup');
+            //getToOption('logoutType','logoutType');
+
+        });
+
+    </script>
+{% endblock %}
+</body>
+</html>

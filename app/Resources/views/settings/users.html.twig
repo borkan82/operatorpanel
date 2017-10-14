@@ -1,0 +1,354 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+    {% set emptyarr = {'country_search': '', 'role_user': ''} %}
+    {% set queryarr = app.request.query.all %}
+    {% set qp = emptyarr|merge(queryarr) %}
+    <div class="main" >
+        <h3 class="headline"  style="width:1420px;">User List</h3>
+    <div style="clear:both"></div>
+      <div class="tableHolder"  style="width:1400px;">
+        <form id="forma">
+            <h4>Add user to list</h4>
+            <div style="float:left;width:50%;margin-top:15px;">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>
+                            State:
+                        </td>
+                        <td>
+                            <select id="country" name="country">
+                                {% for stateInfo in _states %}
+                                    <option value="{{ stateInfo.code2 }}"> {{ stateInfo.title_eng }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Name:
+                        </td>
+                        <td>
+                            <input style="width: 262px;" type="text" id="ime" name="name" placeholder="Name">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Surname:
+                        </td>
+                        <td>
+                            <input style="width: 262px;" type="text" id="prezime" name="surname" placeholder="Surname">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Email:
+                        </td>
+                        <td>
+                            <input style="width: 262px;" type="text" id="mail" name="email" placeholder="Email">
+                        </td>
+                    </tr>
+                        <td>
+                        </td>
+                        <td>
+                            <button type="button" id="addUser" class="bigOrder GreyBtn" style="width:260px;font-size: 20px;" onclick="addNewUser();">Add New User</button>
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+            </div>
+            <div style="float:left;width:50%;margin-top:15px;">
+                <table>
+                    <tbody>
+                        <td>
+                            Username:
+                        </td>
+                        <td>
+                            <input style="width: 262px;" type="text" name="username" placeholder="username">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Password:
+                        </td>
+                        <td>
+                            <input style="width: 262px;"type="text" name="password" placeholder="password">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Role:
+                        </td>
+                        <td>
+                            <select name="role">
+                                <option value="U">User</option>
+                                <option value="M">Manager</option>
+                                <option value="A">Administrator</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Call center group:
+                        </td>
+                        <td>
+                            <select id="center" name="operatorGroup">
+                            {% for centerInfo in _centers %}
+                                       <option value="{{ centerInfo.id }}"> {{ centerInfo.name }} ({{ centerInfo.state }})</option>
+                                    {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Active:
+                        </td>
+                        <td>
+                            <select name="active">
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="tableHolder"  style="width:1400px;">
+        <form>
+            <h4>Search bar</h4>
+
+            <table>
+                <tbody>
+                <tr>
+                    <td>
+                        Search by state:
+                    </td>
+                    <td>
+                        <select id="country_search" name="country_search">
+                            <option value="">All States</option>
+                            {% for stateInfo in _states %}
+                                <option value="{{ stateInfo.code2 }}"> {{ stateInfo.title_eng }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+
+                <td>
+                    Search by role:
+                </td>
+                <td>
+                    <select name="role_user" id="role_user">
+                <option value="">Choose</option>
+                        <option value="U">User</option>
+                        <option value="M">Manager</option>
+                        <option value="A">Administrator</option>
+                    </select>
+                </td>
+                    <td>
+                        <button type="button" class="bigOrder GreyBtn" onclick='SearchFormSimple.search(this);' style="margin-left: 25px; width: 120px;height: 40px;font-size: 16px;margin-top: 0px;">Search</button>
+                    </td>
+                </tr>
+                </tbody>
+                </table>
+            </form>
+        </div>
+
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="width: 1400px;">
+        <table style="width: 1400px;">
+            <tbody>
+            <tr>
+                {% for statesRows in _states %}
+
+                <td>
+                    <a href="?country_search={{ statesRows.code2 }}&role_user={{ qp.role_user }}"> {{ statesRows.code2 }} </a>
+                </td>
+                {% endfor %}
+
+                <td style="width:10px;"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div style="clear:both"></div>
+
+
+    <div class="tableHolder"  style="padding: 10px 10px 10px 10px;width:1400px;">
+        <div class="dayTable" style="width: 1400px;">
+            {% autoescape %}
+                {{ _html|raw }} {# var won't be escaped #}
+            {% endautoescape %}
+        </div>
+    </div>
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width:1400px;">
+    </div>
+</div>
+{% endblock %}
+{% include '::footer.html.twig' %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function(){
+                initDataTable();
+
+                getToOption('country_search','country_search');
+                getToOption('role_user','role_user');
+            });
+            //*********************************************************************
+            //**********SNIMANJE KORISNIKA ****************************************
+            //*********************************************************************
+
+            function addNewUser(){
+                var podaciForme ={};
+                podaciForme['action'] = 'addUser';
+
+                $("form [name]").each(function (){
+                    var kljuc = $(this).attr("name");
+                    var vrijednost = $(this).val();
+                    podaciForme[kljuc] = vrijednost;
+                });
+                var ime     = $('#ime').val();
+                var prezime = $('#prezime').val();
+                var mail    = $('#mail').val();
+                var cCenter = $('#center').val();
+
+                if (podaciForme["country"] == "" || podaciForme["name"] == "" || podaciForme["surname"] == "" || podaciForme["username"] == "" || podaciForme["password"] == "" || podaciForme["role"] == ""){
+                    showWarning("You must fill out the form!");
+                    return false;
+                }
+
+                $.ajax({
+                    url:httpSiteURL+"SettingsAjax",
+                    type:"POST",
+                    dataType:"JSON",
+                    data:podaciForme,
+                    async: true,
+                    success:function(data){
+                        if(data > 0)
+                        {
+                            $('#tabela').append('<tr>' +
+                                '<td >-</td>'+
+                                '<td >'+ podaciForme["country"] +'</td>'+
+                                '<td >'+ ime +'</td>'+
+                                '<td >'+ prezime +'</td>'+
+                                '<td >'+ mail +'</td>'+
+                                '<td >'+ podaciForme["username"] +'</td>'+
+                                '<td >'+ podaciForme["password"] +'</td>'+
+                                '<td >'+ podaciForme["role"] +'</td>'+
+                                '<td >'+ cCenter +'</td>'+
+                                '<td >-</td>'+
+                                '</tr>');
+
+                            showSuccess("User added to Database!");
+                        }
+                        else { showError("Error, already exist"); }
+                    }
+                });
+                return false;
+            }
+        //**********Selekcija polja tabele - GENERALIZOVANO *******************
+        //*********************************************************************
+            var table = "phone_order_users"; // OBAVEZNO PRILAGODJAVANJE TABELI
+
+            /***** inicializovanja data table *******/
+            function initDataTable(){
+                $('#example').dataTable({
+                    sDom: "",
+                    "bDestroy": true,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "bSortCellsTop": true,
+                    "aaSorting": [[ 0, "asc" ]],
+                    "aoColumns": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ]
+                });
+            }
+
+            var dataCenters   =   {};
+            dataCenters[1]    =   'Infomedia Banja Luka';
+            dataCenters[2]    =   'Infomedia Banja Luka';
+            dataCenters[3]    =   'Invictus Belgrade';
+            dataCenters[4]    =   'TV Prodaja';
+            dataCenters[5]    =   'Studio Verde, Stip';
+            dataCenters[6]    =   'Internet Sales';
+            dataCenters[7]    =   'NTH Mobile';
+            dataCenters[8]    =   'TV Prodaja d.o.o.';
+            dataCenters[9]    =   'Zwei Lowen, Italy';
+
+
+            function searchByStateAndRole(){
+                var data    = {};
+
+                data.action = 'searchCountryAndRole';
+                data.state  = $('#country_search').val();
+                data.role   = $('#role').val();
+
+                $.ajax({
+                    url:httpSiteURL+"SettingsAjax",
+                    type:"POST",
+                    dataType:"JSON",
+                    data:data,
+                    async: true,
+                    success: function(data){
+                        if(data){
+                            var table = document.getElementById('tabela');
+                            while(table.rows.length > 0) {
+                                table.deleteRow(0);
+                            }
+                            for(var i = 0; i < data.length; i++){
+                                data[i]['operatorGroup'] = parseInt(data[i]['operatorGroup']);
+                                if(data[i]['status']=="1") data[i]['status'] = 'Active';
+                                else data[i]['status'] = 'Inactive';
+                                $('#tabela').append('<tr><td>' + (i+1) + '</td><td>' + data[i]['state'] + '</td><td>' + data[i]['name'] + '</td><td>' + data[i]['surname'] + '</td><td>' + data[i]['email'] + '</td><td>' + data[i]['username'] + '</td><td>' + data[i]['password'] + '</td><td>' + data[i]['role'] + '</td><td>' + dataCenters[data[i]['operatorGroup']] + '</td><td>' + data[i]['status'] + '</td><td><button type="button" class="delButton">Delete</button></td></tr>');                                                    / /
+                            }
+                        }
+                    }
+                });
+
+
+            }
+    </script>
+{% endblock %}
+</body>
+
+</html>

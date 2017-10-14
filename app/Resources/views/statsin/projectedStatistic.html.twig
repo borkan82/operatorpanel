@@ -1,0 +1,301 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        .tQuickLink a {
+            color: #555;
+            text-decoration: none;
+        }
+        .tQuickLink a:hover {
+            color: #000;
+            text-decoration: underline;
+        }
+        .statsData td {
+            border: 1px solid #ccc;
+            background: #ddd;
+            padding: 0 8px;
+            height: 25px;
+        }
+        .statsData th {
+            border-bottom: 1px solid #ccc;
+        }
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+        #example tbody td{
+            font-size: 12px;
+        }
+        .yellowLine {
+            background-color: #d8d5b5 !important;
+        }
+        input [type=text], select {
+            float: left;
+        }
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+{% set emptyarr = {'tableType': '', 'ordType': '', 'product': '', 'state': ''} %}
+{% set queryarr = app.request.query.all %}
+{% set qp = emptyarr|merge(queryarr) %}
+
+
+<div class="main">
+    <h3 class="headline" style="width: 1422px">PhoneOrder - {{ title }}</h3>
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="width: 1400px;">
+        <h4>Search filter</h4>
+        <form>
+            <div style="width:100%;float:left;">
+                <table >
+                    <tbody>
+                    <tr>
+                        <td >
+                            Table type:
+                        </td>
+                        <td colspan="3">
+                            <select id="tableType" name="tableType">
+                                <option value="">By State</option>
+                                <option value="1">By product</option>
+                            </select>
+                            <div class="resetSelectField" onclick="resetSelectField('tableType');">X</div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="width: 78px;">
+                            Order source:
+                        </td>
+                        <td colspan="3">
+                            <select id="ordSource" name="ordSource">
+                                <option value="">ALL</option>
+                                <option value="1">Page Order</option>
+                                <option value="2">SMS Bulk order</option>
+                                <option value="3">Print Order</option>
+                                <option value="4">SMS Reorder</option>
+                                <option value="5">Vip Mails </option>
+                            </select>
+                            <div class="resetSelectField" onclick="resetSelectField('ordSource');">X</div>
+                        </td>
+                        <td >
+                            <a href="?tableType={{ qp.tableType }}&ordSource=&state={{ qp.state }}&product={{ qp.product }}&from={{ from }}&to={{ to }}"  style="margin-right: 10px;">ALL</a>
+                            <a href="?tableType={{ qp.tableType }}&ordSource=1&state={{ qp.state }}&product={{ qp.product }}&from={{ from }}&to={{ to }}"  style="margin-right: 10px;">Page Order</a>
+                            <a href="?tableType={{ qp.tableType }}&ordSource=2&state={{ qp.state }}&product={{ qp.product }}&from={{ from }}&to={{ to }}"  style="margin-right: 10px;">SMS Bulk order</a>
+                            <a href="?tableType={{ qp.tableType }}&ordSource=3&state={{ qp.state }}&product={{ qp.product }}&from={{ from }}&to={{ to }}"  style="margin-right: 10px;">Print Order</a>
+                            <a href="?tableType={{ qp.tableType }}&ordSource=4&state={{ qp.state }}&product={{ qp.product }}&from={{ from }}&to={{ to }}"  style="margin-right: 10px;">SMS Reorder</a>
+                            <a href="?tableType={{ qp.tableType }}&ordSource=5&state={{ qp.state }}&product={{ qp.product }}&from={{ from }}&to={{ to }}"  style="margin-right: 10px;">Vip Mails</a>
+
+
+                        </td>
+                    </tr>
+
+                    <tr id="products-container">
+                        <td style="width: 78px;">
+                            Product:
+                        </td>
+                        <td colspan="3">
+                            <select id="product" name="product">
+                                <option value="">ALL</option>
+                                {% for productInfo in _products %}
+                                    <option value="{{ productInfo.id }}"> {{ productInfo.title }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="resetSelectField" onclick="resetSelectField('product');">X</div>
+                        </td>
+
+                    </tr>
+
+                    <tr id="state-container">
+                        <td style="width: 78px;">
+                            State:
+                        </td>
+                        <td colspan="3">
+                            <select id="state" name="state">
+                                <option value="">Choose state</option>
+                                {% for stateInfo in _states %}
+                                    <option value="{{ stateInfo.code2 }}"> {{ stateInfo.title_eng }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="resetSelectField" onclick="resetSelectField('state');">X</div>
+                        </td>
+
+                    </tr>
+
+                   
+                    <tr>
+                        <td style="width: 78px;">
+                            Date from:
+                        </td>
+                        <td>
+                            <input name="from" type="text" id="datumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ from }}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 78px;">
+                            Date to:
+                        </td>
+                        <td>
+                            <input name="to" type="text" id="datumTo" placeholder="" onclick="$(this).datepicker();"  style="width:90px;" value="{{ to }}">
+                        </td>
+                        <td >
+                            <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="margin-top:0px; margin-left: 38px; cursor:pointer;width: 120px;height:40px;font-size:16px;">Search</button>
+                        </td>
+                        {% if tableType == 1 %}
+                            <td style="float: right; position: absolute; right: 0;">
+                                <a
+                                    href="{{ app.request.getBaseURL() }}{{ inboundChartRedirectLink }}" target="_blank"
+                                    type="button" class="bigOrder GreyBtn"
+                                    style=" text-decoration:none; margin-top: 0px; vertical-align: bottom; margin-right: -42px; cursor: pointer; width: 206px; height: 40px; font-size: 18px;">Link to Charts</a>
+                            </td>
+                        {% endif %}
+                    </tr>
+
+
+
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+
+
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="padding: 10px 10px 0 10px;width: 1400px;">
+        <div class="dayTable" style="width: 1400px;">
+            {% autoescape %}
+                {{ _html|raw }} {# var won't be escaped #}
+            {% endautoescape %}
+        </div>
+    </div>
+    <div class="legendHolder" style="width: 1422px;">
+        <div class="legendBox" style="width:660px;margin-left:40px;">
+            <div class="legendItem" style="border-bottom:1px dotted #ccc;"><strong>Call types</strong></div>
+            <div class="legendItem"><strong>Adcombo Call</strong> - Sent requests from small form (name and phone)</div>
+            <div class="legendItem"><strong>Canceled user</strong> - Request from user who wants to cancel order via Email</div>
+            <div class="legendItem"><strong>Upsell call</strong> - Requests when order on LP is made so operator offers upsell</div>
+            <div class="legendItem"><strong>Form fill brake</strong> - Request from small form (name, phone) when user didn't submitted</div>
+            <div class="legendItem"><strong>Order fill brake</strong> - Request from full form when user didn't submitted</div>
+            <div class="legendItem"><strong>Reorder call</strong> - Request from cron which gets all users who has  reorder sms day before and no order</div>
+            <div class="legendItem"><strong>Bulk Call</strong> - Request from cron which gets all users who has  bulk sms day before and no order</div>
+            <div class="legendItem"><strong>Undecided</strong> - Request from exit console on Sale page</div>
+            <div class="legendItem"><strong>Mail reorder</strong> - Request from Mail reorder sale page</div>
+            <div class="legendItem"><strong>SMS Link</strong> - Request from SMS Link  </div>
+        </div>
+
+        <div class="legendBox" style="width:660px;margin-left:40px;">
+            <div class="legendItem" style="border-bottom:1px dotted #ccc;"><strong>Calculation stats</strong></div>
+            <div class="legendItem"><strong>Order %</strong> - (COUNT(Orders) / COUNT(Answered)) * 100</div>
+            <div class="legendItem"><strong>Other %</strong> - (COUNT(Other) / COUNT(Total calls)) * 100</div>
+            <div class="legendItem"><strong>Sum order value</strong> - SUM(Final price) </div>
+            <div class="legendItem"><strong>Average call value</strong> - SUM(Final price) / COUNT(Answered)</div>
+            <div class="legendItem"><strong>Average order value</strong> - SUM(Final price) / COUNT(Orders)</div>
+            <div class="legendItem"><strong>RE</strong> - SUM(returned + refunded)</div>
+            <div class="legendItem"><strong>Avg projection ord. value </strong> - SUM(Projection) / COUNT(Orders)</div>
+            <div class="legendItem"><strong>Sum projection </strong> - Sum order value - RE * Average order value - COUNT(Answered) </div>
+        </div>
+    </div>
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1400px;">
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            initDataTable();
+
+            $('#datumFrom,#datumTo,#cdatumFrom,#cdatumTo').datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            // getToOption('state', 'state');
+            getToOption('tableType', 'tableType');
+            getToOption('ordSource', 'ordSource');
+
+            var tableTypeJS = '{{ tableType }}';
+            if ( tableTypeJS === ""){
+                getToOption('product', 'product');
+            } else if(tableTypeJS == 1){
+                getToOption('state', 'state');
+            }
+
+
+            $('.showBuyer').click({});
+
+            $('#tableType').on('change', function (e) {
+                e.stopPropagation();
+                var target = $(this).is('#tableType') ? $(this) : $(this).closest('#tableType');
+                var tableType = target.val();
+                if(tableTypeJS === "") {
+                    $('#products-container').show();
+                    $('#state-container').hide();
+                 }
+                if(tableTypeJS === 1) {
+                    $('#state-container').show();
+                    $('#products-container').hide();
+                }
+
+                switch (tableType) {
+                    case "":
+                        $('#products-container').show();
+                        $('#state-container').hide();
+                        break;
+                    case "1":
+                        $('#state-container').show();
+                        $('#products-container').hide();
+                        break;
+                }
+
+            });
+            $('#tableType').trigger('change');
+
+        });
+        /***** inicializovanja data table *******/
+        function initDataTable() {
+            $('#example').dataTable({
+                sDom: "",
+                "bDestroy": true,
+                "bPaginate": false,
+                "bFilter": false,
+                "bSortCellsTop": true,
+                "aaSorting": [[0, "asc"]],
+                "columns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+
+                ]
+            });
+        }
+    </script>
+{% endblock %}
+</body>
+
+</html>

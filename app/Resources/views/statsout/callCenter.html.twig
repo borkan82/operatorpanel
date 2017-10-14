@@ -1,0 +1,175 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        table tfoot td {
+            background-color: #bbb;
+            text-align: center;
+            font-weight: bold;
+
+        }
+        .chartLink {
+            color: #1365c4;
+            text-decoration: none !important;
+        }
+        .chartLink:hover {
+            color: #0000c4;
+            text-decoration: underline ;
+        }
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+        #example tbody td{
+            font-size: 12px;
+        }
+        .yellowLine {
+            background-color: #d8d5b5 !important;
+        }
+        input [type=text], select {
+            float: left;
+        }
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+{% set emptyarr = {'state': '', 'ordType': '', 'ordStatus': '', 'subStatus': '', 'product': '', 'ordNum': '', 'user': '', 'group': ''} %}
+{% set queryarr = app.request.query.all %}
+{% set qp = emptyarr|merge(queryarr) %}
+<div class="main" ng-controller="MainController">
+
+    <h3 class="headline"  style="width: 1421px;">PhoneOrder - {{ title }} Statistic</h3>
+
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="width: 1400px;">
+        <h4></h4>
+        <form>
+            <div style="width:36%;float:left; margin-top: 16px;">
+                <table >
+                    <tbody>
+
+
+                    <tr>
+                        <td>
+                            Call type:
+                        </td>
+                        <td>
+                            <select id="ordType" name="ordType">
+                                <option value="">ALL</option>
+                                {% for type in _types %}
+                                    <option value="{{ type.id }}"> {{ type.title }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="resetSelectField" onclick="resetSelectField('ordType');">X</div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            Group by:
+                        </td>
+                        <td>
+                            <select id="group" name="group">
+                                <option value="1">ALL BY COUNTRIES</option>
+                                <option value="">ALL BY CALL CENTAR</option>
+                            </select>
+                            <div class="resetSelectField" onclick="resetSelectField('group');">X</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Date from:
+                        </td>
+                        <td>
+                            <input name="from" type="text" id="datumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ from }}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Date to:
+                        </td>
+                        <td>
+                            <input name="to" type="text" id="datumTo" placeholder=""onclick="$(this).datepicker();"  style="width:90px;" value="{{ to }}">
+                        </td>
+                        <td>
+                            <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style=" margin-left: -123px;margin-top:0px;cursor:pointer;width: 120px;height: 40px;font-size: 16px;">Search</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </form>
+    </div>
+    <div style="clear:both"></div>
+
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="padding: 10px 10px 0 10px;width: 1400px;">
+
+        <div class="dayTable" style="width: 1400px;">
+            {% autoescape %}
+                {{ _html|raw }} {# var won't be escaped #}
+            {% endautoescape %}
+        </div>
+    </div>
+
+    <div class="legendHolder" style="width: 1421px;">
+
+        <div class="legendBox" style="width:660px;margin-left:40px;">
+            <div class="legendItem" style="border-bottom:1px dotted #ccc;"><strong>Calculation stats</strong></div>
+            <div class="legendItem"><strong>Answered %</strong> - Answered / Calls * 100</div>
+            <div class="legendItem"><strong>Order %</strong> - Order sucessfull / Answered * 100</div>
+            <div class="legendItem"><strong>Other %</strong> - Other / Calls * 100</div>
+            <div class="legendItem"><strong>Canecel %</strong> - Order cancelled / Answered * 100</div>
+            <div class="legendItem"><strong>Upsell %</strong> - Upsells/ Order sucessfull * 100</div>
+
+        </div>
+    </div>
+
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1400px;">
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function(){
+            //initDataTable();
+
+            $('#example').DataTable({
+                "paging": false,
+                "ordering": true,
+                "searching": false,
+                //"lengthMenu": [[100, 250, 500, -1], [100, 250, 500, "All"]]
+            });
+
+            $('#datumFrom,#datumTo').datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            getToOption('ordType','ordType');
+            getToOption('group','group');
+
+        });
+
+
+
+    </script>
+{% endblock %}
+</body>
+
+</html>

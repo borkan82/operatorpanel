@@ -1,0 +1,621 @@
+{% include '::header.html.twig' %}
+<body>
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+
+        .titleBox {
+        width:100px;
+        height:30px;
+        line-height:30px;
+        font-size:14px;
+        }
+        .listBox {
+            width:100px;
+            height:29px;
+            line-height:30px;
+            font-size:14px;
+        }
+        .sirokiBox {
+            width:233px;
+        }
+        .tableLine {
+            height: 30px;
+        }
+        .dLeft {
+            margin-left:30px;
+            float:left;
+            width:300px;
+
+        }
+        .dRight {
+            margin-left:20px;
+            float:left; 
+            width:300px;
+
+        }
+        table tfoot td {
+            background-color: #bbb;
+            text-align: center;
+            font-weight: bold;
+
+        }
+        .tabAlignLeft {
+            text-align: left;
+        }
+        .stateClick{
+            cursor:pointer;
+        }
+        .translationHolder{
+            display:none;
+            position:fixed;
+            width:513px;
+            height:250px;
+            top:50%;
+            left:50%;
+            margin-left:-250px;
+            margin-top:-125px;
+            padding:15px;
+            border: 1px solid #eee;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px #888888;
+            z-index: 2000;
+        }
+        .translationLineHolder{
+            float:left;
+            width:500px;
+            height:auto;
+            padding:10px 0;
+        }
+        .stateClick{
+            color:#444;
+        }
+        .stateClick:hover{
+            text-decoration: underline;
+        }
+        .existTrans{
+            color:#090;
+        }
+        .chosen-container.chosen-container-single {
+            width: 260px !important;
+        }
+        .testMessageHolder {
+            position:fixed;
+            width: 513px;
+            height: 190px;
+            top: 50%;
+            left:50%;
+            margin-top:-95px;
+            margin-left:-250px;
+            background-color: #ddd;
+            border: 1px solid #999;
+            padding:15px;
+            z-index: 2000;
+        }
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+    <div class="main">
+        <h3 class="headline"  style="width:1331px;">{{ title }}</h3>
+        <div style="clear:both"></div>
+        <div class="tableHolder"  style="width:1310px;">
+            <form id="forma">
+                <h4>Add new message</h4>
+                <div style="float:left;width:30%;margin-top:15px;margin-left:105px;">
+                    <table>
+                        <tbody>
+                        <tr class="newM" >
+                            <td >
+                                Product:
+                            </td>
+                            <td>
+                                <select id="product" name="product">
+                                {% for productsRows in _products %}
+                                    <option value="{{ productsRows.id }}"> {{ productsRows.title }}</option>
+                                {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="newM">
+                            <td>
+                                Type:
+                            </td>
+                            <td>
+                                <select id="mType" name="mType">
+                                    <option value="">Choose message type</option>
+                                    <option value="1">Initial Message</option>
+                                    <option value="2">Squeeze Message</option>
+
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="transM" style="display:none">
+                            <td>
+                                Reference message:
+                            </td>
+                            <td>
+                                <select id="refMess" name="refMess">
+                                    <option value="">Choose Reference Message</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="newM">
+                            <td>
+                                Full URL:
+                            </td>
+                            <td>
+                               <input id="fullURL" name="fullURL" placeholder="Type full URL of site">
+                            </td>
+                        </tr>
+                        <tr class="newM">
+                            <td>
+                            </td>
+                            <td>
+                                <button type="button" id="sendURL" class="bigOrder" style="height: 39px;width: 90px;font-size: 12px;margin-top: 0px;float: left;" onclick="getShortLink();">Get short</button>
+                                <input id="getShort" name="getShort" placeholder="no shortlink" style="width:160px;" disabled>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+
+
+                            </td>
+                            <td>
+                                <input type="hidden" id="messType" name="messType" value="new" >
+                                <button type="button" id="addOffer" class="bigOrder" style="width:260px;font-size: 20px;" onclick="addMessage();">Add Message</button>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="float:left;width:50%;margin-top:15px;">
+                    <table>
+                        <tbody>
+                        <tr class="transM" style="display:none">
+                            <td style="vertical-align: top;">
+                                Reference text:
+                            </td>
+                            <td style="height: 80px;border: 1px solid #ddd;background-color: #eee;">
+                                <span id="refMessText"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;padding-top: 8px;">
+                                Message text:
+                                <br><br>
+                                Encoding: <span id="charSet" style="float:right;color:red">n/a</span>
+                                <br>
+                                Chars: <span id="charCount" style="float:right;">0</span>
+                            </td>
+                            <td>
+                                <textarea id="messText" name="messText" onkeyup="countChars(this);" style="width:380px;height:85px;"></textarea> <button type="button" id="testMessage" class="bigOrder GreyBtn" style="width:63px;font-size:12px;margin-top:64px;float:right;margin-left:5px;height:27px;" onclick="$('.blocked').show();$('.testMessageHolder').show();$('#testB1').show();">Test</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td  style="vertical-align: top;padding-top: 8px;">Variables:</td>
+                            <td style="vertical-align: top;padding-top: 8px;">
+                                <span class="dynamicVar" style="cursor:pointer;text-decoration: underline;" onclick="insertDynamic(this);">[[contact.name]]</span> - Dynamic name of customer variable
+                                <br>
+                                <span class="dynamicVar" style="cursor:pointer;text-decoration: underline;" onclick="insertDynamic(this);">[[price]]</span> - Dynamic variable for price
+                                <br>
+                                <span class="dynamicVar" style="cursor:pointer;text-decoration: underline;" onclick="insertDynamic(this);">[[upsell]]</span> - Dynamic variable for Upsell price
+                                <br>
+                                <span class="dynamicVar" style="cursor:pointer;text-decoration: underline;" onclick="insertDynamic(this);">[[phone]]</span> - Dynamic variable for phone number
+                                <br>
+                                <span class="dynamicVar" style="cursor:pointer;text-decoration: underline;" onclick="insertDynamic(this);">[[mail]]</span> - Dynamic variable for E-mail
+                                <br>
+                                <span class="dynamicVar" style="cursor:pointer;text-decoration: underline;" onclick="insertDynamic(this);">[[smslink]]</span> - Dynamic variable for Short Link
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </form>
+
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder"  style="width:1310px;">
+            <form id="forma">
+                <table>
+                        <tbody>
+                        <tr>
+                            <td>Product:
+                               <select id="selProduct" name="selProduct" class="chosen-select-products">
+                                    <option value="">All products</option>
+                                    {% for productsRows in _products %}
+                                        <option value="{{ productsRows.id }}"> {{ productsRows.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>Type:
+                                <select id="selType" name="selType">
+                                    <option value="">All types</option>
+                                    <option value="1">Initial Message</option>
+                                    <option value="2">Squeeze Message</option>
+                                </select>
+                            </td>
+                            <td>Date from:</td>
+                            <td>
+                                <input type="text" id="dateFrom" name="from" value="{{ from }}" placeholder="Date From" style="width:90px;">
+                            </td>
+                            <td>Date to:</td>
+                            <td>
+                                <input type="text" id="dateTo" name="to" value="{{ to }}" placeholder="Date To" style="width:90px;">
+                            </td>
+                            <td>
+
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="margin-top: 3px;  margin-left: 45px;cursor:pointer;width: 120px;height: 40px;font-size: 16px;">Search</button>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+            </form>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder"  style="padding: 10px 10px 0 10px;width:1310px;">
+            <div class="dayTable" style="width: 1310px;">
+                 {% autoescape %}
+                        {{ _html|raw }} {# var won't be escaped #}
+                 {% endautoescape %}
+            </div>
+        </div>
+        <div class="legendHolder" style="width:1310px;">
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width:1310px;">
+        </div>
+    </div>
+    <div class="translationHolder">
+        <div class="translationLineHolder">
+            <h2><span class="transLang"></span> - Translation</h2>
+        </div>
+        <div class="translationLineHolder"  style="border-top:1px solid #ccc">
+            <div style="float:left;width:75px;">
+                <span class="charSet" style="float:left;color:red">n/a</span><br>
+                <span class="charCount" style="float:left;">0</span><br>
+                <span style="float:left;">Message:</span>
+                <button type="button" id="testMessage" class="bigOrder GreyBtn" style="width:63px;font-size:12px;margin-top:16px;float:left;margin-left:0px;height:27px;" onclick="$('.blocked').show();$('.testMessageHolder').show();$('#testB2').show();">Test</button>
+            </div>
+
+            <textarea id="transText" onkeyup="countChars(this);" name="transText" style="width:410px;height:85px;float:left;"></textarea>
+        </div>
+        <div class="translationLineHolder" style="border-top:1px solid #ccc">
+            <input type="hidden" id="trAct" class="trAct" value="">
+            <input type="hidden" id="traID" class="traID" value="">
+            <button class="bigOrder GreyBtn" onclick="$('.blocked').hide();$('.translationHolder').hide();$('.selectedTranslation').removeClass('selectedTranslation');$('#charCount').empty();$('.charCount').empty();" style="margin-left:10px;margin-top:0px;cursor:pointer;width:150px;font-size:14px;height:31px;float:right;">Close window</button>
+            <button class="bigOrder GreyBtn" onclick="controlMessage();" style="margin-left:10px;margin-top:0px;cursor:pointer;width:150px;font-size:14px;height:31px;float:right;">Add Message</button>
+        </div>
+
+    </div>
+
+    <div class="testMessageHolder" style="display:none;">
+        <strong>Enter destination number</strong><br>
+
+        <input type="text" id="testNumber"  placeholder="0038765xxxxxx" style="width:290px;"><br>
+        <button type="button" class="bigOrder GreyBtn" style="width:80px;font-size:13px;margin-top:5px;float:left;margin-left:5px;height:40px;" onclick="$('.blocked').hide();$('.testMessageHolder').hide();$('#testB1,#testB2').hide();">Cancel</button>
+        <button type="button" id="testB1" class="bigOrder GreyBtn" style="width:150px;font-size:13px;margin-top:5px;float:left;margin-left:5px;height:40px;display:none;" onclick="testMessage(1);">Send Message</button>
+        <button type="button" id="testB2" class="bigOrder GreyBtn" style="width:150px;font-size:13px;margin-top:5px;float:left;margin-left:5px;height:40px;display:none;" onclick="testMessage(2);">Send Message</button>
+
+    </div>
+
+{% endblock %}
+{% include '::footer.html.twig' %}
+{% block javascripts %}
+    <script>
+                jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+                "num-html-pre": function ( a ) {
+                    var x = String(a).replace( /<[\s\S]*?>/g, "" );
+                    return parseFloat( x );
+                },
+
+                "num-html-asc": function ( a, b ) {
+                    return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+                },
+
+                "num-html-desc": function ( a, b ) {
+                    return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+                }
+            } );
+
+            $(document).ready(function(){
+                initDataTable();
+                $('#country').change(function(){
+                    var countryCode = $('#country option:selected').val();
+                });
+
+                $('#dateFrom,#dateTo').datepicker({
+                    dateFormat: "yy-mm-dd"
+                });
+
+           });
+            //*********************************************************************
+            //**********SNIMANJE PORUKA *******************************************
+            //*********************************************************************
+
+            function addMessage(){
+                var podaciForme ={};
+                podaciForme['action'] = 'addMessage';
+
+                $("form [name]").each(function (){
+                    var kljuc = $(this).attr("name");
+                    var vrijednost = $(this).val();
+                    podaciForme[kljuc] = vrijednost;
+                });
+
+
+                if (podaciForme["messText"] == "" || podaciForme["mType"] == ""){
+                    showWarning("You must fill out the form!");
+                    return false;
+                }
+
+                $.ajax({
+                    url:httpSiteURL+"CampaignsAjax",
+                    type:"POST",
+                    dataType:"JSON",
+                    data:podaciForme,
+                    async: true,
+                    success:function(data){
+                        if(data > 0)
+                        {
+                            $('#tabela').append('<tr>' +
+                                '<td ></td>'+
+                                '<td >'+ podaciForme["product"] +'</td>'+
+                                '<td >'+ podaciForme["messText"] +'</td>'+
+                                '<td >'+ podaciForme["mLength"] +'</td>'+
+                                '<td >-</td>'+
+                                '<td ></td>'+
+                                '</tr>');
+
+                            showSuccess("New Message Added to database!");
+                        }
+                        location.reload();
+                    }
+                });
+                return false;
+            }
+            //**********Selekcija polja tabele - GENERALIZOVANO *******************
+            //*********************************************************************
+            var table = "phone_order_messages"; // OBAVEZNO PRILAGODJAVANJE TABELI
+
+            /***** inicializovanja data table *******/
+            function initDataTable(){
+                $('#example').dataTable({
+                    sDom: "",
+                    /*"sDom": 'T<"clear">lfrtip',*/
+                    /*"bProcessing": true,*/
+                    "bDestroy": true,
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "bSortCellsTop": true,
+                    "aaSorting": [[ 0, "asc" ]],
+                    "aoColumns": [
+                        {"sType": 'num-html'},
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "oTableTools": {
+                        "sSwfPath": "http://www.instanio.com/dev/js/plugins/datatables/media/swf/copy_csv_xls_pdf.swf" ,
+                        "aButtons": [
+                        ]
+                    }
+                });
+            }
+            //**********Pokazi prevod za poruku *******************
+            //*********************************************************************
+            function showMessageTranslation(obj,act) {
+                console.log(obj);
+                $("#charCount").empty();
+                $(".charCount").empty();
+                var transState = obj.textContent;
+                var transID = obj.getAttribute("data-trid");
+                var preAction = obj.classList.contains("existTrans");
+                obj.className += " selectedTranslation";
+
+                $('#transText').val('');
+                $(".transLang").empty();
+                $(".transLang").append(transState);
+
+                $(".trAct").val(act);
+                $(".traID").val(transID);
+
+
+                if(preAction == true){
+
+                    var selektovan = {action:"getMessageTrans",state:transState, mID:transID};
+                    $.ajax({
+                        url:httpSiteURL+"CampaignsAjax",
+                        type:"POST",
+                        dataType:"JSON",
+                        data:selektovan,
+                        async: true,
+                        success:function(data){
+                            $('#transText').val('');
+                            $('#transText').val(data.message);
+                            countChars($('#transText').get( 0 ));
+                            $('.blocked').show();
+                            $(".translationHolder").show();
+                        }
+                    });
+                    return false;
+
+                }
+                $('.blocked').show();
+                $(".translationHolder").show();
+            }
+        // ******************************************************************************************
+        // ***************  ADD / EDIT MESSAGE function *********************************************
+        // ******************************************************************************************
+
+            function controlMessage() {
+                var tranID = $(".traID").val();   // ID originalne BA poruke za koju je izabran prevod
+                var transLan = $(".transLang").text();  // State code prevoda koji je izabran
+                var trAct = $(".trAct").val();  // akcija koja se radi Update ili New
+                var messageText = $('#transText').val();
+                if (trAct == "update") {
+
+                    var messData = {action:"updateMessageTrans",state:transLan, mID:tranID, messageText:messageText};
+                    $.ajax({
+                        url:httpSiteURL+"CampaignsAjax",
+                        type:"POST",
+                        dataType:"JSON",
+                        data:messData,
+                        async: true,
+                        success:function(data){
+                            $("#charCount").empty();
+                            $(".charCount").empty();
+                            $(".translationHolder").hide();
+                            $('.blocked').hide();
+                            if (data > 0) {
+                                showSuccess("Translation succesfully updated!");
+                            } else {
+                                showError("Translation not updated!");
+                            }
+                            $(".selectedTranslation").removeClass("selectedTranslation");
+                        }
+                    });
+                    return false;
+
+                } else if(trAct == "new"){
+                    var messData = {action:"newMessageTrans",state:transLan, mID:tranID, messageText:messageText};
+                    $.ajax({
+                        url:httpSiteURL+"CampaignsAjax",
+                        type:"POST",
+                        dataType:"JSON",
+                        data:messData,
+                        async: true,
+                        success:function(data){
+                            $('.blocked').hide();
+                            $(".translationHolder").hide();
+                            $("#charCount").empty();
+                            $(".charCount").empty();
+                            if (data > 0) {
+                                showSuccess("Translation succesfully added!");
+                                $(".selectedTranslation").css("color","#0c0");
+
+                            } else {
+                                showError("Translation not added!");
+                            }
+                            $(".selectedTranslation").removeClass("selectedTranslation");
+                        }
+                    });
+                    return false;
+                } else {
+                    alert("Error in sending action for translation");
+                }
+
+
+
+            }
+
+            function insertDynamic(o){
+                var dynaVar = o.textContent;
+                var cursorPos = $('#messText').prop('selectionStart');
+                var v = $('#messText').val();
+                var textBefore = v.substring(0,  cursorPos);
+                var textAfter  = v.substring(cursorPos, v.length);
+
+                $('#messText').val(textBefore + dynaVar + textAfter);
+            }
+
+            function testMessage(pos){
+
+                var podaci ={};
+                podaci['action']   = 'sendTestMessage';
+                //podaci["state"]    = $('#testState option:selected').val();
+                podaci["number"]   = $('#testNumber').val();
+
+                if (pos == 1){
+                    podaci["message"]  = $('#messText').val();
+                } else {
+                    podaci["message"]  = $('#transText').val();
+                }
+
+                if (podaci["number"] == "" || podaci["message"] == ""){
+                    showWarning("You must enter all data!");
+                    return false;
+                }
+
+                $.ajax({
+                    url:httpSiteURL+"CampaignsAjax",
+                    type:"POST",
+                    dataType:"JSON",
+                    data:podaci,
+                    async: true,
+                    success:function(data){
+                        if(data)
+                        {
+                            showSuccess("Message sent!");
+                            $('.blocked').hide();
+                            $('.testMessageHolder').hide();$('#testB1,#testB2').hide();
+                        } else {
+                            showError("Message not sent!");
+                        }
+                    }
+                });
+                return false;
+            }
+
+            function getShortLink() {
+                var full = $('#fullURL').val();
+
+                if (full.length > 10){
+                    var podaci ={};
+                    podaci['action']   = 'getShortURL';
+                    podaci["longURL"]      = full;
+
+                    $.ajax({
+                        url:httpSiteURL+"CampaignsAjax",
+                        type:"POST",
+                        dataType:"JSON",
+                        data:podaci,
+                        async: true,
+                        success:function(data){
+                            if(data)
+                            {
+                                $('#getShort').val(data);
+                            }
+                        }
+                    });
+                    return false;
+
+                } else {
+                    showWarning("URL is not valid!");
+                }
+            }
+            $(".chosen-select-products").chosen({no_results_text: "No results"});
+    </script>
+{% endblock %}
+</body>
+
+</html>

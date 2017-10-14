@@ -1,0 +1,376 @@
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
+#    schemes:  [https]
+_ajax:
+    resource: "@AjaxBundle/Controller/"
+    type:     annotation
+
+default:
+    path:      /
+    defaults:  { _controller: AppBundle:Default:index }
+
+index:
+    path:      /index
+    defaults:  { _controller: AppBundle:Default:index }
+
+login:
+    path:      /login
+    defaults:  { _controller: AppBundle:Default:login }
+
+redirect:
+    path:      /redirect
+    defaults:  { _controller: AppBundle:Default:redirect }
+
+#statistic inbound
+viewDataIn:
+    path:      /statsin/viewData
+    defaults:  { _controller: AppBundle:Inbound:viewData }
+
+statChart:
+    path:      /statsin/statChart
+    defaults:  { _controller: AppBundle:Inbound:statChart }
+
+inboundCharts:
+    path:      /statsin/inboundCharts
+    defaults:  { _controller: AppBundle:Inbound:inboundCharts }
+
+operatorin:
+    path:      /statsin/operator
+    defaults:  { _controller: AppBundle:Inbound:operator }
+
+callCenterIn:
+    path:      /statsin/callCenter
+    defaults:  { _controller: AppBundle:Inbound:callCenter }
+
+projectedStatisticIn:
+    path:      /statsin/projectedStatistic
+    defaults:  { _controller: AppBundle:Inbound:projectedStatistic }
+#END statistic inbound
+
+#statistic outbound
+viewDataOut:
+    path:      /statsout/viewData
+    defaults:  { _controller: AppBundle:Outbound:viewData }
+
+outboundCharts:
+    path:      /statsout/outboundCharts
+    defaults:  { _controller: AppBundle:Outbound:outboundCharts }
+
+operatorout:
+    path:      /statsout/operator
+    defaults:  { _controller: AppBundle:Outbound:operator }
+
+validation:
+    path:      /statsout/validation
+    defaults:  { _controller: AppBundle:Outbound:validation }
+
+callCenterOut:
+    path:      /statsout/callCenter
+    defaults:  { _controller: AppBundle:Outbound:callCenter }
+
+projectedStatisticOut:
+    path:      /statsout/projectedStatistic
+    defaults:  { _controller: AppBundle:Outbound:projectedStatistic }
+
+notCalled:
+    path:      /statsout/notCalled
+    defaults:  { _controller: AppBundle:Outbound:notCalled }
+#END statistic outbound
+orders:
+    path:      /summary/orders
+    defaults:  { _controller: AppBundle:Summary:orders }
+
+ordersEur:
+    path:      /summary/ordersEur
+    defaults:  { _controller: AppBundle:Summary:ordersEur }
+
+ordersDocument:
+    path:      /summary/ordersDocument
+    defaults:  { _controller: AppBundle:Summary:ordersDocument }
+
+report:
+    path:      /summary/report
+    defaults:  { _controller: AppBundle:Summary:report }
+
+summaryReport:
+      path:      /summary/summaryReport
+      defaults:  { _controller: AppBundle:Summary:summaryReport }
+
+summaryInboundReport:
+      path:      /summary/summaryInboundReport
+      defaults:  { _controller: AppBundle:Summary:summaryInboundReport }
+
+summaryOutboundReport:
+      path:      /summary/summaryOutboundReport
+      defaults:  { _controller: AppBundle:Summary:summaryOutboundReport }
+
+# campaigns
+addBulk:
+    path:      /campaigns/addBulk
+    defaults:  { _controller: AppBundle:Campaigns:addBulk }
+
+addReorder:
+    path:      /campaigns/addReorder
+    defaults:  { _controller: AppBundle:Campaigns:addReorder }
+
+addSplit:
+    path:      /campaigns/addSplit
+    defaults:  { _controller: AppBundle:Campaigns:addSplit }
+
+campaigns:
+    path:      /campaigns/campaigns
+    defaults:  { _controller: AppBundle:Campaigns:campaigns }
+
+reorder:
+    path:      /campaigns/reorder
+    defaults:  { _controller: AppBundle:Campaigns:reorder }
+
+split:
+    path:      /campaigns/split
+    defaults:  { _controller: AppBundle:Campaigns:split }
+
+messages:
+    path:      /campaigns/messages
+    defaults:  { _controller: AppBundle:Campaigns:messages }
+
+messagePerformance:
+    path:      /campaigns/messagePerformance
+    defaults:  { _controller: AppBundle:Campaigns:messagePerformance }
+
+shortLinks:
+    path:      /campaigns/shortLinks
+    defaults:  { _controller: AppBundle:Campaigns:shortLinks }
+
+bulkShortLinks:
+    path:      /campaigns/bulkShortLinks
+    defaults:  { _controller: AppBundle:Campaigns:bulkShortLinks }
+
+suppression:
+    path:      /campaigns/suppression
+    defaults:  { _controller: AppBundle:Campaigns:suppression }
+
+smsDifference:
+    path:      /campaigns/smsDifference
+    defaults:  { _controller: AppBundle:Campaigns:smsDifference }
+
+smsCampaigns:
+    path:      /campaigns/smsCampaigns
+    defaults:  { _controller: AppBundle:Campaigns:smsCampaigns }
+
+#END outbound
+users:
+    path:      /settings/users
+    defaults:  { _controller: AppBundle:Settings:users }
+
+costs:
+    path:      /settings/costs
+    defaults:  { _controller: AppBundle:Settings:costs }
+
+callCenters:
+    path:      /settings/callCenters
+    defaults:  { _controller: AppBundle:Settings:callCenters }
+
+callCenterCosts:
+    path:      /settings/callCenterCosts
+    defaults:  { _controller: AppBundle:Settings:callCenterCosts }
+
+smsPrices:
+    path:      /settings/smsPrices
+    defaults:  { _controller: AppBundle:Settings:smsPrices }
+
+productPrices:
+    path:      /settings/productPrices
+    defaults:  { _controller: AppBundle:Settings:productPrices }
+
+productDescription:
+    path:      /settings/productDescription
+    defaults:  { _controller: AppBundle:Settings:productDescription }
+
+reorderLinks:
+    path:      /settings/reorderLinks
+    defaults:  { _controller: AppBundle:Settings:reorderLinks }
+
+outboundSwitchProducts:
+    path:      /settings/outboundSwitchProducts
+    defaults:  { _controller: AppBundle:Settings:outboundSwitchProducts }
+
+productProfiles:
+    path:      /settings/productProfiles
+    defaults:  { _controller: AppBundle:Settings:productProfiles }
+
+# Reports
+smsSent:
+    path:      /report/smsSent
+    defaults:  { _controller: AppBundle:Report:smsSent }
+
+phoneStatus:
+    path:      /report/phoneStatus
+    defaults:  { _controller: AppBundle:Report:phoneStatus }
+
+smsAnalytics:
+    path:      /report/smsAnalytics
+    defaults:  { _controller: AppBundle:Report:smsAnalytics }
+
+callTrack:
+    path:      /report/callTrack
+    defaults:  { _controller: AppBundle:Report:callTrack }
+
+TmRequest:
+    path:      /report/TmRequest
+    defaults:  { _controller: AppBundle:Report:TmRequest }
+
+twillioStatus:
+    path:      /report/twillioStatus
+    defaults:  { _controller: AppBundle:Report:twillioStatus }
+
+userLogs:
+    path:      /report/userLogs
+    defaults:  { _controller: AppBundle:Report:userLogs }
+
+callers:
+    path:      /report/callers
+    defaults:  { _controller: AppBundle:Report:callers }
+# END Reports
+orderData:
+    path:      /ajax/orderData
+    defaults:  { _controller: AppBundle:Ajax:orderData }
+
+inboundOrders:
+    path:      /ajax/inboundOrders
+    defaults:  { _controller: AppBundle:Ajax:inboundOrders }
+
+outboundOrders:
+    path:      /ajax/outboundOrders
+    defaults:  { _controller: AppBundle:Ajax:outboundOrders }
+
+CampaignsAjax:
+    path:      /CampaignsAjax
+    defaults:  { _controller: AjaxBundle:CampaignsAjax:ajax }
+
+InboundAjax:
+    path:      /InboundAjax
+    defaults:  { _controller: AjaxBundle:InboundAjax:ajax }
+
+MainAjax:
+    path:      /MainAjax
+    defaults:  { _controller: AjaxBundle:MainAjax:ajax }
+
+MainOutboundAjax:
+    path:      /MainOutboundAjax
+    defaults:  { _controller: AjaxBundle:MainOutboundAjax:ajax }
+
+
+OutboundAjax:
+    path:      /OutboundAjax
+    defaults:  { _controller: AjaxBundle:OutboundAjax:ajax }
+
+SettingsAjax:
+    path:      /SettingsAjax
+    defaults:  { _controller: AjaxBundle:SettingsAjax:ajax }
+
+
+
+AjaxBulkLinks:
+    path:      /AjaxBulkLinks
+    defaults:  { _controller: AjaxBundle:AjaxBulkLinks:index }
+
+SmsCampAjax:
+    path:       /SmsCampAjax
+    defaults:  { _controller: AjaxBundle:SmsCampAjax:index }
+RequestHandler:
+    path:       /RequestHandler
+    defaults:  { _controller: AjaxBundle:RequestHandlerAjax:index }
+
+# Languages
+
+
+languages:
+    path:      /inbound/index/{state}
+    defaults:  { _controller: AppBundle:Languages:index }
+
+MultiPanel:
+    path:      /inbound/MultiPanel
+    defaults:  { _controller: AppBundle:Multipanel:index }
+    
+languagesOut:
+    path:      /outbound/index/{state}
+    defaults:  { _controller: AppBundle:LanguagesOut:index }
+
+call:
+    path:      /outbound/call/{state}
+    defaults:  { _controller: AppBundle:LanguagesOut:call }
+
+callTest:
+    path:      /outbound/callTest/{state}
+    defaults:  { _controller: AppBundle:LanguagesOut:call9 }
+
+callt:
+    path:      /outbound/callt/{state}
+    defaults:  { _controller: AppBundle:LanguagesOut:callt }
+
+callt2:
+    path:      /outbound/callt2/{state}
+    defaults:  { _controller: AppBundle:LanguagesOut:callt2 }
+
+callt3:
+    path:      /outbound/callt3/{state}
+    defaults:  { _controller: AppBundle:LanguagesOut:callvs }
+
+callt4:
+    path:      /outbound/callt4/{state}
+    defaults:  { _controller: AppBundle:LanguagesOut:callHRgs }
+
+call2:
+    path:      /outbound/call2/{state}
+    defaults:  { _controller: AppBundle:LanguagesOut:call2 }
+
+#call2t:
+#    path:      /outbound/call2t/{state}
+#    defaults:  { _controller: AppBundle:LanguagesOut:call2t }
+
+call3:
+    path:      /outbound/call3/{state}
+    defaults:  { _controller: AppBundle:LanguagesOut:call3 }
+
+callZeljka:
+    path:      /outbound/callZeljka/{state}
+    defaults:  { _controller: AppBundle:LanguagesOut:callZeljka }
+
+call4:
+  path:      /outbound/call4/{state}
+  defaults:  { _controller: AppBundle:LanguagesOut:call4 }
+
+call5:
+  path:      /outbound/call5/{state}
+  defaults:  { _controller: AppBundle:LanguagesOut:call5 }
+
+call6:
+  path:      /outbound/call6/{state}
+  defaults:  { _controller: AppBundle:LanguagesOut:call6 }
+
+call7:
+  path:      /outbound/call7/{state}
+  defaults:  { _controller: AppBundle:LanguagesOut:call7 }
+
+call8:
+  path:      /outbound/call8/{state}
+  defaults:  { _controller: AppBundle:LanguagesOut:call8 }
+
+testPhonePanelUsers:
+    path:      /outbound/testPhonePanelUsers
+    defaults:  { _controller: AppBundle:LanguagesOut:testPhonePanelUsers }
+
+languagesInd:
+    path:      /inbound/index
+    defaults:  { _controller: AppBundle:Languages:index }
+
+
+# END Languages
+FillOrderForm:
+    path:      /fillOrderForm
+    defaults:  { _controller: AjaxBundle:FillOrderFormAjax:ajax }
+
+Tracker:
+    path:       /Tracker
+    defaults:  { _controller: AjaxBundle:TrackerAjax:index }

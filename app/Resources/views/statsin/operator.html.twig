@@ -1,0 +1,361 @@
+{% include '::header.html.twig' %}
+<body>
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+        #example tbody td{
+            font-size: 12px;
+        }
+        .yellowLine {
+            background-color: #d8d5b5 !important;
+        }
+        input [type=text], select {
+            float: left;
+        }
+
+    </style>
+{% endblock %}
+{% block javascripts %}
+    <script>
+    $(function () {
+            $('#curve_chart').highcharts({
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: '{{ charthead|raw }}'
+                },
+                xAxis: {
+                    categories: [
+                        {{ ccategories|raw }}
+                    ]
+                },
+                yAxis: {
+                    title: {
+                        text: 'Rate'
+                    }
+                },
+                series: [
+                    {{ cseries|raw }}
+                ]
+            });
+        });
+    </script>
+{% endblock %}   
+<body>
+{% block body %}
+    {% set emptyarr = {'state': '', 'product': '', 'ordType': '', 'outcome': '', 'ordNum': '', 'reason': '', 'ordSource': '', 'user': '', 'group': '', 'sType': '1', 'rType': '1'} %}
+    {% set queryarr = app.request.query.all %}
+    {% set qp = emptyarr|merge(queryarr) %}
+    {% set downloadName = '/Download/InboundStats/OperatorStatsInb' %}
+
+    {% if qp.state != "" %}
+        {%   set downloadName = '/Download/InboundStats/OperatorStatsInb-' %}
+    {% endif %}
+
+    <div class="main">
+        <h3 class="headline" style="width:1421px;">{{ title }} statistics</h3>
+        <div style="clear:both"></div>
+        <div class="chartBox" style="width: 1422px;height: 10px;margin-bottom: 10px; border:none;font-size:14px" >
+            Show stats per:
+
+            {% set redText = "" %}
+            {% if qp.sType == 1 %}
+                {% set redText = "style=\"color:#900;\"" %}
+            {% endif %}
+                    <a class="chartLink" {{ redText|raw }} href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordSource={{ qp.ordSource }}&user={{ qp.user }}&group={{ qp.group }}&from={{ from }}&to={{ to }}&rType={{ qp.rType }}&sType=1">Day</a>
+
+            {% set redText = "" %}
+            {% if qp.sType == 3 %}
+                {% set redText = 'style="color:#900;"' %}
+            {% endif %}
+
+                    <a class="chartLink" {{ redText|raw }} href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordSource={{ qp.ordSource }}&user={{ qp.user }}&group={{ qp.group }}&from={{ from }}&to={{ to }}&rType={{ qp.rType }}&sType=3">Week</a>
+
+            {% set redText = "" %}
+            {% if qp.sType == 2  %}
+                {% set redText = 'style="color:#900;"' %}
+            {% endif %}
+
+                    <a class="chartLink" {{ redText|raw }} href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordSource={{ qp.ordSource }}&user={{ qp.user }}&group={{ qp.group }}&from={{ from }}&to={{ to }}&rType={{ qp.rType }}&sType=2">Month</a>
+
+                    <span style="margin-left:40px;">Rate type: </span>
+
+            {% set redText = "" %}
+            {% if qp.rType == 1  %}
+                {% set redText = 'style="color:#900;"' %}
+            {% endif %}
+
+                    <a class="chartLink" {{ redText|raw }} href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordSource={{ qp.ordSource }}&user={{ qp.user }}&group={{ qp.group }}&from={{ from }}&to={{ to }}&rType=1&sType={{ qp.sType }}">Success</a>
+
+            {% set redText = "" %}
+            {% if qp.rType == 2  %}
+                {% set redText = 'style="color:#900;"' %}
+            {% endif %}
+
+                    <a class="chartLink" {{ redText|raw }} href="?state={{ qp.state }}&ordType={{ qp.ordType }}&ordSource={{ qp.ordSource }}&user={{ qp.user }}&group={{ qp.group }}&from={{ from }}&to={{ to }}&rType=2&sType={{ qp.sType }}">Cancel</a>
+        </div>
+        <div style="clear:both"></div>
+        <div class="chartBox" style="width: 1422px;height: 502px;margin-bottom: 10px;">
+            <div id="curve_chart" style="width: 1421px; height: 500px"></div>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1400px;">
+            <h4></h4>
+            <form>
+                <div style="width:31%;float:left;">
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td>
+                                State:
+                            </td>
+                            <td>
+                                <select id="state" name="state">
+                                    <option value="">ALL</option>
+                                    {% for statesRows in _states %}
+                                        <option value="{{ statesRows.code2 }}"> {{ statesRows.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('state');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Product:
+                            </td>
+                            <td>
+                                <select id="product" name="product">
+                                    <option value="">ALL</option>
+                                    {% for productsRows in _products %}
+                                        <option value="{{ productsRows.id }}"> {{ productsRows.title }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('product');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                User:
+                            </td>
+                            <td>
+                                <select id="user" name="user">
+                                    <option value="">ALL</option>
+                                    {% for userRows in _users %}
+                                        <option value="{{ userRows.id }}"> {{ userRows.name }} {{ userRows.surname }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('user');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Call center group:
+                            </td>
+                            <td>
+                                <select id="group" name="group">
+                                    <option value="">ALL</option>
+                                    {% for centersRows in _centers %}
+                                        <option value="{{ centersRows.id }}"> {{ centersRows.name }} ({{ centersRows.state }})</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('group');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Order type:
+                            </td>
+                            <td>
+                                <select id="ordType" name="ordType">
+                                    <option value="">ALL</option>
+                                    <option value="1" label="ORDER">ORDER</option>
+                                    <option value="2" label="OTHER">OTHER</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('ordType');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Order source:
+                            </td>
+                            <td>
+                                <select id="ordSource" name="ordSource">
+                                    <option value="">ALL</option>
+                                    <option value="1" label="Page Order">Page Order</option>
+                                    <option value="2" label="SMS Bulk order">SMS Bulk order</option>
+                                    <option value="3" label="Print Order">Print Order</option>
+                                    <option value="4" label="SMS Reorder">SMS Reorder</option>
+                                    <option value="5" label="Vip Mails">Vip Mails</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('ordSource');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Date from:
+                            </td>
+                            <td>
+                                <input name="from" type="text" id="datumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ from }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Date to:
+                            </td>
+                            <td>
+                                <input name="to" type="text" id="datumTo" placeholder=""onclick="$(this).datepicker();"  style="width:90px;" value="{{ to }}">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:50%;float:left;">
+                    <table >
+                        <tbody>
+
+                        <tr>
+                            <td>
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="margin-top: 330px; margin-left: -197px;cursor:pointer;width: 120px;height: 40px;font-size: 16px;">Search</button>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="width: 1400px;">
+            <table style="width: 100%;">
+                <tbody>
+                <tr>
+                    {% for statesRows in _states %}
+                        <td>
+                            <a href="?state={{ statesRows.code2 }}&product={{ qp.product }}&user={{ qp.user }}&group={{ qp.group }}&ordType={{ qp.ordType }}&ordSource={{ qp.ordSource }}&from={{ from }}&to={{ to }}" style="margin-right: 10px;">{{ statesRows.code2 }} </a>
+                        </td>
+                    {% endfor %}
+                    <td>
+                        <button class="bigOrder delButton" onclick="exportStats({{ random }});" style="float:right;cursor:pointer;width: 120px;height:30px;font-size:14px;">Export</button>
+                    </td>
+                    <td>
+                        <span id="downloadText" style="display:none;"><a href="{{ app.request.getBaseURL() }}{{ downloadName }}{{ qp.state }}-{{ exportFile }}">Download</a></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="padding: 10px 10px 0 10px;width: 1400px;">
+
+            <div class="dayTable" style="width: 1400px;">
+                {% autoescape %}
+                    {{ _html|raw }} {# var won't be escaped #}
+                {% endautoescape %}
+            </div>
+        </div>
+
+        <div style="clear:both"></div>
+        <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width: 1400px;">
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts2 %}
+    <script type="text/javascript" src="/ver3/web/js/highcharts.js"></script>
+    <script>
+        $(document).ready(function(){
+
+            initDataTable();
+            $('#datumFrom,#datumTo').datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            getToOption('state','state');
+            getToOption('product','product');
+            getToOption('user','user');
+            getToOption('group','group');
+            getToOption('ordType','ordType');
+            getToOption('ordSource','ordSource');
+        });
+
+        /***** inicializovanja data table *******/
+        function initDataTable() {
+            $('#example').DataTable({
+                "paging": false,
+                "order": [0, 'asc'],
+                "destroy": true,
+                "searching": false,
+                "columns": [
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {}
+                ]
+            });
+        }
+        function exportStats(randomNum) {
+            var podaci = {};
+            podaci['action']      = 'exportOperatorStats';
+            podaci["random"]      = randomNum;
+            podaci["state"]       = $('#state').find('option:selected').val();
+            podaci["product"]     = $('#product').find('option:selected').val();
+            podaci["ordType"]     = $('#ordType').find('option:selected').val();
+            podaci["ordSource"]   = $('#ordSource').find('option:selected').val();
+            podaci["user"]        = $('#user').find('option:selected').val();
+            podaci["group"]       = $('#group').find('option:selected').val();
+            podaci["from"]        = '{{ from }}';
+            podaci["to"]          = '{{ to }}';
+            console.log(podaci);
+
+
+            $('#downloadText').show();
+            $.ajax({
+                url:httpSiteURL+"InboundAjax",
+                type:"GET",
+                //dataType:"JSON",
+                data:podaci,
+                async: true,
+
+            }).done(function (data) {
+                console.log('success');
+            }).fail(function (data) {
+                //error in comuication with server
+                console.log('Error: Server returned error');
+            }).always(function (data) {
+                // console.log('always');
+            });
+            return false;
+        }
+    </script>
+{% endblock %}
+</body>
+
+</html>

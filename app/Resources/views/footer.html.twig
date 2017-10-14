@@ -1,0 +1,27 @@
+<input type="hidden" id="outCancelStatus" value="">
+<input type="hidden" id="callerId" value="{% if data is defined %} {{ data.callerId }} {% endif %}">
+<div class="blocked" style="display:none;"></div>
+<div class="alertBox errorB">
+    <div class="alert-box error"><span class="aBoxTitle">error: </span><span id="messageE">Write your error message here.</span></div>
+</div>
+<div class="alertBox successB">
+    <div class="alert-box success"><span class="aBoxTitle">success: </span><span id="messageS">Write your error message here.</span></div>
+</div>
+<div class="alertBox warningB">
+    <div class="alert-box warning"><span class="aBoxTitle">warning: </span><span id="messageW">Write your error message here.</span></div>
+</div>
+<div class="alertBox noticeB">
+    <div class="alert-box notice"><span class="aBoxTitle">notice: </span><span id="messageN">Write your error message here.</span></div>
+</div>
+<div class="loaderGreen" style="display:none;">
+    
+    {#<img src="http://phone-sale.net/ver3/web/images/loaderGreen.gif">#}
+    <img src="{{ asset('images/loaderGreen.gif') }}">
+</div>
+<div class="csvViewBox" style="display:none;">
+    <div style="width:180px;height:15px; font-size:18px;font-weight: bold;color:#000;margin-bottom: 10px;text-align: left;border-bottom: 1px solid #888;padding:5px 0;">
+        <span style="cursor:pointer" onclick="$('.csvViewBox').hide();">X</span>
+    </div>
+    <div style="clear:both;"></div>
+    <span id="csvViewBox"></span>
+</div>

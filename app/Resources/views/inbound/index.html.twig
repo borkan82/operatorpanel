@@ -1,0 +1,753 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+{% set URL = '//domain.com/' %}
+<input type="hidden" id="state" value="{{ state }}">
+
+<input type="hidden" id="cancelText" value="{{ content[250] }}">
+<input type="hidden" id="openText" value="{{ content[251] }}">
+<input type="hidden" id="unMsg" value="{{ content[252] }}">
+<input type="hidden" id="choosePr" value="{{ content[253] }}">
+<input type="hidden" id="yNum" value="{{ content[254] }}">
+<input type="hidden" id="yMail" value="{{ content[255] }}">
+<input type="hidden" id="isDeleted" value="{{ content[256] }}">
+<input type="hidden" id="supNum" value="{{ content[257] }}">
+<input type="hidden" id="noValidNum" value="{{ content[258] }}">
+<input type="hidden" id="noNameFound" value="{{ content[209] }}">
+
+
+<input type="hidden" id="content" value="{{ content |json_encode() }}">
+{% block stylesheet %}
+    <style>
+        .callInfoBox{
+            margin-top: -420px;
+        }
+    </style>
+{% endblock %}
+{% block javascripts5 %}
+
+    <script type="text/javascript" src="{{ asset('js/interfaceV2.js')}}"></script>
+    <script type="text/javascript" src="{{ asset('js/translations.js') }} "></script>
+    <script>
+        var json_desc = {{ descJS | json_encode |raw}};
+        var json_upsellText = {{ upsellJS | json_encode |raw}};
+    </script>
+
+
+{% endblock %}
+
+<body>
+{% block body %}
+
+
+<div class="rightholder">
+
+    {#<!--Box kampanje-->#}
+    <div class="campaignsHolder" id="campaignsholder" >
+        <div id="campaignsdiv">
+            <div class="row-col" >
+                <div class="left-col-6 firstInfo" style="padding: 13px;">
+                    {{ content[55] }}
+                </div>
+                <div class="right-col-6">
+
+                </div>
+            </div>
+
+            <div class="faqBox" id="fix_10" style="padding:0px; width:300px;">
+                <div class="faqQuest" onclick="$('.rightLine').hide();$('#faqA').show();">
+                    {{ content[312] }}
+                </div>
+                <div class="quest_cont_drugo rightLine" id="faqA" faq-id="1" step="other1"
+                     style="height:55px; margin-top: 5px;display:none;">
+                    <label for="answer"
+                           style="font-size:13px;">{{ content[313] }}</label>
+                </div>
+                <div class="clear"></div>
+                <div class="faqQuest" onclick="$('.rightLine').hide();$('#faqB').show();">
+                    {{ content[314] }}
+                </div>
+                <div class="quest_cont_drugo rightLine" id="faqB" faq-id="2" step="other2"
+                     style="height:55px; margin-top: 10px;display:none;">
+                    <label for="answer"
+                           style="font-size:13px;">{{ content[315] }}</label>
+                </div>
+                <div class="clear"></div>
+                <div class="faqQuest" onclick="$('.rightLine').hide();$('#faqC').show();">
+                    {{ content[316] }}
+                </div>
+                <div class="quest_cont_drugo rightLine" id="faqC" faq-id="3" step="other3"
+                     style="height:55px; margin-top: 10px;display:none;">
+                    <label for="answer"
+                           style="font-size:13px;">{{ content[317] }}</label>
+                </div>
+                <div class="clear"></div>
+                <div class="faqQuest" onclick="$('.rightLine').hide();$('#faqD').show();">
+                    {{ content[318] }}
+                </div>
+                <div class="quest_cont_drugo rightLine" id="faqD" faq-id="4" step="other4"
+                     style="height:55px; margin-top: 10px;display:none;">
+                    <label for="answer"
+                           style="font-size:13px;">{{ content[319] }}</label>
+                </div>
+                            <textarea id="faqComment" type="text" placeholder="{{ content[326] }}"
+                                      style="width:212px; height:72px; margin-top:10px; margin-bottom:10px; float:left; margin-left:3px;display:none;"></textarea>
+                <div class="clear"></div>
+
+                <div class="faqQuest" onclick="$('.rightLine').hide();$('#faqE').show();">
+                    {{ content[320] }}
+                </div>
+                <div class="quest_cont_drugo rightLine" id="faqE" faq-id="5" step="other5"
+                     style="height:55px; margin-top: 10px;display:none;">
+                    <label for="answer"
+                           style="font-size:13px;">{{ content[322] }}</label>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="subtopline">
+    <div class="topLineHolder">
+        <button  type="button" id="open_order" class="callBtn" onclick="callUp('{{ callTrack }}')">{{ content[0] }}</button>
+        <div class="topInfoHolder">
+            <p style="margin-top:10px;margin-left:10px;border-left:1px solid #BCC3BC">{{ content[1] }} {{ korisnik.Ime }} {{ korisnik.Prezime }} <br>
+                <strong><a style="text-decoration:none;color:#000" href="{{ path('login', {'logout': '1'}) }}">Logout</a></strong></p>
+
+        </div>
+        {#<div class="faqtop"><span onclick="window.open('other/callpanelprotocol.pdf','faqwindow','height=1000,width=1000');"><img  src="../../images/protocol.png"><span class="borderspan" style="margin-right: 10px;">{{ content[7] }}</span></span><span onclick="window.open('../../faqdocs/faq-rs.php','faqwindow','height=1000,width=1000');"><img  src="../../images/faq.png"><span class="borderspan">{{ content[8] }}</span></span></div>#}
+    </div>
+</div>
+
+
+
+<div class="main" style="border-left: 1px solid #ccc;margin-bottom: 300px;">
+    {#<!------------------------------------- START Conversation Flow   ------------------------------>#}
+    <div class="conversation_flow" id="conversation_flow">
+        {#<!------------------------------------- 1. PITANJE  ------------------------------>#}
+        <div class="answers">
+            <div class="checkBox" style="margin-top: 25px;">
+                <input name="initialPhone" id="initialPhone" type="text" placeholder="{{ content[9] }}"
+                       style="width:200px; margin-right:10px;" value="{{ predefinedPhone }}">
+                <button type="button"
+                        class="noCheckbutton initialPhone initNumYes" style="background-color: #ffe6e6 ;" onclick="checkFromPhone('initialPhone');">{{ content[6] }}</button>
+                <button type="button"
+                        class="bluebutton initialPhone" onclick="$('.introBox').fadeIn();" style="background-color: #ffe6e6 ;width:auto!important">{{ content[33] }}</button>
+                <span id="testPodaci"></span> |
+                <span id="testCamp"></span> <span id="testProiz"></span>
+            </div>
+
+
+            <input id="outboundID" type="hidden">
+            <input id="outboundType" type="hidden">
+
+
+            <div id="notifyBox" class="checkBox" style="padding: 0 25px; display:none;">
+                <div>
+                    <span style="color:#C00;font-size: 15px;display:none; display: inline-block; height: 39px; padding-top: 11px;">{{ content[49] }}</span>
+                </div>
+                <div>
+                    <button onclick= "routerToOutbound();" type="button" class="bluebutton initialPhone" style=" background-color: #ffe6e6; width:auto!important; ">{{ content[509] }}</button>
+                </div>
+            </div>
+
+
+            <div class="conversation_cont">
+                <div class="introBox" style="display:none;">
+                    <div class="quest_cont" id="quest0" step="order1">
+                        <label for="answer" id="first_Con">
+                            <strong>{{ content[2] }}</strong>
+                        </label>
+                    </div>
+                    <div class="checkBox">
+                        <button type="button" id="first_Button_A"
+                                class="bluebutton first_Button_A" style="height: 115px;font-size: 20px;float:left;background-color: #ffe6e6 ">{{ content[3] }}</button>
+                        <button type="button" class="bluebutton otherButtons" id="CANCEL_B"
+                                style="width: 415px;height:25px;font-size: 14px;line-height: 3px;float:left;margin: 0 5px 5px 5px;text-align: left;background-color: #ffe6e6 " onclick="selectOtherSection(1);">{{ content[4] }}</button>
+                        <button type="button" class="bluebutton otherButtons" id="REKLAMACIJA_B"
+                                style="width: 415px;height:25px;font-size: 14px;line-height: 3px;float:left;margin: 0 5px 5px 5px;text-align: left;background-color: #ffe6e6 " onclick="selectOtherSection(2);">{{ content[303] }}</button>
+                        <button type="button" class="bluebutton otherButtons" id="ODJAVA_B"
+                                style="width: 415px;height:25px;font-size: 14px;line-height: 3px;float:left;margin: 0 5px 5px 5px;text-align: left;background-color: #ffe6e6 " onclick="selectOtherSection(3);">{{ content[306] }}</button>
+                        <button type="button" class="bluebutton otherButtons" id="OTHERQ_B"
+                                style="width: 415px;height:25px;font-size: 14px;line-height: 3px;float:left;margin: 0 5px 5px 5px;text-align: left;background-color: #ffe6e6 " onclick="selectOtherSection(4);">{{ content[5] }}</button>
+                        <div class="clear"></div>
+                        <div class="quest_cont" id="quest2" step="order2" style="display:none;">
+                            <label for="answer2" id="conversation_cont_A4"><strong>{{ content[10] }}</strong></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="quest_fix" id="fix_1" style="display:none;">
+                    <div class="checkBox" style="width:800px;">
+
+                                {% for key,value in content['topProduct'] %}
+                                    {#<button type="button" class="bluebutton topProduct" style="background-color: #ffe6e6 ;" onclick="changeProduct({{ key }});">{{ value }}</button>#}
+                                <button type="button" class="bluebutton topProduct" style="background-color: #ffe6e6 ;" onclick="changeProduct({{ key }});">{{ value }}</button>
+                                {% endfor %}
+
+                    </div>
+                    <div class="clear"></div>
+
+                    <div class="checkBox" style="width:800px;">
+                        <select name="product_f" id="product_f" class="select chosen-select-product"
+                                style="margin-left:0px; width:353px; height:35px;">
+                            <option value="">{{ content[11] }}</option>
+
+                            {% autoescape %}
+                                {{ proizvOption|raw }} {# var won't be escaped #}
+                            {% endautoescape %}
+
+                            {#<?php#}
+                            {#if (!empty($proizvodi)) {#}
+                                {#foreach ($proizvodi as $proizvod) {#}
+                                    {#if ($proizvod['suma'] != 0) {#}
+                                        {#$prSku = $proizvod['sku'];#}
+                                        {#$prTip = $proizvod['productType'];#}
+                                        {#$prId = $proizvod['id'];#}
+
+                                        {#$fullsku = $prSku."-".$prTip."-".sprintf("%04s", $prId);#}
+
+                                        {#?>#}
+                            {#<option value="<?= $prId ?>" data-fullsku="<?= $fullsku ?>"><?= $proizvod['title'] ?></option>#}
+                            {#<?php#}
+                                    {#}#}
+                                {#}#}
+                            {#}#}
+                            {#?>#}
+                            <option value="252" data-fullsku="0262-911-0252">Vival Pro B</option>
+                        </select>
+                        <strong><span class="singlePrice" style="float:right;margin-right: 50px;font-size: 18px;"></span></strong>
+                        <div style="height:auto; width:330px;">
+                            <span id="pagedat"></span><br>
+                            <span id="smsdat"></span>
+                        </div>
+
+                        <div class="opisupsell" id="pDescBox" style="display:none;">
+                            <span class="bluespan"><strong>{{ content[51] }} </strong></span>
+                            <span class="productDescr"></span>
+                        </div>
+                    </div>
+
+                    <span class="stanjeLine" style="margin-left:10px;color:#FF2626"></span>
+
+                    <div id="phoneSelectBox" style="display:none">
+                        <div class="quest_cont" id="quest2a" step="order2" >
+                            <label for="answer2a"><strong>{{ content[23] }}</strong></label>
+                        </div>
+                        <div class="checkBox secondPhoneBox" style="margin-top: 25px;display:none;">
+                            <input name="secondPhone" id="secondPhone" type="text" placeholder="{{ content[9] }}"
+                                   style="width:200px; margin-right:10px;">
+                            <button type="button"
+                                    class="noCheckbutton initialPhone secondNumYes"  style="background-color: #ffe6e6 ;" onclick="checkFromPhone('secondPhone');">{{ content[6] }}</button>
+                            <button type="button"
+                                    class="bluebutton initialPhone secondNumNo"  onclick="$('#quest1').fadeIn();$('.secondNumYes').removeClass('bChecked');" style="background-color: #ffe6e6 ;width:200px!important">{{ content[25] }}</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+                <div class="quest_cont" id="quest1" step="order1" style="width: 725px;display:none;">
+                    <label for="answer" id="">
+                        <strong>{{ content[56] }}</strong>
+                    </label>
+                </div>
+                <div class="clear"></div>
+
+                <button type="button" class="bluebutton orderType" id="sms_btn" style="width: 390px;display:none;background-color: #ffe6e6 ;" onclick="$('#container_2A').slideDown('slow');selectOrderType(1, this);">{{ content[29] }}</button>
+                <button type="button" class="bluebutton orderType" id="web_btn" style="width: 390px;display:none;background-color: #ffe6e6 ;" onclick="$('#container_2A').slideDown('slow');selectOrderType(2, this);">{{ content[30] }}</button>
+                <div class="clear"></div>
+                <button type="button" class="bluebutton orderType" id="email_btn" style="width: 390px;display:none;margin-top: 5px;background-color: #ffe6e6 ;" onclick="$('#container_2A').slideDown('slow');selectOrderType(4, this);">{{ content[31] }}</button>
+                <button type="button" class="bluebutton orderType" id="print_btn" style="width: 390px;display:none;margin-top: 5px;background-color: #ffe6e6 ;" onclick="$('#container_2A').slideDown('slow');selectOrderType(3, this);">{{ content[32] }}</button>
+
+
+            </div>
+            <div class="container_2A" id="container_2A"> {#<!-- START ODGOVOR NARUDZBA  -->#}
+                <div class="conversation_cont_A0">
+
+                    <div class="quest_fix codeSection" id="fix_2">
+                        <div class="quest_cont" id="quest3" step="order4">
+                            <label for="answer" id=""><strong><span id="codeStandard">{{ content[14] }}</span><span id="codeMail" style="display:none;">{{ content[50] }}</span></strong></label>
+                        </div>
+                        <div class="checkBox">
+                            <input name="code" id="code" type="text" placeholder="{{ content[15] }}"
+                                   style="width:200px; margin-right:10px;" >
+
+                            <button type="button" class="noCheckbutton code1b" id="yesCode1" style="width: 120px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="checkCodeField(1);">{{ content[6] }}</button>
+                            <button type="button" class="bluebutton" id="nocod1" style="width: 150px;margin-top: 5px;margin-left: 40px;height:40px;background-color: #ffe6e6 ;" onclick="defineCodeStatus();">{{ content[13] }}</button>
+
+                            <div class="sub_quest_cont_h" id="quest4" step="order5">
+                                <label for="answer" id=""><strong>{{ content[17] }}</strong></label>
+                            </div>
+                        </div>
+                        {#<!--                        <div class="note_operator">#}
+                           {#<?//= $content[$state][18] ?>#}
+                            {#<br>#}
+                            {#<?//= $content[$state][57] ?>#}
+                        {#</div>-->#}
+                        <div class="quest_cont" id="quest3a" step="order4" style="display:none;">
+                            <label for="answer" id=""><strong>{{ content[57] }}</strong></label>
+                        </div>
+                        <div class="checkBox code2" style="display:none;">
+                            <input name="code" id="code2" type="text" placeholder="{{ content[15] }}"
+                                   style="width:200px; margin-right:10px;">
+                            <button type="button" class="noCheckbutton code2b" id="yesCode2" style="width: 120px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="checkCodeField(2);">{{ content[6] }}</button>
+                            <button type="button" class="bluebutton" id="nocod2" style="width: 150px;margin-top: 5px;margin-left: 40px;height:40px;background-color: #ffe6e6 ;" onclick="$('#quest3b').show();noCode();checkQuestionBox('quest3a');">{{ content[13] }}</button>
+                        </div>
+                        <div class="quest_cont" id="quest3b" step="order4" style="display:none;" onclick="$('.korak1').show();">
+                            <label for="answer" id=""><strong>{{ content[17] }}</strong></label>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="quest_fix codeSection2" id="fix_2" style="display:none">
+                        <div class="quest_cont" id="quest3c" step="order4">
+                            <label for="answer" id=""><strong>{{ content[14] }}</strong></label>
+                        </div>
+                        <div class="checkBox">
+                            <input name="code" id="code" type="text" placeholder="{{ content[15] }}"
+                                   style="width:200px; margin-right:10px;" onblur="checkCodeField();"> {{ content[16] }}
+
+                            <div class="sub_quest_cont_h" id="quest4" step="order5">
+                                <label for="answer" id=""><strong>{{ content[17] }}</strong></label>
+                            </div>
+                        </div>
+                        <div class="note_operator">
+                            {{ content[18] | raw}}
+                            <br>
+                            {{ content[57] }}
+                        </div>
+                    </div>
+
+
+                    <div class="quest_fix korak1" id="fix_3" style="display:none;">
+                        <div class="quest_cont formGroup" id="quest5" step="order6">
+                            <label for="answer" id=""><strong>{{ content[19] }}</strong></label>
+                        </div>
+                        <div class="checkBox">
+                            <input name="name" id="ime" type="text" placeholder="{{ content[100] }}"
+                                   onblur=""
+                                   onfocus="elementActive(this, '{{ content[100] }}', '{{ content[101] }}')"
+                                   style="width:260px; margin-right:10px;"> <input id="surname" type="text"
+                                   placeholder="{{ content[102] }}"
+                                   onblur=""
+                                   onfocus="elementActive(this, '{{ content[102] }}', '{{ content[103] }}')"
+                                   style="width:260px; margin-right:10px;">
+                            <button type="button" class="noCheckbutton korak1b" id="korak1" style="width:150px;height:39px;background-color: #ffe6e6 ;"  onclick="fillOrderFormNew();">{{ content[6] }}</button>
+                        </div>
+                        <div class="checkBox fillInfoBox" style="display:none;">
+                            <table id="fillInfo" class="fillInfo" >
+                            </table>
+                            <span id="noOMGbutton"></span>
+                        </div>
+                        <!--                        <div class="note_operator">?= //$content[$state][20] ?</div>-->
+                    </div>
+                    <div class="quest_fix noomg korak2" id="fix_5" style="display:none;">
+                        <div class="quest_cont formGroup" id="quest7" step="order7">
+                            <label for="answer" id=""><strong>{{ content[21] |raw }}</strong></label>
+                        </div>
+                        <div class="checkBox">
+                            <input id="address" type="text" placeholder="{{ content[104] }}"
+                                   onblur=""
+                                   onfocus="elementActive(this, '{{ content[104] }}', '{{ content[105] }}')"
+                                   style="width:356px; margin-right:10px;">
+                            <input id="number" type="text" placeholder="{{ content[106] }}"
+                                   onblur=""
+                                   onfocus="elementActive(this, '{{ content[106] }}', '{{ content[107] }}')"
+                                   style="width:100px; margin-right:10px;" autocomplete="off">
+
+                            <button type="button" class="noCheckbutton korak2b" id="korak2" style="width: 120px;margin-top: 5px;margin-left: 10px;height:40px;background-color: #ffe6e6 ;" onclick="openNextField('korak3');">{{ content[6] }}</button>
+                        </div>
+                        {#<!--                        <div class="note_operator"><?//= $content[$state][23] ?></div>-->#}
+                    </div>
+                    <div class="quest_fix noomg korak3" id="fix_4" style="display:none;">
+                        <div class="quest_cont formGroup" id="quest6" step="order8">
+                            <label for="answer" id=""><strong>{{ content[24] }}</strong></label>
+                        </div>
+                        <div class="checkBox">
+                            <input id="city" type="text" placeholder="{{ content[108] }}"
+                                   onblur=""
+                                   onfocus="elementActive(this)" style="width:220px; margin-right:10px;">
+                            <input id="postal" type="text" placeholder="{{ content[110] }}"
+                                   onblur=""
+                                   onfocus="elementActive(this, '{{ content[110] }}', '{{ content[111] }}')"
+                                   style="width:100px; margin-right:10px;">
+                            <button type="button" class="noCheckbutton korak3b" id="korak3" style="width: 120px;margin-top: 5px;margin-left: 0px;height:40px;background-color: #ffe6e6 ;" onclick="openNextField('korak4');">{{ content[6] }}</button>
+                            <div style="height: 40px; width: 220px" class="googleBtn" onclick="gMapCheck();">{{ content[22] }}</div>
+                        </div>
+                        {#<!--                        <div class="note_operator"><?//= $content[$state][25] ?></div>-->#}
+                    </div>
+                    <div class="quest_fix noomg korak4" id="fix_6" style="display:none;">
+                        <div class="quest_cont formGroup" id="quest8" step="order9">
+                            <label for="answer" id=""><strong>{{ content[26] }}</strong></label>
+                        </div>
+                        <div class="checkBox">
+                            <input id="phone" type="text" placeholder="{{ content[112] }}"
+                                   onblur=""
+                                   onfocus="elementActive(this, '{{ content[112] }}', '{{ content[113] }}')"
+                                   style="width:356px; margin-right:10px;">
+                            <button type="button" class="noCheckbutton korak4b" id="korak4" style="width: 120px;margin-top: 5px;margin-left: 0px;height:40px;background-color: #ffe6e6 ;" onclick="openNextField('korak5');">{{ content[6] }}</button>
+                            <button type="button" class="bluebutton"  onclick="$('.korak5').show();checkQuestionBox('quest8');" style="background-color: #ffe6e6 ;height:40px;width:200px!important">{{ content[25] }}</button>
+                        </div>
+                        <div class="note_operator"></div>
+                    </div>
+                    <div class="quest_fix noomg korak5" id="fix_6a" style="display:none;">
+
+                        <div class="quest_cont formGroup" id="quest8a" step="order10">
+                            <label for="answer" id=""><strong>{{ content[27] }}</strong></label>
+                        </div>
+                        <div class="checkBox">
+                            <input id="email" type="text" placeholder="{{ content[114] }}"
+                                   style="width:356px; margin-right:10px;" >
+                            <button type="button" class="noCheckbutton korak5b" id="korak5" style="width:120px;margin-top: 5px;margin-left: 0px;height:40px;background-color: #ffe6e6 ;" onclick="openNextField('korak6');">{{ content[6] }}</button>
+
+                            <button type="button" id="noMail" class="bluebutton" style="width:230px;background-color: #ffe6e6 ;height:40px;" onclick="$('.korak6').show();checkQuestionBox('quest8a');">{{ content[28] }}</button>
+                        </div>
+                        <div class="note_operator"></div>
+                    </div>
+
+                    {#<!--Hidden lp input-->#}
+                    <input id="hidden_lp" type="hidden" name="landing_page">
+                    {#<!--Hidden ip input-->#}
+                    <input id="ip_address" type="hidden" name="ip">
+                    <input id="http_ua" type="hidden" name="HTTP_USER_AGENT">
+                    <input id="http_rf" type="hidden" name="HTTP_REFERER">
+                    {#<!--Hidden code id input-->#}
+                    <input id="phone_code_hidden" type="hidden" name="phonecode_hidden">
+                    <input id="stateHidden" type="hidden" name="state" value="{{ state }}">
+                    <input id="idHidden" type="hidden" name="idKorisnika" value="{{ idKorisnika }}">
+                    <input id="postHidden" type="hidden" name="postar" value="{{ postar }}">
+                    <input id="price" type="hidden" name="price" value="">
+                    <input id="upsellPrice" type="hidden" name="upsellPrice" value="">
+                    <input id="full_sku" type="hidden" name="full_sku" value="">
+                    <input id="mfs" type="hidden" value="2">
+                    <input id="freeShip" type="hidden" value="0">
+                    <input id="callId" type="hidden" value="{{ callTrack }}">
+
+
+                    <div class="quest_fix korak6" id="fix_6c" style="display:none;" >
+
+                        <div class="quest_cont" id="quest_provjera" onclick="provjera_podataka();$('.korak6a1').show();" step="order14">
+                            <label for="answer" id=""><strong>{{ content[36] }}</strong></label>
+                        </div>
+                        <div class="quest_podaci pleft" id="podaci">
+                            <div class="podaci_cont">
+                                <div class="podatak_naziv">{{ content[100] }}:</div>
+                                <div class="podatak_sadrzaj"><strong><span class="P_ime"></span></strong><input class="infoCheck P_ime" type="text" style="width:250px;" onkeyup="changeInputFieldValue(this,'ime');"></div>
+                            </div>
+                            <div class="podaci_cont">
+                                <div class="podatak_naziv">{{ content[102] }}:</div>
+                                <div class="podatak_sadrzaj"><strong><span class="P_prezime"></span></strong><input class="infoCheck P_prezime" type="text" style="width:250px;" onkeyup="changeInputFieldValue(this,'surname');"></div>
+                            </div>
+                            <div class="podaci_cont">
+                                <div class="podatak_naziv">{{ content[116] }}:</div>
+                                <div class="podatak_sadrzaj"><strong><span class="P_adresa"></span></strong><input class="infoCheck P_adresa" type="text" style="width:184px;" onkeyup="changeInputFieldValue(this,'address');"> <input class="infoCheck P_number" type="text" style="width:50px;"  onkeyup="changeInputFieldValue(this,'number');"></div>
+                            </div>
+                            <div class="podaci_cont">
+                                <div class="podatak_naziv">{{ content[108] }}:</div>
+                                <div class="podatak_sadrzaj"><strong><span class="P_grad"></span></strong><input class="infoCheck P_grad" type="text" style="width:250px;"  onkeyup="changeInputFieldValue(this,'city');"></div>
+                            </div>
+                            <div class="podaci_cont">
+                                <div class="podatak_naziv">{{ content[110] }}:</div>
+                                <div class="podatak_sadrzaj"><strong><span class="P_postanski"></span></strong><input class="infoCheck P_postanski" type="text" style="width:250px;"  onkeyup="changeInputFieldValue(this,'postal');"></div>
+                            </div>
+                            <div class="podaci_cont">
+                                <div class="podatak_naziv">{{ content[112] }}:</div>
+                                <div class="podatak_sadrzaj"><strong><span class="P_telefon"></span></strong><input class="infoCheck P_telefon" type="text" style="width:250px;" onkeyup="changeInputFieldValue(this,'phone');"></div>
+                            </div>
+                            <div class="podaci_cont">
+                                <div class="podatak_naziv">{{ content[114] }}:</div>
+                                <div class="podatak_sadrzaj"><strong><span class="P_mail"></span></strong><input class="infoCheck P_mail" type="text" style="width:250px;" onkeyup="changeInputFieldValue(this,'email');"></div>
+                            </div>
+                            <div class="podaci_cont">
+                                <div class="podatak_naziv">{{ content[117] }}:</div>
+                                <div class="podatak_sadrzaj"><strong><span class="P_proizvod"></span></strong></div>
+                            </div>
+                            <div class="podaci_cont">
+                                <div class="podatak_naziv">{{ content[118] }}:</div>
+                                <div class="podatak_sadrzaj" style="width:430px;"><span id="noFreePost"><strong>{{ content[34] }} <span style="color:#1137FE">{{ postar }} {{ valuta }}</span> {{ content[35] | raw }}</strong></span><span id="yesFreePost" style="display:none;"><strong><span style="color:#1137FE"> {{ content[119] }} </span></strong></span></div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                    <div class="quest_fix korak6a1" id="fix_6c0" style="display:none;">
+                        <div class="quest_cont" id="quest7c" step="order8c" onclick="$('.korak6a2').show();">
+                            <label for="answer" id=""><strong>{{ content[47] }}</strong></label>
+                        </div>
+                        <div class="korak6a2" style="display:none;">
+
+                            <textarea class="commenttextarea" id="comment1" type="text" placeholder="{{ content[12] }}"></textarea>
+
+                            <button type="button" class="noCheckbutton korak6b" id="korak6" style="width: 120px;margin-top: 0px;margin-left: 0px;height:40px;background-color: #ffe6e6 ;float:left;" onclick="openNextField('korak6a');">{{ content[6] }}</button>
+                            <button type="button" class="bluebutton" id="" style="width: auto;margin-top: 0px;margin-left: 5px;height:40px;background-color: #ffe6e6 ;float:left;" onclick="$('.korak6a').show();">{{ content[48] }}</button>
+                        </div>
+
+                    </div>
+
+                    <div class="quest_fix" id="fix_6c1">
+                        <div class="quest_cont korak6a" id="quest8" step="order9" style="display:none;" onclick="$('.korak7').show();">
+                            <label for="answer" id=""><strong>{{ content[120] | raw }}</strong></label>
+                        </div>
+                        <div class="checkBox korak7" style="padding: 5px 5px 5px 0px;display:none;">
+                            <button type="button" class="bluebutton orderType" id="dodatni0" style="width: 140px;font-size: 15px;padding: 10px 3px 10px 3px;background-color: #ffe6e6 ;" onclick="addAdditionalProduct(0)">{{ content[121] }}</button>
+                            <button type="button" class="bluebutton orderType" id="dodatni1" style="width: 165px;font-size: 15px;padding: 10px 3px 10px 3px;background-color: #ffe6e6 ;" onclick="addAdditionalProduct(1)">{{ content[122] }}</button>
+                            <button type="button" class="bluebutton orderType" id="dodatni2" style="width: 165px;font-size: 15px;padding: 10px 3px 10px 3px;background-color: #ffe6e6 ;" onclick="addAdditionalProduct(2)">{{ content[123] }}</button>
+                            <button type="button" class="bluebutton orderType" id="dodatni3" style="width: 165px;font-size: 15px;padding: 10px 3px 10px 3px;background-color: #ffe6e6 ;" onclick="addAdditionalProduct('n');">{{ content[124] }}</button>
+                            <input id="additionalNum" type="number" style="width:45px;display:none;" onchange="checkValidAdditional();">
+                            <button type="button" class="GreyBtn" id="dodajN" style="width:57px;height:30px;margin-left:5px;display:none;" onclick="addAdditionalProduct('d');">{{ content[125] }}</button>
+                        </div>
+                        <div class="note_operator"></div>
+                    </div>
+                    <div class="quest_cont korak8" id="quest8c" step="order15" style="display:none;" onclick="$('#zakljuci_Button').show();">
+                        <label for="answer" id=""><strong>{{ content[37] }}</strong></label>
+                    </div>
+                </div>
+            </div>
+            <div class="quest_fix" id="fix_xx" style="display:none;margin-top: 200px;">
+                <div class="checkBox" style="width:1190px;">
+                    <div style="float:left;position:relative;">
+                        <button onclick="formaCheck();" type="button" id="zakljuci_Button" class="bluebutton"
+                                style="float:left; width:350px; height:70px; font-size:23px;background-color: #ffe6e6 ;display:none;">
+                            <a id="btn1"/>{{ content[38] }}</a>
+                        </button>
+                        <div class="clear"></div>
+                        <button type="button" id="otkazi_Button" class="bluebutton"
+                                style="width:350px; height:50px; font-size:23px; margin-top:10px;line-height:30px;background-color: #ffe6e6 ;">
+                            <a id="btn1"/>{{ content[39] }}</a>
+                        </button>
+                    </div>
+                    <div class="confirmBox">
+                        <div class="confirmOrder">
+                            <strong><span id="ocDate"></span></strong>
+                        </div>
+                        <div class="confirmCancel">
+                            <strong><span id="ccDate"></span></strong>
+                        </div>
+                    </div>
+                    <div class="otkazBox" id="otkazBox">
+                        <div class="obRadioHolder" style="font-size:16px;">
+                            <strong>{{ content[45] }}</strong>
+                        </div>
+                        <div class="obRadioHolder">
+                            <input type="radio" value="1" name="cReason" id="cReasonOne"
+                                   class="cReason css-checkbox"><label for="cReasonOne" class="css-label">{{ content[40] }}</label>
+                        </div>
+                        <div class="obRadioHolder">
+                            <input type="radio" value="2" name="cReason" id="cReasonTwo"
+                                   class="cReason css-checkbox"><label for="cReasonTwo" class="css-label">{{ content[41] }}</label>
+                        </div>
+                        <div class="obRadioHolder">
+                            <input type="radio" value="3" name="cReason" id="cReasonThree"
+                                   class="cReason css-checkbox"><label for="cReasonThree" class="css-label">{{ content[42] }}</label>
+                        </div>
+                        <div class="obRadioHolder" style="height:90px;line-height:50px;" class="cReason">
+                            <input type="radio" value="4" id="cReasonFour" name="cReason"
+                                   class="cReason css-checkbox"><label for="cReasonFour" class="css-label">{{ content[43] }}</label><br/>
+                            <input type="text" id="razlogOtk" placeholder="{{ content[44] }}"
+                                   name="cReason" class="otherReason"
+                                   style="width: 300px;height:40px;margin-top:15px;display:none">
+                            <br><button type="button" id="snimirazlog" class="otherReason">OK</button>
+                        </div>
+                    </div>
+                </div>
+                <div style="float:left; width:1150px; height:30px; text-align:center;">
+                    {#<a href="?ouid=<?= $ouid ?>"><span class="newOrder" style="cursor: pointer;"></span></a>#}
+                    <a href="?{{ path('languages', {'state':state, 'ouid': ouid} ) }}"><span class="newOrder" style="cursor: pointer;"></span></a>
+
+                </div>
+            </div>
+            <div class="confirm" id="confirm">
+                <strong>{{ content[46] }}</strong>
+            </div>
+            {#<!-- END ODGOVOR NARUDZBA  -->#}
+            {#<!-- START ODGOVOR DRUGO  -->#}
+            <div class="container_2B" id="container_2B">
+
+                <div class="quest_fix otherBox"  id="cancelBox" style="padding-top:0px; min-height:65px;">
+                    <div class="quest_fix_h" id="fix_8" style="padding:0px; display:block;">
+                        <div class="quest_cont_drugo biggerFont" id="quest9a" step="return1" style="width: 765px;background-color: #ddd;" onclick="$('#cancBut1').show();$('#cancBut2').show();">
+                            <label for="answer" id="">
+                                <strong>
+                                    {{ content[300] | raw }}
+                                </strong>
+                            </label>
+
+                        </div>
+                        <button type="button" class="bluebutton" id="cancBut1" style="width: auto;font-size: 15px;margin: 15px 5px 0 0;background-color: #ffe6e6 ;display:none;" onclick="$('.cancelAnswer1').show();$('#cancBut2').attr('disabled', 'disabled');">{{ content[310] }} </button>
+                        <button type="button" class="bluebutton" id="cancBut2" style="width: auto;font-size: 15px;margin: 15px 5px 0 0;background-color: #ffe6e6 ;display:none;" onclick="$('.cancelAnswer2').show();$('#cancBut1').attr('disabled', 'disabled');">{{ content[311] }}</button>
+                        <div class="quest_cont_drugo cancelAnswer1 biggerFont" id="quest9a" step="return1" style="width: 765px;display:none;margin-top: 15px;background-color: #ddd;" onclick="$('#zakljuci_Button2').show();">
+                            <label for="answer" id="">
+                                <strong>
+                                    {{ content[301] }}
+                                </strong>
+                            </label>
+                        </div>
+                        <div class="quest_cont_drugo cancelAnswer2 biggerFont" id="quest9a" step="return1" style="width: 765px;background-color: #ddd;display:none;margin-top: 15px;" onclick="$('#zakljuci_Button2').show();">
+                            <label for="answer" id="">
+                                <strong>
+                                    {{ content[302] }}
+                                </strong>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quest_fix otherBox" id="reklamacijaBox" style="min-height:65px;">
+                    <div class="quest_fix_h" id="fix_9" style="padding:0px; display:block;">
+                        <div class="quest_cont_drugo biggerFont" id="quest10" step="rekl1" style="width: 765px;background-color: #ddd;">
+                            <label for="answer" id="">
+                                <strong>
+                                    {{ content[304] }}
+                                </strong>
+                            </label>
+                        </div>
+                        <div class="quest_cont_drugo biggerFont" id="quest10" step="rekl2" style="width: 765px;margin-top: 15px;background-color: #ddd;" onclick="$('#zakljuci_Button2').show();">
+                            <label for="answer" id="">
+                                <strong>
+                                    {{ content[305] }}
+                                </strong>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quest_fix otherBox" id="odjavaBox" style="min-height:65px;">
+
+                    <div class="quest_fix_h" id="fix_9a" style="padding:0px; display:block;">
+                        <div class="quest_cont_drugo biggerFont" id="quest10a" step="odjava1" style="height: auto;width: 765px;background-color: #ddd;margin-bottom: 10px;" onclick="$('#quest10b').show();">
+                            <label for="answer2" id=""><strong>{{ content[308] }}</strong></label><br>
+                        </div>
+
+                        <div class="quest_cont_drugo noCheck biggerFont" id="quest10b" step="odjava" style="min-height:150px;height: auto;width: 765px;display:none;" disable>
+
+                            <input name="odjavaPhone" id="odjavaPhone" type="number"
+                                   placeholder="{{ content[112] }}"
+                                   style="width:285px; margin-right:10px;margin-top:5px;">
+                            <br>
+                            <input name="odjavaMail" id="odjavaMail" type="email"
+                                   placeholder="{{ content[114] }}"
+                                   style="width:285px; margin-right:10px;margin-top:5px;">
+                            <br>
+                            <button type="button" id="odjavi_button" class="bluebutton"
+                                    style="width:300px; height:40px; font-size:17px; margin-left:0px;margin-top:5px;float:left;background-color: #ffe6e6 ;"
+                                    onclick="unsubscribeUser();">{{ content[309] }}</button>
+
+                        </div>
+                        <div class="faqQuest odjavaNotify biggerFont" step="odjava2" style="height:auto;width:765px;display:none;line-height: 30px;background-color: #ddd;" onclick="$('#quest10c').show();">
+                            <span id="odjavaNotify"></span>
+                        </div>
+                        <div class="quest_cont_drugo biggerFont" id="quest10c" step="odjava3" style="width: 765px;margin-top: 15px;background-color: #ddd;display:none;" onclick="$('#zakljuci_Button2').show();">
+                            <label for="answer" id="">
+                                <strong>
+                                    {{ content[305] }}
+                                </strong>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quest_fix otherBox" id="otherQBox" style="min-height:65px;">
+                    <div class="quest_fix_h" id="fix_9b" style="padding:0px; display:block;">
+                        <div class="quest_cont_drugo biggerFont" id="" step="ostalo1" style="width: 765px;background-color: #ddd;">
+                            <label for="answer" id="">
+                                <strong>
+                                    {{ content[304] }}
+                                </strong>
+                            </label>
+                        </div>
+                        <div class="quest_cont_drugo biggerFont" id="quest10" step="ostalo2" style="width: 765px;margin-top: 15px;background-color: #ddd;" onclick="$('#zakljuci_Button2').show();">
+                            <label for="answer" id="">
+                                <strong>
+                                    {{ content[305] }}
+                                </strong>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quest_fix_h" id="fix_12" style="display:block;">
+                    <div class="checkBox" style="width: 880px;padding-left:0">
+                        <button type="button" id="zakljuci_Button2" class="bluebutton"
+                                style="width:369px; height:45px; font-size:16px; margin-left:0;float:left;display:none;background-color: #ffe6e6 ;">{{ content[323] }}</button>
+                    </div>
+                    <div style="float:left;width:1150px;height:30px;text-align:center;">
+                        {#<a href="?ouid=<?= $ouid ?>"><span class="newOrder2" style="cursor: pointer;"></span></a>#}
+                    </div>
+                </div>
+                <div class="confirm" id="confirm2">
+                    <strong>{{ content[325] }}</strong>
+                </div>
+            </div>
+
+            {#<!-- END ODGOVOR DRUGO  -->#}
+        </div>
+    </div>
+    {#<!------------ END Conversation Flow   -------------->#}
+
+</div><span id="interfaceEnd"></span>
+               {#<!------------ END MAIN   -------------->#}
+
+   
+
+{% endblock %}
+{% include '::footer.html.twig' %}
+
+{% autoescape %}
+    {{ _callInfoBox|raw }} {# var won't be escaped #}
+{% endautoescape %}
+
+<div class="specialPopup" style="display:none;">
+    <div class="specialHolder">
+    </div>
+    <div class="specialOffer">
+        <div class="specQuest questClick">
+            <label>
+                <strong>
+                    {{ content[400] | raw }}
+                </strong>
+            </label>
+        </div>
+        <div class="checkBox">
+            <button type="button" id="specY" class="bluebutton"
+                    onclick="$('.specialProd').show('slow');$('#specialProd').trigger('change');"
+                    style="width:80px;">{{ content[401] }}</button>
+            <button type="button" id="specN" class="bluebutton" onclick="noSpecialOffer();"
+                    style="width:80px;">{{ content[402] }}</button>
+            <div class="specialProd" style="float: left;display:none;">
+                <select id="specialProd" style="width:300px; margin-right:10px;">
+                </select>
+                <input id="phCall_id" type="hidden" name="phCall_id" value="">
+            </div>
+        </div>
+        <div class="specQuest" id="offerTextHolder" style="display:none;">
+            <span id="offerText">{{ content[403] }}</span>
+        </div>
+        <button type="button" id="specialOrderB" class="bigOrder"
+                onclick="makeSpecialOffer();">{{ content[404] }}</button>
+    </div>
+</div>
+
+{% block javascripts6 %}
+    <script>
+
+        $(document).ready(function(){
+            var handle;
+            handle = window.setInterval(showPendingCalls, 60000);
+//            $('.mItem.me4').prop("disabled", true);
+//            $('.mItem.me4').hide();
+        });
+
+
+    </script>
+
+{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,200 @@
+{% include '::header.html.twig' %}
+
+{% include '::navigation.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            /*background-image: url('/ver3/web/images/spring.jpg');*/
+            /*background-repeat: no-repeat;*/
+            /*background-attachment: fixed;*/
+        }
+        .tableHolder {
+            opacity:0.93;
+        }
+        .chartBox {
+            opacity:0.9;
+        }
+
+        .headline {
+            color:#000;
+        }
+        input [type=text], select {
+            float: left;
+        }
+    </style>
+{% endblock %}
+
+<body>
+{% block body %}
+    {% set emptyarr = {'country': '', 'operator': '', 'callcenter': '', 'answered': '', 'ended': ''} %}
+    {% set queryarr = app.request.query.all %}
+    {% set qp = emptyarr|merge(queryarr) %}
+
+
+<div class="main" ng-controller="campaignController">
+    <h3 class="headline"  style="width:1321px;">{{ title }}</h3>
+    <div style="clear:both"></div>
+    <div class="tableHolder"  style="width:1300px;">
+        <form id="forma">
+            <h4></h4>
+            <div style="float:left;width:50%;margin-top:15px;">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                State:
+                            </td>
+                            <td>
+                                <select id="country" name="country">
+                                   <option value="">All States</option>
+                                    {% for stateInfo in _states %}
+                                        <option value="{{ stateInfo.code2 }}"> {{ stateInfo.title_eng }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('country');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Operator:
+                            </td>
+                            <td>
+                                <select id="operator" name="operator">
+                                    <option value="">All Operators</option>
+                                    {% for userInfo in _users  %}
+                                       <option value="{{ userInfo.username }}"> {{ userInfo.username }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('operator');">X</div>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Call center:
+                            </td>
+                            <td>
+                                <select id="callcenter" name="callcenter">
+                                    <option value="">Call Center</option>
+                                    {% for centerInfo in _centers %}
+                                       <option value="{{ centerInfo.id }}"> {{ centerInfo.name }} ({{ centerInfo.state }})</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('callcenter');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Call answered:
+                            </td>
+                            <td>
+                                <select id="answered" name="answered">
+                                    <option value="">All statuses</option>
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('answered');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Call ended:
+                            </td>
+                            <td>
+                                <select id="ended" name="ended">
+                                    <option value="">All statuses</option>
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                                <div class="resetSelectField" onclick="resetSelectField('ended');">X</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Date from:
+                            </td>
+                            <td>
+                                <input name="from" type="text" id="datumFrom" placeholder="" onclick="$(this).datepicker();" style="width:90px;" value="{{ from }}">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                Date to:
+                            </td>
+                            <td>
+                                <input name="to" type="text" id="datumTo" placeholder=""onclick="$(this).datepicker();"  style="width:90px;" value="{{ to }}">
+                            </td>
+                            <td>
+                                <button class="bigOrder GreyBtn" onclick="SearchFormSimple.search(this);" style="margin-left: -124px;margin-top:0px;cursor:pointer;width: 120px;height:40px;font-size:16px;">Search</button>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+    <div style="clear:both"></div>
+    <div class="tableHolder"  style="padding: 10px 10px 0 10px;width:1300px;">
+        <div class="dayTable" style="width: 1300px;">
+            {% autoescape %}
+                {{ _html|raw }} {# var won't be escaped #}
+            {% endautoescape %}
+        </div>
+    </div>
+    <div class="legendHolder" style="width:1322px;">
+    </div>
+    <div style="clear:both"></div>
+    <div class="tableHolder" style="background-color:#fbfbfb;font-size:14px;width:1300px;">
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $( function() {
+            $("#datumFrom, #datumTo").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+        } );
+        $(document).ready(function() {
+            initDataTable();
+
+            getToOption('country','country');
+            getToOption('operator','operator');
+            getToOption('callcenter','callcenter');
+            getToOption('answered','answered');
+            getToOption('ended','ended');
+        });
+
+        /***** inicializovanja data table *******/
+        function initDataTable(){
+            $('#example').dataTable({
+                sDom: "",
+                "bDestroy": true,
+                "bPaginate": false,
+                "bFilter": false,
+                "bSortCellsTop": true,
+                "aaSorting": [[ 0, "asc" ]],
+                "aoColumns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ]
+            });
+        }
+    </script>
+{% endblock %}
+</body>
+
+</html>
