@@ -1,0 +1,217 @@
+body {
+	font-family: arial, helvetica, sans-serif;
+	font-size: 14px;
+}
+h4 {
+   width:338px;
+   font-size:25px;
+	margin-bottom:20px;
+	margin-top: 0px;
+	margin-left: 0px;
+}
+/*------------ VIEW DATA ----------------------------------------*/
+.viewMain {
+	position:relative;
+	top:20px;
+	left:50%;
+	margin-left:-600px;
+	height:auto;
+}
+.searchViewHolder {
+
+}
+
+.tableHolder {
+	float:left;
+	width: 1200px;
+	height:auto;
+	margin-bottom:5px;
+	/*background-color: #999;*/
+	background: #fbfbfb; /* Old browsers */
+	border: 1px solid #888;
+	border-radius: 3px;
+	padding:10px;
+	
+}
+.tableHolder h3{
+  width: 99%;
+  font-size: 25px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  margin-left: 0px;
+  font-weight: bold;
+}
+.tableHolder h4{
+  width: 99%;
+  font-size: 18px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  margin-left: 0px;
+  font-weight: bold;
+  border-bottom: 1px solid #444;
+}
+.tableLine {
+	float:left;
+	width: 100%;
+	height:20px;
+}
+.inputPholder{
+	float:left;
+	height:40px;
+	width: 250px;
+	line-height: 40px;
+	font-size: 16px;
+	font-family: calibri, tahoma, verdana;
+	margin-top:20px;
+}
+.titleBox {
+	float:left;
+	width: 85px;
+	height:20px;
+	margin-left:1px;
+	color:#000;
+	background-color: #eee;
+	font-family: Calibri, Tahoma, Verdana;
+	font-weight: bold;
+	text-align: center;
+	font-size:12px;
+	border-radius: 3px 3px 0 0;
+	box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,1);
+	line-height: 20px;
+}
+.listBox {
+	float:left;
+	width: 85px;
+	height:19px;
+	margin-left:1px;
+	color:#000;
+	background-color: #ddd;
+	font-family: Calibri, Tahoma, Verdana;
+	text-align: center;
+	font-size:12px;
+	line-height: 20px;
+	margin-bottom: 1px;
+}
+.uski {
+	width:30px;
+}
+.srednji {
+	width:60px;
+}
+.showBuyer:hover {
+    background: rgba(100,100,100, 0.7);;
+}
+.showBuyerPopup {
+	display:none;
+	position:fixed;
+	width: 300px;
+	height: 350px;
+	top:50%;
+	left:50%;
+	margin-top:-175px;
+	margin-left:-150px;
+	z-index: 2000;
+	background-color: #fff;
+	background: url('../images/infoBack.png'), #fff;
+	background-repeat: no-repeat;
+	background-position: center;
+	border: 1px solid #333;
+	border-radius: 3px;
+	padding:20px;
+	cursor: pointer;
+}
+.infoPopupHolder{
+    float:left;
+	border-bottom:1px dotted #999;
+	width: 240px;
+	min-height: 50px;
+	font-size: 28px;
+	font-family: calibri, tahoma, verdana;
+	font-weight: bold;
+	color: #333;
+}
+.showBuyerInfo {
+	float:left;
+	width: 220px;
+	height: 20px;
+	font-family: calibri, tahoma, verdana;
+	font-size: 19px;
+    font-weight: normal;
+	color:#000;
+	line-height: 20px;
+
+}
+.showBuyerClose {
+    float:right;
+    width: 40px;
+    height: 40px;
+    font-family: calibri, tahoma, verdana;
+    font-size: 30px;
+    font-weight: normal;
+    color:#fff;
+    line-height: 40px;
+    background-color: #111;
+    border-radius: 20px;
+    text-align:center;
+    margin-right:-40px;
+    margin-top: -40px;
+}
+.legendHolder{
+	float:left;
+	width: 1200px;
+	height:auto;
+	margin-bottom:5px;
+	/*background-color: #999;*/
+	background: #fcfff4; /* Old browsers */
+	background: -moz-linear-gradient(top,  #FFFFFF 0%, #E9E9E9 40%, #eeeeee  100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFFFF), color-stop(40%,#E9E9E9), color-stop(100%,#eeeeee )); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #FFFFFF 0%,#E9E9E9 40%,#eeeeee  100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #FFFFFF 0%,#E9E9E9 40%,#eeeeee  100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #FFFFFF 0%,#E9E9E9 40%,#eeeeee  100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #FFFFFF 0%,#E9E9E9 40%,#eeeeee  100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfff4', endColorstr='#b3bead',GradientType=0 ); /* IE6-9 */
+	border: 1px solid #888;
+	border-radius: 3px;
+	padding:10px;
+	-webkit-box-shadow: inset 0px 0px 7px -2px rgba(0,0,0,1);
+	-moz-box-shadow: inset 0px 0px 7px -2px rgba(0,0,0,1);
+	box-shadow: inset 0px 0px 7px -2px rgba(0,0,0,1);
+}
+.legendBox{
+	float:left;
+	width: 400px;
+	height:auto;
+	margin-bottom:5px;
+	padding: 20px 0;
+}
+.legendItem {
+	float:left;
+	width: 100%;
+	margin-bottom:5px;
+	text-align: left;
+	font-family: calibri, tahoma, verdana;
+	font-size: 14px;
+	color: #444;
+	line-height: 20px;
+}
+/*------------ VIEW DATA END----------------------------------------*/
+.bigger {
+	  position: absolute;
+	  width: 250px;
+      height:auto;
+	  min-height: 40px;
+	  background-color: #fff;
+	  border: 1px solid #444;
+	  margin-left: -84px;
+	  border-radius: 4px;
+      font-size: 14px;
+}
+.makeBigger {
+	cursor:pointer;
+}
+.greenLine {
+    background-color: #97e0ae !important;
+}
+.redLine {
+    background-color: #FF8888 !important;
+}
